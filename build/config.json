@@ -1,0 +1,6 @@
+{
+	"webpack": {
+	    "publicPath": "/dist/js/",
+	    "serverAddress": "luge.wrk"
+	}
+}

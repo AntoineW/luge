@@ -1,0 +1,51 @@
+{
+  "name": "luge.cool",
+  "version": "0.1.0",
+  "description": "Cool animation tookit",
+  "author": "Waaark <hello@waaark.com> (https://waaark.com)",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=development gulp --gulpfile build/gulpfile.js",
+    "build": "NODE_ENV=production gulp build --gulpfile build/gulpfile.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "browser-sync": "^2.26.12",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "core-js": "^3.2.1",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.2.2",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-loader": "^3.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sass-glob": "^1.1.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^7.3.1",
+    "style-loader": "^1.0.0",
+    "tiny-emitter": "^2.1.0",
+    "webfontloader": "^1.6.28",
+    "webpack": "^4.39.3",
+    "webpack-bundle-analyzer": "^3.8.0",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2",
+    "webpack-stream": "^5.2.1",
+    "write-file-webpack-plugin": "^4.5.1"
+  },
+  "dependencies": {
+    "bowser": "^2.11.0",
+    "whatwg-fetch": "^3.0.0"
+  }
+}
