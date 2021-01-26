@@ -1,10 +1,9 @@
 import Bowser from 'bowser'
-
 import Actions from 'Luge/Actions'
 
 const emitter = require('tiny-emitter/instance')
 
-export default class Luge {
+class Luge {
   constructor () {
     // Timeouts
     this.timeouts = {
@@ -21,6 +20,7 @@ export default class Luge {
     window.scrollTop = window.pageYOffset
     this.previousScrollTop = window.pageYOffset
     this.isScrolling = false
+    this.hasSmoothScroll = false
 
     // Mouse
     window.mouseX = 0
@@ -64,6 +64,7 @@ export default class Luge {
     }
 
     Actions.add('siteInit', this.siteInit.bind(this), 999)
+    Actions.add('pageInit', this.pageInit.bind(this), 999)
 
     this.bindEvents()
   }
@@ -73,6 +74,15 @@ export default class Luge {
    */
   siteInit (done) {
     this.scrollHandler()
+
+    done()
+  }
+
+  /**
+   * Page init
+   */
+  pageInit (done) {
+    this.hasSmoothScroll = document.documentElement.classList.contains('has-smooth-scroll')
 
     done()
   }
@@ -148,7 +158,7 @@ export default class Luge {
 
     this.previousScrollTop = window.scrollTop
 
-    if (!window.lg.hasSmoothScroll) {
+    if (!this.hasSmoothScroll) {
       emitter.emit('scroll')
     }
   }
@@ -189,3 +199,5 @@ export default class Luge {
     emitter.emit('endScroll')
   }
 }
+
+export default new Luge()

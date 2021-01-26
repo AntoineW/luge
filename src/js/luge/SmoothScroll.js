@@ -2,7 +2,7 @@ import Actions from 'Luge/Actions'
 
 const emitter = require('tiny-emitter/instance')
 
-export default class SmoothScroll {
+class SmoothScroll {
   /**
    * Constructor
    */
@@ -14,6 +14,7 @@ export default class SmoothScroll {
 
     this.containers = null
     this.inertia = 0.1
+    this.hasSmoothScroll = false
     window.smoothScrollTop = 0
 
     Actions.add('pageInit', this.pageInit.bind(this))
@@ -37,11 +38,11 @@ export default class SmoothScroll {
 
     if (containers) {
       window.smoothScrollTop = window.scrollTop
-      window.lg.hasSmoothScroll = true
+      this.hasSmoothScroll = true
       document.documentElement.classList.add('has-smooth-scroll')
     } else {
       window.smoothScrollTop = 0
-      window.lg.hasSmoothScroll = false
+      this.hasSmoothScroll = false
       document.documentElement.classList.remove('has-smooth-scroll')
     }
 
@@ -113,7 +114,7 @@ export default class SmoothScroll {
         })
       }
 
-      if (window.lg.hasSmoothScroll) {
+      if (this.hasSmoothScroll) {
         emitter.emit('scroll')
       }
     }
@@ -121,3 +122,5 @@ export default class SmoothScroll {
     this.requestId = requestAnimationFrame(this.rafAnimation.bind(this))
   }
 }
+
+export default new SmoothScroll()

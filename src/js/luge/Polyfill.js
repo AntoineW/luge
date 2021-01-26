@@ -1,4 +1,4 @@
-export default class Polyfill {
+class Polyfill {
   constructor () {
     this.closestPolyfill()
     this.customEventPolyfill()
@@ -44,4 +44,4 @@ export default class Polyfill {
   }
 }
 
-export const polyfill = new Polyfill()
+export default new Polyfill()

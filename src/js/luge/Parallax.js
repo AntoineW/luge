@@ -2,7 +2,7 @@ import Actions from 'Luge/Actions'
 
 const emitter = require('tiny-emitter/instance')
 
-export default class Parallax {
+class Parallax {
   /**
    * Constructor
    */
@@ -177,3 +177,5 @@ export default class Parallax {
     }
   }
 }
+
+export default new Parallax()

@@ -1,6 +1,6 @@
 import Actions from 'Luge/Actions'
 
-export default class PreLoader {
+class PreLoader {
   constructor () {
     Actions.add('siteIn', this.siteIn.bind(this))
   }
@@ -22,3 +22,5 @@ export default class PreLoader {
     }
   }
 }
+
+export default new PreLoader()

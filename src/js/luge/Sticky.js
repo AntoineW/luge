@@ -2,7 +2,7 @@ import Actions from 'Luge/Actions'
 
 const emitter = require('tiny-emitter/instance')
 
-export default class Sticky {
+class Sticky {
   /**
    * Constructor
    */
@@ -133,3 +133,5 @@ export default class Sticky {
     }
   }
 }
+
+export default new Sticky()

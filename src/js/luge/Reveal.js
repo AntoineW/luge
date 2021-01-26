@@ -2,7 +2,7 @@ import Actions from 'Luge/Actions'
 
 const emitter = require('tiny-emitter/instance')
 
-export default class Reveal {
+class Reveal {
   /**
    * Constructor
    */
@@ -162,3 +162,5 @@ export default class Reveal {
     })
   }
 }
+
+export default new Reveal()

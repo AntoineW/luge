@@ -1,10 +1,7 @@
 import 'whatwg-fetch'
-
 import Actions from 'Luge/Actions'
 
-const emitter = require('tiny-emitter/instance')
-
-export default class Transition {
+class Transition {
   /**
    * Constructor
    */
@@ -220,3 +217,5 @@ export default class Transition {
     this.navigateTo(window.location.href)
   }
 }
+
+export default new Transition()

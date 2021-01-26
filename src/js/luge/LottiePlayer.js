@@ -2,7 +2,7 @@ import Actions from 'Luge/Actions'
 
 const emitter = require('tiny-emitter/instance')
 
-export default class LottiePlayer {
+class LottiePlayer {
   /**
    * Constructor
    */
@@ -125,3 +125,5 @@ export default class LottiePlayer {
     this.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
   }
 }
+
+export default new LottiePlayer()
