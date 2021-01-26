@@ -1,4 +1,7 @@
 import 'whatwg-fetch'
+
+import Actions from 'Luge/Actions'
+
 const emitter = require('tiny-emitter/instance')
 
 export default class Transition {
@@ -11,17 +14,13 @@ export default class Transition {
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
 
-    this.wait = {
-      fetch: true,
-      out: true
-    }
-
-    window.lg.Core.addAction('siteInit', this.siteInit.bind(this))
-    window.lg.Core.addAction('pageInit', this.pageInit.bind(this))
-    window.lg.Core.addAction('pageFetch', this.pageFetch.bind(this))
-    window.lg.Core.addAction('pageOut', this.pageOut.bind(this))
-    window.lg.Core.addAction('pageIn', this.pageIn.bind(this))
-    window.lg.Core.addAction('pageCreate', this.pageCreate.bind(this))
+    Actions.add('siteInit', this.siteInit.bind(this))
+    Actions.add('pageInit', this.pageInit.bind(this))
+    Actions.add('pageFetch', this.pageFetch.bind(this))
+    Actions.add('pageOut', this.pageOut.bind(this))
+    Actions.add('pageIn', this.pageIn.bind(this))
+    Actions.add('pageCreate', this.pageCreate.bind(this))
+    Actions.add('pageKill', this.pageKill.bind(this), 999)
   }
 
   /**
@@ -77,16 +76,7 @@ export default class Transition {
   navigateTo (url) {
     this.url = url
 
-    this.wait.fetch = true
-    this.wait.out = true
-
-    window.lg.Core.wait.transition = {
-      fetch: true,
-      out: true
-    }
-
-    window.lg.Core.doAction('pageFetch')
-    window.lg.Core.doAction('pageOut')
+    Actions.flow('transition')
   }
 
   /**
@@ -209,6 +199,16 @@ export default class Transition {
       // Set title
       document.querySelector('head title').innerText = html.querySelector('head title').innerText
     }
+
+    done()
+  }
+
+  /**
+   * Page kill
+   */
+  pageKill (done) {
+    var oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
+    oldPage.parentNode.removeChild(oldPage)
 
     done()
   }

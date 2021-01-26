@@ -1,3 +1,5 @@
+import Actions from 'Luge/Actions'
+
 const emitter = require('tiny-emitter/instance')
 
 export default class SmoothScroll {
@@ -14,8 +16,8 @@ export default class SmoothScroll {
     this.inertia = 0.1
     window.smoothScrollTop = 0
 
-    window.lg.Core.addAction('pageInit', this.pageInit.bind(this))
-    window.lg.Core.addAction('pageKill', this.pageKill.bind(this))
+    Actions.add('pageInit', this.pageInit.bind(this))
+    Actions.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
   }

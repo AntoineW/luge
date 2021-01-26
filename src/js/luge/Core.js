@@ -1,27 +1,11 @@
 import Bowser from 'bowser'
 
+import Actions from 'Luge/Actions'
+
 const emitter = require('tiny-emitter/instance')
 
 export default class Luge {
   constructor () {
-    // Site actions
-    this.actions = {
-      siteInit: {},
-      pageInit: {},
-      siteIn: {},
-      pageIn: {},
-      reveal: {},
-      pageFetch: {},
-      pageOut: {},
-      pageCreate: {},
-      pageKill: {}
-    }
-
-    for (var action in this.actions) {
-      this.actions[action].callbacks = []
-      this.actions[action].done = 0
-    }
-
     // Timeouts
     this.timeouts = {
       resizeThrottle: null,
@@ -41,19 +25,6 @@ export default class Luge {
     // Mouse
     window.mouseX = 0
     window.mouseY = 0
-
-    // Init
-    this.firstInit = true
-    this.wait = {
-      ready: {
-        site: true,
-        page: true
-      },
-      transition: {
-        fetch: true,
-        out: true
-      }
-    }
 
     // Browser detect
     window.browser = Bowser.getParser(window.navigator.userAgent)
@@ -92,120 +63,24 @@ export default class Luge {
       document.documentElement.classList.add('is-light')
     }
 
+    Actions.add('siteInit', this.siteInit.bind(this), 999)
+
     this.bindEvents()
-  }
-
-  /**
-   * Hook callback to action
-   * @param {String} actionName Action name
-   * @param {Function} callback Callback function
-   */
-  addAction (actionName, callback) {
-    if (this.actions[actionName]) {
-      // console.log('addAction', actionName)
-      this.actions[actionName].callbacks.push(callback)
-    }
-  }
-
-  /**
-   * Call hooked callbacks
-   * @param {String} actionName Action name
-   */
-  doAction (actionName) {
-    this.actions[actionName].done = 0
-
-    if (this.actions[actionName].callbacks.length > 0) {
-      for (var i = 0; i < this.actions[actionName].callbacks.length; i++) {
-        this.actions[actionName].callbacks[i](() => this.doneAction(actionName))
-      }
-    } else {
-      this.doneAction(actionName)
-    }
-  }
-
-  /**
-   * Count done action
-   * @param {String} actionName Action name
-   */
-  doneAction (actionName) {
-    this.actions[actionName].done++
-
-    // All callback are done, call next action
-    if (this.actions[actionName].done >= this.actions[actionName].callbacks.length) {
-      if (actionName === 'siteInit') {
-        this.doAction('pageInit')
-      } else if (actionName === 'pageInit') {
-        if (!this.wait.ready.page) {
-          this.doAction('pageIn')
-        } else {
-          this.waitReady('page')
-        }
-      } else if (actionName === 'siteIn') {
-        this.doAction('pageIn')
-      } else if (actionName === 'pageIn') {
-        this.doAction('reveal')
-      } else if (actionName === 'pageFetch') {
-        this.waitTransition('fetch')
-      } else if (actionName === 'pageOut') {
-        this.waitTransition('out')
-      } else if (actionName === 'pageCreate') {
-        this.doAction('pageKill')
-      } else if (actionName === 'pageKill') {
-        this.pageClean()
-        this.doAction('pageInit')
-      }
-    }
   }
 
   /**
    * Site initialization
    */
-  siteInit () {
+  siteInit (done) {
     this.scrollHandler()
 
-    this.doAction('siteInit')
-  }
-
-  /**
-   * Remove old page container
-   */
-  pageClean () {
-    var oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
-    oldPage.parentNode.removeChild(oldPage)
-  }
-
-  /**
-   * Wait for site and page to be ready
-   * @param {String} element site|page
-   */
-  waitReady(element) {
-    this.wait.ready[element] = false
-
-    // Site loaded and page initiated
-    if (!this.wait.ready.site && !this.wait.ready.page) {
-      this.doAction('siteIn')
-    }
-  }
-
-  /**
-   * Wait for fetch and page out for transition
-   * @param {String} element site|page
-   */
-  waitTransition(element) {
-    this.wait.transition[element] = false
-
-    // Site loaded and page initiated
-    if (!this.wait.transition.fetch && !this.wait.transition.out) {
-      this.doAction('pageCreate')
-    }
+    done()
   }
 
   /**
    * Bind events
    */
   bindEvents () {
-    window.addEventListener('load', this.waitReady.bind(this, 'site'), { once: true })
-
     window.addEventListener('mousemove', this.mouseHandler.bind(this), { passive: true })
     window.addEventListener('resize', this.resizeThrottle.bind(this))
     window.addEventListener('scroll', this.scrollHandler.bind(this), { passive: true })

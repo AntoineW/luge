@@ -1,6 +1,8 @@
+import Actions from 'Luge/Actions'
+
 export default class PreLoader {
   constructor () {
-    window.lg.Core.addAction('siteIn', this.siteIn.bind(this))
+    Actions.add('siteIn', this.siteIn.bind(this))
   }
 
   siteIn (done) {

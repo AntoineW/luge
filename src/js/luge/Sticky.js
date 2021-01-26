@@ -1,3 +1,5 @@
+import Actions from 'Luge/Actions'
+
 const emitter = require('tiny-emitter/instance')
 
 export default class Sticky {
@@ -12,8 +14,8 @@ export default class Sticky {
 
     this.elements = []
 
-    window.lg.Core.addAction('pageInit', this.pageInit.bind(this))
-    window.lg.Core.addAction('pageKill', this.pageKill.bind(this))
+    Actions.add('pageInit', this.pageInit.bind(this))
+    Actions.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
   }

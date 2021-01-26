@@ -1,5 +1,9 @@
+import Actions from 'Luge/Actions'
+
 import Polyfill from 'Luge/Polyfill'
+
 import Luge from 'Luge/Core'
+
 import LottiePlayer from 'Luge/LottiePlayer'
 import Parallax from 'Luge/Parallax'
 import Preloader from 'Luge/Preloader'
@@ -23,4 +27,4 @@ window.lg.Sticky = new Sticky()
 window.lg.Transition = new Transition()
 
 // Site init on DOM ready
-document.addEventListener('DOMContentLoaded', window.lg.Core.siteInit.bind(window.lg.Core), { once: true })
+document.addEventListener('DOMContentLoaded', Actions.flow.bind(Actions, 'load'), { once: true })

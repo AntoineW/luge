@@ -1,3 +1,5 @@
+import Actions from 'Luge/Actions'
+
 const emitter = require('tiny-emitter/instance')
 
 export default class LottiePlayer {
@@ -6,8 +8,8 @@ export default class LottiePlayer {
    */
   constructor () {
     if (typeof lottie === 'object') {
-      window.lg.Core.addAction('pageInit', this.pageInit.bind(this))
-      window.lg.Core.addAction('pageKill', this.pageKill.bind(this))
+      Actions.add('pageInit', this.pageInit.bind(this))
+      Actions.add('pageKill', this.pageKill.bind(this))
     }
   }
 
