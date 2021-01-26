@@ -2,5 +2,4 @@
 /package-lock.json
 /demo
 /node_modules
-/dist/css/demo.css
-/dist/js/demo.js
+/dist
