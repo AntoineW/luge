@@ -39,7 +39,7 @@ function stylesDemo() {
  * Script task
  */
 function scripts() {
-  return src('../src/js/script.js')
+  return src('../src/js/luge.js')
     .pipe(webpackStream( require('./webpack.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js') ))
     .pipe(browserSync.reload({
       stream: true
