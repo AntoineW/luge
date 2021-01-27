@@ -6,10 +6,24 @@ class LottiePlayer {
    * Constructor
    */
   constructor () {
+    if (document.readyState === 'complete') {
+      this.addActions()
+    } else {
+      window.addEventListener('load', this.addActions.bind(this), { once: true })
+    }
+  }
+
+  /**
+   * Add actions
+   */
+  addActions () {
     if (typeof lottie === 'object') {
       Actions.add('pageInit', this.pageInit.bind(this))
-      Actions.add('pageLoad', this.pageLoad.bind(this))
       Actions.add('pageKill', this.pageKill.bind(this))
+
+      if (Actions.flows.load.current > 0) {
+        this.pageInit(() => {})
+      }
     }
   }
 
@@ -29,10 +43,6 @@ class LottiePlayer {
     })
 
     done()
-  }
-
-  pageLoad () {
-
   }
 
   /**
