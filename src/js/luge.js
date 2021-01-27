@@ -17,9 +17,10 @@ import Transition from 'Luge/Transition'
 // Public methods
 window.luge = {
   addAction: Actions.add.bind(Actions),
+  addReveal: Reveal.add.bind(Reveal),
+  off: Emitter.off.bind(Emitter),
   on: Emitter.on.bind(Emitter),
   once: Emitter.once.bind(Emitter),
-  off: Emitter.off.bind(Emitter),
   settings: Luge.settings
 }
 

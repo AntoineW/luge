@@ -7,6 +7,10 @@ class Reveal {
    */
   constructor () {
     this.elements = []
+    this.reveals = {
+      in: {},
+      out: {}
+    }
     this.canReveal = false
 
     Actions.add('pageInit', this.pageInit.bind(this))
@@ -33,7 +37,8 @@ class Reveal {
 
     this.elements = Array.from(elements).map(element => (
       {
-        el: element
+        el: element,
+        name: element.getAttribute('data-lg-reveal')
       }
     ))
 
@@ -140,6 +145,10 @@ class Reveal {
           setTimeout(function () {
             element.el.dispatchEvent(new CustomEvent('revealIn'))
 
+            if (typeof self.reveals.in[element.name] === 'function') {
+              self.reveals.in[element.name](element.el)
+            }
+
             element.el.setAttribute('data-lg-reveal-state', state)
           }, delay ? revealInTimeout : 0)
 
@@ -149,6 +158,10 @@ class Reveal {
         } else if (isOut) {
           if (element.el.hasAttribute('data-lg-reveal-state')) {
             element.el.dispatchEvent(new CustomEvent('revealOut'))
+
+            if (typeof self.reveals.out[element.name] === 'function') {
+              self.reveals.out[element.name](element.el)
+            }
           }
 
           element.el.setAttribute('data-lg-reveal-state', state)
@@ -159,6 +172,19 @@ class Reveal {
         delete self.elements[index]
       }
     })
+  }
+
+  /**
+   * Add reveal animation
+   */
+  add (type, revealName, callback) {
+    if (this.reveals[type]) {
+      if (this.reveals[type][revealName]) {
+        console.log('Reveal animation named ' + revealName + ' already exists.')
+      } else {
+        this.reveals[type][revealName] = callback
+      }
+    }
   }
 }
 
