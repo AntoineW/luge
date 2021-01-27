@@ -68,7 +68,6 @@ class Parallax {
    * Resize handler
    */
   resizeHandler () {
-    console.log('resize')
     this.setBounding()
     this.checkElements()
   }

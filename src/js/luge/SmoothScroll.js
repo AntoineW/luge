@@ -1,5 +1,6 @@
 import Actions from 'Luge/Actions'
 import Emitter from 'Luge/Emitter'
+import Luge from 'Luge/Core'
 
 class SmoothScroll {
   /**
@@ -99,7 +100,7 @@ class SmoothScroll {
    */
   rafAnimation () {
     if (window.smoothScrollTop !== window.scrollTop) {
-      window.smoothScrollTop = window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * this.inertia)
+      window.smoothScrollTop = window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia)
 
       // Round smooth scroll
       var gap = window.smoothScrollTop - window.scrollTop

@@ -19,7 +19,8 @@ window.luge = {
   addAction: Actions.add.bind(Actions),
   on: Emitter.on.bind(Emitter),
   once: Emitter.once.bind(Emitter),
-  off: Emitter.off.bind(Emitter)
+  off: Emitter.off.bind(Emitter),
+  settings: Luge.settings
 }
 
 // Site init on DOM ready

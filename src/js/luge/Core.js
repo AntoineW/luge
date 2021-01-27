@@ -4,6 +4,11 @@ import Emitter from 'Luge/Emitter'
 
 class Luge {
   constructor () {
+    // Options
+    this.settings = {
+      smoothInertia: 0.1
+    }
+
     // Timeouts
     this.timeouts = {
       resizeThrottle: null,
