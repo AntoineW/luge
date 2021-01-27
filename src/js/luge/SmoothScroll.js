@@ -1,6 +1,5 @@
 import Actions from 'Luge/Actions'
-
-const emitter = require('tiny-emitter/instance')
+import Emitter from 'Luge/Emitter'
 
 class SmoothScroll {
   /**
@@ -27,7 +26,7 @@ class SmoothScroll {
    * Bind events
    */
   bindEvents () {
-    emitter.on('resize', this.resizeHandler, this)
+    Emitter.on('resize', this.resizeHandler, this)
   }
 
   /**
@@ -115,7 +114,7 @@ class SmoothScroll {
       }
 
       if (this.hasSmoothScroll) {
-        emitter.emit('scroll')
+        Emitter.emit('scroll')
       }
     }
 

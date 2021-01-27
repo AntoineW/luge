@@ -1,7 +1,5 @@
 import Actions from 'Luge/Actions'
 
-const emitter = require('tiny-emitter/instance')
-
 class LottiePlayer {
   /**
    * Constructor

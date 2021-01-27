@@ -1,7 +1,6 @@
 import Bowser from 'bowser'
 import Actions from 'Luge/Actions'
-
-const emitter = require('tiny-emitter/instance')
+import Emitter from 'Luge/Emitter'
 
 class Luge {
   constructor () {
@@ -103,7 +102,7 @@ class Luge {
     window.mouseX = e.pageX
     window.mouseY = e.pageY
 
-    emitter.emit('mouseMove', e)
+    Emitter.emit('mouseMove', e)
   }
 
   /**
@@ -136,7 +135,7 @@ class Luge {
       document.documentElement.style.setProperty('--ch', (this.clientHeight * 0.01) + 'px')
     }
 
-    emitter.emit('resize')
+    Emitter.emit('resize')
   }
 
   /**
@@ -159,7 +158,7 @@ class Luge {
     this.previousScrollTop = window.scrollTop
 
     if (!this.hasSmoothScroll) {
-      emitter.emit('scroll')
+      Emitter.emit('scroll')
     }
   }
 
@@ -178,7 +177,7 @@ class Luge {
     })
     document.documentElement.classList.add('is-scrolling')
 
-    emitter.emit('startScroll')
+    Emitter.emit('startScroll')
   }
 
   /**
@@ -196,8 +195,9 @@ class Luge {
     })
     document.documentElement.classList.remove('is-scrolling')
 
-    emitter.emit('endScroll')
+    Emitter.emit('endScroll')
   }
 }
+var luge = new Luge()
 
-export default new Luge()
+export { luge as default }

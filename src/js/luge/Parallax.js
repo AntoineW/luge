@@ -1,6 +1,5 @@
 import Actions from 'Luge/Actions'
-
-const emitter = require('tiny-emitter/instance')
+import Emitter from 'Luge/Emitter'
 
 class Parallax {
   /**
@@ -24,8 +23,8 @@ class Parallax {
    * Bind events
    */
   bindEvents () {
-    emitter.on('resize', this.resizeHandler, this)
-    emitter.on('scroll', this.scrollHandler, this)
+    Emitter.on('resize', this.resizeHandler, this)
+    Emitter.on('scroll', this.scrollHandler, this)
   }
 
   /**
@@ -69,6 +68,7 @@ class Parallax {
    * Resize handler
    */
   resizeHandler () {
+    console.log('resize')
     this.setBounding()
     this.checkElements()
   }
