@@ -1,4 +1,5 @@
 import Actions from 'Luge/Actions'
+import Emitter from 'Luge/Emitter'
 
 class LottiePlayer {
   /**
@@ -7,6 +8,7 @@ class LottiePlayer {
   constructor () {
     if (typeof lottie === 'object') {
       Actions.add('pageInit', this.pageInit.bind(this))
+      Actions.add('pageLoad', this.pageLoad.bind(this))
       Actions.add('pageKill', this.pageKill.bind(this))
     }
   }
@@ -16,6 +18,7 @@ class LottiePlayer {
    */
   pageInit (done) {
     var self = this
+    this.toLoad = 0
 
     document.querySelectorAll('[data-lg-lottie]').forEach(element => {
       if (!element.player) {
@@ -26,6 +29,10 @@ class LottiePlayer {
     })
 
     done()
+  }
+
+  pageLoad () {
+
   }
 
   /**
@@ -50,6 +57,10 @@ class LottiePlayer {
    * Init player
    */
   initPlayer (element) {
+    var self = this
+
+    this.toLoad++
+
     element.player = lottie.loadAnimation({
       container: element,
       renderer: 'svg',
@@ -106,11 +117,26 @@ class LottiePlayer {
     // Set methods
     element.play = this.play
 
-    // Autoplay
-    if (element.hasAttribute('data-lg-lottie-autoplay')) {
-      element.player.addEventListener('DOMLoaded', () => {
+    // Loaded
+    element.player.addEventListener('DOMLoaded', () => {
+      self.playerLoaded()
+
+      // Autoplay
+      if (element.hasAttribute('data-lg-lottie-autoplay')) {
         element.player.goToAndPlay(0, true)
-      }, { once: true })
+      }
+    }, { once: true })
+  }
+
+  /**
+   * Player loaded
+   */
+  playerLoaded () {
+    this.toLoad--
+
+    // Emit resize event when all animations are loaded
+    if (this.toLoad === 0) {
+      Emitter.emit('resize')
     }
   }
 
