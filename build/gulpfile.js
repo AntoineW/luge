@@ -46,14 +46,6 @@ function scripts() {
     }));
 }
 
-function scriptsDemo() {
-  return src('../demo/src/js/demo.js')
-    .pipe(webpackStream( require('./webpack.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js') ))
-    .pipe(browserSync.reload({
-      stream: true
-    }));
-}
-
 /**
  * Watch task
  */
@@ -69,7 +61,6 @@ function serve(cb) {
 
   // Watch .js files
   watch('../src/**/*.js', scripts);
-  watch('../demo/src/**/*.js', scriptsDemo);
 
   // Watch .html files
   watch(['../demo/*.html']).on('change', browserSync.reload);

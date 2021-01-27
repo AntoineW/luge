@@ -8,7 +8,6 @@ module.exports = {
   target: 'web',
   entry: {
     'luge': '../src/js/luge.js',
-    'demo': '../demo/src/js/demo.js',
   },
   resolve: {
     alias: {
