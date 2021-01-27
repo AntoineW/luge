@@ -18,6 +18,7 @@ import Transition from 'Luge/Transition'
 window.luge = {
   addAction: Actions.add.bind(Actions),
   addReveal: Reveal.add.bind(Reveal),
+  addTransition: Transition.add.bind(Transition),
   off: Emitter.off.bind(Emitter),
   on: Emitter.on.bind(Emitter),
   once: Emitter.once.bind(Emitter),

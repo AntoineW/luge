@@ -9,6 +9,11 @@ class Transition {
     this.url = window.location.href
     this.pageFetched = null
 
+    this.transitions = {
+      in: {},
+      out: {}
+    }
+
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
 
     Actions.add('siteInit', this.siteInit.bind(this))
@@ -119,18 +124,31 @@ class Transition {
     var page = document.querySelector('[data-lg-page]')
 
     if (page) {
+      var pageName = page.getAttribute('data-lg-page')
+      var transition = false
+
       window.scroll(0, 0)
       window.smoothScrollTop = 0
 
-      page.style.transition = 'opacity 0.3s linear !important'
-      setTimeout(() => { page.style.opacity = 0 }, 10)
+      if (typeof this.transitions.out[pageName] === 'function') {
+        transition = this.transitions.out[pageName]
+      } else if (typeof this.transitions.out.default === 'function') {
+        transition = this.transitions.out.default
+      }
 
-      setTimeout(() => {
-        page.style.transition = ''
-        page.style.opacity = ''
+      if (transition) {
+        transition(page, done)
+      } else {
+        page.style.transition = 'opacity 0.3s linear !important'
+        setTimeout(() => { page.style.opacity = 0 }, 10)
 
-        done()
-      }, 300)
+        setTimeout(() => {
+          page.style.transition = ''
+          page.style.opacity = ''
+
+          done()
+        }, 300)
+      }
     } else {
       done()
     }
@@ -145,15 +163,28 @@ class Transition {
     var page = document.querySelector('[data-lg-page]')
 
     if (page) {
-      page.style.transition = 'opacity 0.3s linear !important'
-      setTimeout(() => { page.style.opacity = 1 }, 10)
+      var pageName = page.getAttribute('data-lg-page')
+      var transition = false
 
-      setTimeout(() => {
-        page.style.transition = ''
-        page.style.opacity = ''
+      if (typeof this.transitions.in[pageName] === 'function') {
+        transition = this.transitions.in[pageName]
+      } else if (typeof this.transitions.in.default === 'function') {
+        transition = this.transitions.in.default
+      }
 
-        done()
-      }, 300)
+      if (transition) {
+        transition(page, done)
+      } else {
+        page.style.transition = 'opacity 0.3s linear !important'
+        setTimeout(() => { page.style.opacity = 1 }, 10)
+
+        setTimeout(() => {
+          page.style.transition = ''
+          page.style.opacity = ''
+
+          done()
+        }, 300)
+      }
     } else {
       done()
     }
@@ -215,6 +246,19 @@ class Transition {
    */
   historyStateChanged () {
     this.navigateTo(window.location.href)
+  }
+
+  /**
+   * Add transition animation
+   */
+  add (type, callback, pageName = 'default') {
+    if (this.transitions[type]) {
+      if (this.transitions[type][pageName]) {
+        console.log('Transition animation for ' + pageName + ' page already exists.')
+      } else {
+        this.transitions[type][pageName] = callback
+      }
+    }
   }
 }
 
