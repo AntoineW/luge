@@ -85,6 +85,8 @@ class Transition {
    * Site init
    */
   siteInit (done) {
+    this.initLoader()
+
     done()
 
     window.addEventListener('popstate', this.historyStateChanged.bind(this))
@@ -97,6 +99,57 @@ class Transition {
     this.bindLinksEvent()
 
     done()
+  }
+
+  /**
+   * Init loader
+   */
+  initLoader () {
+    var loader = document.querySelector('[data-lg-loader]')
+
+    if (loader && loader.getAttribute('data-lg-loader') === 'lottie' && typeof lottie === 'object') {
+      var animOut = loader.getAttribute('data-lg-loader-out')
+      var playerOut = false
+      var animIn = loader.getAttribute('data-lg-loader-in')
+      var playerIn = false
+
+      if (animOut) {
+        playerOut = lottie.loadAnimation({
+          container: loader,
+          renderer: 'svg',
+          loop: false,
+          autoplay: false,
+          path: animOut,
+          rendererSettings: {
+            preserveAspectRatio: 'none'
+          }
+        })
+      }
+
+      if (animIn === 'reverse') {
+        animIn = animOut
+      }
+
+      if (anim)
+        playerIn = lottie.loadAnimation({
+          container: loader,
+          renderer: 'svg',
+          loop: false,
+          autoplay: false,
+          path: animIn,
+          rendererSettings: {
+            preserveAspectRatio: 'none'
+          }
+        })
+
+        if (animIn === animOut) {
+          playerIn.setDirection(-1)
+        }
+      }
+
+      loader.playerOut = playerOut
+      loader.playerIn = playerIn
+    }
   }
 
   /**
@@ -114,79 +167,6 @@ class Transition {
 
           done()
         })
-    }
-  }
-
-  /**
-   * Page out
-   */
-  pageOut (done) {
-    var page = document.querySelector('[data-lg-page]')
-
-    if (page) {
-      var pageName = page.getAttribute('data-lg-page')
-      var transition = false
-
-      window.scroll(0, 0)
-      window.smoothScrollTop = 0
-
-      if (typeof this.transitions.out[pageName] === 'function') {
-        transition = this.transitions.out[pageName]
-      } else if (typeof this.transitions.out.default === 'function') {
-        transition = this.transitions.out.default
-      }
-
-      if (transition) {
-        transition(page, done)
-      } else {
-        page.style.transition = 'opacity 0.3s linear !important'
-        setTimeout(() => { page.style.opacity = 0 }, 10)
-
-        setTimeout(() => {
-          page.style.transition = ''
-          page.style.opacity = ''
-
-          done()
-        }, 300)
-      }
-    } else {
-      done()
-    }
-
-    this.unbindLinksEvent.bind(this)
-  }
-
-  /**
-   * Page in
-   */
-  pageIn (done) {
-    var page = document.querySelector('[data-lg-page]')
-
-    if (page) {
-      var pageName = page.getAttribute('data-lg-page')
-      var transition = false
-
-      if (typeof this.transitions.in[pageName] === 'function') {
-        transition = this.transitions.in[pageName]
-      } else if (typeof this.transitions.in.default === 'function') {
-        transition = this.transitions.in.default
-      }
-
-      if (transition) {
-        transition(page, done)
-      } else {
-        page.style.transition = 'opacity 0.3s linear !important'
-        setTimeout(() => { page.style.opacity = 1 }, 10)
-
-        setTimeout(() => {
-          page.style.transition = ''
-          page.style.opacity = ''
-
-          done()
-        }, 300)
-      }
-    } else {
-      done()
     }
   }
 
@@ -239,6 +219,120 @@ class Transition {
     oldPage.parentNode.removeChild(oldPage)
 
     done()
+  }
+
+  /**
+   * Page out
+   */
+  pageOut (done) {
+    var page = document.querySelector('[data-lg-page]')
+
+    if (page) {
+      var pageName = page.getAttribute('data-lg-page')
+      var transition = false
+
+      window.scroll(0, 0)
+      window.smoothScrollTop = 0
+
+      if (typeof this.transitions.out[pageName] === 'function') {
+        transition = this.transitions.out[pageName]
+      } else if (typeof this.transitions.out.default === 'function') {
+        transition = this.transitions.out.default
+      }
+
+      if (transition) {
+        transition(page, done)
+      } else {
+        var loader = document.querySelector('[data-lg-loader]')
+
+        if (loader) {
+          if (loader.playerOut) {
+            loader.playerOut.stop()
+            loader.playerOut.renderer.svgElement.style.opacity = 1
+            loader.playerOut.play()
+
+            loader.playerOut.addEventListener('complete', () => {
+              loader.playerOut.renderer.svgElement.style.opacity = ''
+              done()
+            }, { once: true })
+          } else {
+            var duration = window.getComputedStyle(document.querySelector('[data-lg-loader]')).getPropertyValue('transition-duration')
+
+            if (duration !== '' && duration !== '0s') {
+              loader.addEventListener('transitionend', done, { once: true })
+            } else {
+              done()
+            }
+          }
+
+          loader.classList.add('is-visible')
+        } else {
+          done()
+        }
+      }
+    } else {
+      done()
+    }
+
+    this.unbindLinksEvent.bind(this)
+  }
+
+  /**
+   * Page in
+   */
+  pageIn (done) {
+    var page = document.querySelector('[data-lg-page]')
+
+    if (page) {
+      var pageName = page.getAttribute('data-lg-page')
+      var transition = false
+
+      page.style.opacity = ''
+
+      if (typeof this.transitions.in[pageName] === 'function') {
+        transition = this.transitions.in[pageName]
+      } else if (typeof this.transitions.in.default === 'function') {
+        transition = this.transitions.in.default
+      }
+
+      if (transition) {
+        transition(page, done)
+      } else {
+        var loader = document.querySelector('[data-lg-loader]')
+
+        if (loader && loader.classList.contains('is-visible')) {
+          if (loader.playerIn) {
+            loader.playerIn.stop()
+            loader.playerIn.renderer.svgElement.style.opacity = 1
+            if (loader.getAttribute('data-lg-loader-in') === 'reverse') {
+              loader.playerIn.goToAndPlay(loader.playerIn.totalFrames, true)
+            } else {
+              loader.playerIn.play()
+            }
+
+            loader.playerIn.addEventListener('complete', () => {
+              loader.playerIn.renderer.svgElement.style.opacity = ''
+              loader.classList.remove('is-visible')
+              done()
+            }, { once: true })
+          } else {
+            var duration = window.getComputedStyle(document.querySelector('[data-lg-loader]')).getPropertyValue('transition-duration')
+
+            if (duration !== '' && duration !== '0s') {
+              loader.addEventListener('transitionend', done, { once: true })
+            } else {
+              done()
+            }
+
+            loader.classList.remove('is-visible')
+          }
+        } else {
+          done()
+        }
+      }
+    } else {
+      done()
+    }
   }
 
   /**
