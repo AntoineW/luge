@@ -99,7 +99,7 @@ class LottiePlayer {
                 element.player.setDirection(-1)
                 element.player.goToAndPlay(element.player.totalFrames, true)
 
-                this.setAttribute('data-lg-lottie-state', 'is-playing is-playing--backward')
+                element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--backward')
               }, 0)
             } else if (loop) {
               setTimeout(() => {
@@ -116,7 +116,7 @@ class LottiePlayer {
                 element.player.setDirection(1)
                 element.player.goToAndPlay(loopFrame, true)
 
-                this.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
+                element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
               }, 0)
             }
           }
