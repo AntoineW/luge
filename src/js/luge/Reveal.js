@@ -32,7 +32,6 @@ class Reveal {
    * Init
    */
   pageInit (done) {
-    this.canReveal = true
     var elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
 
     this.elements = Array.from(elements).map(element => (
@@ -61,6 +60,8 @@ class Reveal {
    * Reveal
    */
   reveal (done) {
+    this.canReveal = true
+
     this.checkElements()
 
     done()
@@ -100,78 +101,80 @@ class Reveal {
    * Check position
    */
   checkElements () {
-    var scrollTop = window.scrollTop
-    scrollTop = Math.max(scrollTop, 0)
+    if (this.canReveal) {
+      var scrollTop = window.scrollTop
+      scrollTop = Math.max(scrollTop, 0)
 
-    var self = this
-    var threshold = window.innerHeight * 0.15
-    var revealInDelay = 200
-    var revealInTimeout = 0
+      var self = this
+      var threshold = window.innerHeight * 0.15
+      var revealInDelay = 200
+      var revealInTimeout = 0
 
-    this.elements.forEach(function (element, index) {
-      var state = ''
-      var isIn = false
-      var delay = true
-      var isOut = false
+      this.elements.forEach(function (element, index) {
+        var state = ''
+        var isIn = false
+        var delay = true
+        var isOut = false
 
-      if (scrollTop > element.end - threshold) {
-        if (element.el.getAttribute('data-lg-reveal-state') === null && !element.el.hasAttribute('data-lg-reveal-multiple')) {
-          // Show element when above the viewport
+        if (scrollTop > element.end - threshold) {
+          if (element.el.getAttribute('data-lg-reveal-state') === null && !element.el.hasAttribute('data-lg-reveal-multiple')) {
+            // Show element when above the viewport
+            isIn = true
+            state = 'is-in'
+            delay = false
+          } else {
+            isOut = true
+            state = 'is-out is-out--top'
+          }
+        } else if (scrollTop < element.start + threshold) {
+          isOut = true
+          state = 'is-out is-out--bottom'
+        } else {
           isIn = true
           state = 'is-in'
-          delay = false
-        } else {
-          isOut = true
-          state = 'is-out is-out--top'
-        }
-      } else if (scrollTop < element.start + threshold) {
-        isOut = true
-        state = 'is-out is-out--bottom'
-      } else {
-        isIn = true
-        state = 'is-in'
 
-        if (element.el.hasAttribute('data-lg-reveal-multiple')) {
-          if (scrollTop < element.middle) {
-            state += ' is-in--bottom'
-          } else {
-            state += ' is-in--top'
+          if (element.el.hasAttribute('data-lg-reveal-multiple')) {
+            if (scrollTop < element.middle) {
+              state += ' is-in--bottom'
+            } else {
+              state += ' is-in--top'
+            }
           }
         }
-      }
 
-      if (element.el.getAttribute('data-lg-reveal-state') !== state) {
-        if (isIn) {
-          setTimeout(function () {
-            element.el.dispatchEvent(new CustomEvent('revealIn'))
+        if (element.el.getAttribute('data-lg-reveal-state') !== state) {
+          if (isIn) {
+            setTimeout(function () {
+              element.el.dispatchEvent(new CustomEvent('revealIn'))
 
-            if (typeof self.reveals.in[element.name] === 'function') {
-              self.reveals.in[element.name](element.el)
+              if (typeof self.reveals.in[element.name] === 'function') {
+                self.reveals.in[element.name](element.el)
+              }
+
+              element.el.setAttribute('data-lg-reveal-state', state)
+            }, delay ? revealInTimeout : 0)
+
+            if (delay) {
+              revealInTimeout += revealInDelay
+            }
+          } else if (isOut) {
+            if (element.el.hasAttribute('data-lg-reveal-state')) {
+              element.el.dispatchEvent(new CustomEvent('revealOut'))
+
+              if (typeof self.reveals.out[element.name] === 'function') {
+                self.reveals.out[element.name](element.el)
+              }
             }
 
             element.el.setAttribute('data-lg-reveal-state', state)
-          }, delay ? revealInTimeout : 0)
-
-          if (delay) {
-            revealInTimeout += revealInDelay
           }
-        } else if (isOut) {
-          if (element.el.hasAttribute('data-lg-reveal-state')) {
-            element.el.dispatchEvent(new CustomEvent('revealOut'))
-
-            if (typeof self.reveals.out[element.name] === 'function') {
-              self.reveals.out[element.name](element.el)
-            }
-          }
-
-          element.el.setAttribute('data-lg-reveal-state', state)
         }
-      }
 
-      if (isIn && !element.el.hasAttribute('data-lg-reveal-multiple')) {
-        delete self.elements[index]
-      }
-    })
+        if (isIn && !element.el.hasAttribute('data-lg-reveal-multiple')) {
+          delete self.elements[index]
+        }
+      })
+    }
   }
 
   /**
