@@ -28,7 +28,8 @@ class LottiePlayer {
   }
 
   /**
-   * Init
+   * Initialization
+   * @param {Function} done Done function
    */
   pageInit (done) {
     var self = this
@@ -47,6 +48,7 @@ class LottiePlayer {
 
   /**
    * Kill
+   * @param {Function} done Done function
    */
   pageKill (done) {
     var self = this
@@ -65,6 +67,7 @@ class LottiePlayer {
 
   /**
    * Init player
+   * @param {HTMLElement} element Container
    */
   initPlayer (element) {
     var self = this

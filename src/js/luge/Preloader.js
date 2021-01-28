@@ -1,10 +1,17 @@
 import Actions from 'Luge/Actions'
 
 class PreLoader {
+  /**
+   * Constructor
+   */
   constructor () {
     Actions.add('siteIn', this.siteIn.bind(this))
   }
 
+  /**
+   * Initialization
+   * @param {Function} done Done function
+   */
   siteIn (done) {
     var preloader = document.querySelector('[data-lg-preloader]')
 

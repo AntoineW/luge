@@ -31,7 +31,8 @@ class SmoothScroll {
   }
 
   /**
-   * Init
+   * Initialization
+   * @param {Function} done Done function
    */
   pageInit (done) {
     var containers = document.querySelectorAll('[data-lg-smooth]')
@@ -62,6 +63,7 @@ class SmoothScroll {
 
   /**
    * Kill
+   * @param {Function} done Done function
    */
   pageKill (done) {
     this.containers = null

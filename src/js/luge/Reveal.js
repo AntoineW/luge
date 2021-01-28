@@ -29,7 +29,8 @@ class Reveal {
   }
 
   /**
-   * Init
+   * Initialization
+   * @param {Function} done Done function
    */
   pageInit (done) {
     var elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
@@ -48,6 +49,7 @@ class Reveal {
 
   /**
    * Kill
+   * @param {Function} done Done function
    */
   pageKill (done) {
     this.canReveal = false
@@ -58,6 +60,7 @@ class Reveal {
 
   /**
    * Reveal
+   * @param {Function} done Done function
    */
   reveal (done) {
     this.canReveal = true
@@ -179,6 +182,9 @@ class Reveal {
 
   /**
    * Add reveal animation
+   * @param {String} type Reveal type (in | out)
+   * @param {String} revealName Reveal animation name
+   * @param {Function} callback Callback function
    */
   add (type, revealName, callback) {
     if (this.reveals[type]) {

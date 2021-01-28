@@ -3,6 +3,9 @@ import Actions from 'Luge/Actions'
 import Emitter from 'Luge/Emitter'
 
 class Luge {
+  /**
+   * Constructor
+   */
   constructor () {
     // Options
     this.settings = {
@@ -33,12 +36,6 @@ class Luge {
     // Browser detect
     window.browser = Bowser.getParser(window.navigator.userAgent)
     var isLight = false
-
-    Boolean(window.browser.satisfies({
-      safari: '<12',
-      'internet explorer': '>0',
-      mobile: {}
-    }))
 
     if (window.browser.is('mobile') || window.browser.is('tablet')) {
       isLight = true
@@ -75,6 +72,7 @@ class Luge {
 
   /**
    * Site initialization
+   * @param {Function} done Done function
    */
   siteInit (done) {
     this.scrollHandler()
@@ -83,7 +81,8 @@ class Luge {
   }
 
   /**
-   * Page init
+   * Page initialization
+   * @param {Function} done Done function
    */
   pageInit (done) {
     this.hasSmoothScroll = document.documentElement.classList.contains('has-smooth-scroll')
@@ -102,6 +101,7 @@ class Luge {
 
   /**
    * Mouse handler
+   * @param {Event} e Mouse event
    */
   mouseHandler (e) {
     window.mouseX = e.pageX

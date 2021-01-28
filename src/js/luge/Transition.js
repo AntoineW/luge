@@ -45,6 +45,7 @@ class Transition {
 
   /**
    * Link handler
+   * @param {Event} e Mouse event
    */
   linkHandler (e) {
     var element = e.currentTarget
@@ -74,6 +75,7 @@ class Transition {
 
   /**
    * Navigate to page
+   * @param {URL} url New page URL
    */
   navigateTo (url) {
     this.url = url
@@ -83,6 +85,7 @@ class Transition {
 
   /**
    * Site init
+   * @param {Function} done Done function
    */
   siteInit (done) {
     this.initLoader()
@@ -94,6 +97,7 @@ class Transition {
 
   /**
    * Page init
+   * @param {Function} done Done function
    */
   pageInit (done) {
     this.bindLinksEvent()
@@ -130,7 +134,7 @@ class Transition {
         animIn = animOut
       }
 
-      if (anim)
+      if (animIn) {
         playerIn = lottie.loadAnimation({
           container: loader,
           renderer: 'svg',
@@ -154,6 +158,7 @@ class Transition {
 
   /**
    * Fetch
+   * @param {Function} done Done function
    */
   pageFetch (done) {
     var self = this
@@ -172,6 +177,7 @@ class Transition {
 
   /**
    * Page create
+   * @param {Function} done Done function
    */
   pageCreate (done) {
     // Convert data to HTML
@@ -213,6 +219,7 @@ class Transition {
 
   /**
    * Page kill
+   * @param {Function} done Done function
    */
   pageKill (done) {
     var oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
@@ -223,6 +230,7 @@ class Transition {
 
   /**
    * Page out
+   * @param {Function} done Done function
    */
   pageOut (done) {
     var page = document.querySelector('[data-lg-page]')
@@ -279,6 +287,7 @@ class Transition {
 
   /**
    * Page in
+   * @param {Function} done Done function
    */
   pageIn (done) {
     var page = document.querySelector('[data-lg-page]')
@@ -344,6 +353,9 @@ class Transition {
 
   /**
    * Add transition animation
+   * @param {String} type Transition type (in | out)
+   * @param {Function} callback Callback function
+   * @param {String} pageName Page name
    */
   add (type, callback, pageName = 'default') {
     if (this.transitions[type]) {

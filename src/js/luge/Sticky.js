@@ -28,7 +28,8 @@ class Sticky {
   }
 
   /**
-   * Init
+   * Initialization
+   * @param {Function} done Done function
    */
   pageInit (done) {
     var elements = document.querySelectorAll('[data-lg-sticky]')
@@ -49,6 +50,7 @@ class Sticky {
 
   /**
    * Kill
+   * @param {Function} done Done function
    */
   pageKill (done) {
     this.elements = []

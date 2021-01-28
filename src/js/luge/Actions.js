@@ -1,4 +1,7 @@
 class Actions {
+  /**
+   * Constructor
+   */
   constructor () {
     this.actionsName = [
       'siteInit',

@@ -1,9 +1,16 @@
 class Polyfill {
+  /**
+   * Constructor
+   */
   constructor () {
     this.closestPolyfill()
     this.customEventPolyfill()
   }
 
+  /**
+   * Finds the closest nodes
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Element/closest}
+   */
   closestPolyfill () {
     /*  eslint-disable */
     if (!Element.prototype.matches) {
@@ -26,6 +33,10 @@ class Polyfill {
     /*  eslint-enable */
   }
 
+  /**
+   * Custom event
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#polyfill}
+   */
   customEventPolyfill () {
     /*  eslint-disable */
     if (typeof window.CustomEvent === 'function') {

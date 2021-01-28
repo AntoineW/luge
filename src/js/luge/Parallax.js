@@ -28,7 +28,8 @@ class Parallax {
   }
 
   /**
-   * Init
+   * Initialization
+   * @param {Function} done Done function
    */
   pageInit (done) {
     document.querySelectorAll('[data-lg-parallax]').forEach(element => {
@@ -57,6 +58,7 @@ class Parallax {
 
   /**
    * Kill
+   * @param {Function} done Done function
    */
   pageKill (done) {
     this.elements = []
