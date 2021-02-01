@@ -1,5 +1,5 @@
-/wrk-core-dev.code-workspace
 /package-lock.json
 /demo
 /node_modules
 /dist
+*.code-workspace
