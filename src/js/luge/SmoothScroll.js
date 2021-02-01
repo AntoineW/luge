@@ -17,6 +17,10 @@ class SmoothScroll {
     this.hasSmoothScroll = false
     window.smoothScrollTop = 0
 
+    this.then = Date.now()
+    this.fps = 60
+    this.fpsInterval = 1000 / this.fps
+
     Actions.add('pageInit', this.pageInit.bind(this))
     Actions.add('pageKill', this.pageKill.bind(this))
 
@@ -101,23 +105,30 @@ class SmoothScroll {
    * Raf animation
    */
   rafAnimation () {
-    if (window.smoothScrollTop !== window.scrollTop) {
-      window.smoothScrollTop = window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia)
+    this.now = Date.now()
+    var elapsed = this.now - this.then
 
-      // Round smooth scroll
-      var gap = window.smoothScrollTop - window.scrollTop
-      if (gap > -0.1 && gap < 0.1) {
-        window.smoothScrollTop = window.scrollTop
-      }
+    if (elapsed >= this.fpsInterval) {
+      this.then = this.now - (elapsed % this.fpsInterval)
 
-      if (this.containers) {
-        this.containers.forEach(function (container) {
-          container.el.style.transform = 'translate3d(0, -' + window.smoothScrollTop + 'px, 0)'
-        })
-      }
+      if (window.smoothScrollTop !== window.scrollTop) {
+        window.smoothScrollTop = window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia)
 
-      if (this.hasSmoothScroll) {
-        Emitter.emit('scroll')
+        // Round smooth scroll
+        var gap = window.smoothScrollTop - window.scrollTop
+        if (gap > -0.1 && gap < 0.1) {
+          window.smoothScrollTop = window.scrollTop
+        }
+
+        if (this.containers) {
+          this.containers.forEach(function (container) {
+            container.el.style.transform = 'translate3d(0, -' + window.smoothScrollTop + 'px, 0)'
+          })
+        }
+
+        if (this.hasSmoothScroll) {
+          Emitter.emit('scroll')
+        }
       }
     }
 
