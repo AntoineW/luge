@@ -6,11 +6,15 @@ class LottiePlayer {
    * Constructor
    */
   constructor () {
+    this.elements = []
+
     if (document.readyState === 'complete') {
       this.addActions()
     } else {
       window.addEventListener('load', this.addActions.bind(this), { once: true })
     }
+
+    this.bindEvents()
   }
 
   /**
@@ -28,20 +32,32 @@ class LottiePlayer {
   }
 
   /**
+   * Bind events
+   */
+  bindEvents () {
+    Emitter.on('resize', this.resizeHandler, this)
+    Emitter.on('scroll', this.scrollHandler, this)
+  }
+
+  /**
    * Initialization
    * @param {Function} done Done function
    */
   pageInit (done) {
     var self = this
+    this.elements = document.querySelectorAll('[data-lg-lottie]')
     this.toLoad = 0
 
-    document.querySelectorAll('[data-lg-lottie]').forEach(element => {
+    this.elements.forEach(element => {
       if (!element.player) {
         self.initPlayer(element)
 
         element.addEventListener('revealIn', self.play)
       }
     })
+
+    this.setBounding()
+    this.checkElements()
 
     done()
   }
@@ -63,6 +79,64 @@ class LottiePlayer {
     })
 
     done()
+  }
+
+  /**
+   * Resize handler
+   */
+  resizeHandler () {
+    this.setBounding()
+    this.checkElements()
+  }
+
+  /**
+   * Set bounding
+   */
+  setBounding () {
+    var scrollTop = (window.smoothScrollTop ? window.smoothScrollTop : window.scrollTop)
+    scrollTop = Math.max(scrollTop, 0)
+
+    this.elements.forEach(element => {
+      var bounding = element.getBoundingClientRect()
+      element.start = bounding.top + scrollTop - window.innerHeight
+      element.end = element.start + element.clientHeight + window.innerHeight
+    })
+  }
+
+  /**
+   * Sroll handler
+   */
+  scrollHandler () {
+    this.checkElements()
+  }
+
+  /**
+   * Check position
+   */
+  checkElements () {
+    var scrollTop = window.scrollTop
+    scrollTop = Math.max(scrollTop, 0)
+
+    var self = this
+    var threshold = 0
+
+    this.elements.forEach(function (element, index) {
+      var inViewport = false
+
+      if (scrollTop <= element.end - threshold && scrollTop >= element.start + threshold) {
+        inViewport = true
+      }
+
+      if (element.inViewport !== inViewport) {
+        if (!inViewport) {
+          element.player.pause()
+        } else {
+          element.player.play()
+        }
+      }
+
+      element.inViewport = inViewport
+    })
   }
 
   /**
