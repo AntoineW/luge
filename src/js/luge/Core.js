@@ -1,5 +1,5 @@
 import Bowser from 'bowser'
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 
 class Luge {
@@ -64,8 +64,8 @@ class Luge {
       document.documentElement.classList.add('is-light')
     }
 
-    Actions.add('siteInit', this.siteInit.bind(this), 999)
-    Actions.add('pageInit', this.pageInit.bind(this), 999)
+    LifeCycle.add('siteInit', this.siteInit.bind(this), 999)
+    LifeCycle.add('pageInit', this.pageInit.bind(this), 999)
 
     this.bindEvents()
   }
@@ -173,16 +173,9 @@ class Luge {
   scrollStart () {
     this.isScrolling = true
 
-    // Pause videos on scroll
-    document.querySelectorAll('video').forEach(video => {
-      if (!video.paused) {
-        video.classList.add('was-playing')
-        video.pause()
-      }
-    })
     document.documentElement.classList.add('is-scrolling')
 
-    Emitter.emit('startScroll')
+    Emitter.emit('scrollStart')
   }
 
   /**
@@ -191,16 +184,9 @@ class Luge {
   scrollEnd () {
     this.isScrolling = false
 
-    // Resume videos after scroll
-    document.querySelectorAll('video').forEach(video => {
-      if (video.classList.contains('was-playing')) {
-        video.classList.remove('was-playing')
-        video.play()
-      }
-    })
     document.documentElement.classList.remove('is-scrolling')
 
-    Emitter.emit('endScroll')
+    Emitter.emit('scrollEnd')
   }
 }
 var luge = new Luge()

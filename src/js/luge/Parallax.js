@@ -1,4 +1,4 @@
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 
 class Parallax {
@@ -13,8 +13,8 @@ class Parallax {
 
     this.elements = []
 
-    Actions.add('pageInit', this.pageInit.bind(this))
-    Actions.add('pageKill', this.pageKill.bind(this))
+    LifeCycle.add('pageInit', this.pageInit.bind(this))
+    LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
   }

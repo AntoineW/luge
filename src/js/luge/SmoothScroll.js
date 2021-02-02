@@ -1,4 +1,4 @@
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 import Luge from 'Luge/Core'
 import Ticker from 'Luge/Ticker'
@@ -18,8 +18,8 @@ class SmoothScroll {
     this.hasSmoothScroll = false
     window.smoothScrollTop = 0
 
-    Actions.add('pageInit', this.pageInit.bind(this))
-    Actions.add('pageKill', this.pageKill.bind(this))
+    LifeCycle.add('pageInit', this.pageInit.bind(this))
+    LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
   }

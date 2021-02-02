@@ -1,4 +1,4 @@
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 
 class Reveal {
@@ -13,9 +13,9 @@ class Reveal {
     }
     this.canReveal = false
 
-    Actions.add('pageInit', this.pageInit.bind(this))
-    Actions.add('pageKill', this.pageKill.bind(this))
-    Actions.add('reveal', this.reveal.bind(this))
+    LifeCycle.add('pageInit', this.pageInit.bind(this), 11)
+    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    LifeCycle.add('reveal', this.reveal.bind(this))
 
     this.bindEvents()
   }

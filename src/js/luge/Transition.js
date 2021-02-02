@@ -1,5 +1,5 @@
 import 'whatwg-fetch'
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 
 class Transition {
   /**
@@ -16,13 +16,13 @@ class Transition {
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
 
-    Actions.add('siteInit', this.siteInit.bind(this))
-    Actions.add('pageInit', this.pageInit.bind(this))
-    Actions.add('pageFetch', this.pageFetch.bind(this))
-    Actions.add('pageOut', this.pageOut.bind(this))
-    Actions.add('pageIn', this.pageIn.bind(this))
-    Actions.add('pageCreate', this.pageCreate.bind(this))
-    Actions.add('pageKill', this.pageKill.bind(this), 999)
+    LifeCycle.add('siteInit', this.siteInit.bind(this))
+    LifeCycle.add('pageInit', this.pageInit.bind(this))
+    LifeCycle.add('pageFetch', this.pageFetch.bind(this))
+    LifeCycle.add('pageOut', this.pageOut.bind(this))
+    LifeCycle.add('pageIn', this.pageIn.bind(this))
+    LifeCycle.add('pageCreate', this.pageCreate.bind(this))
+    LifeCycle.add('pageKill', this.pageKill.bind(this), 999)
   }
 
   /**
@@ -80,7 +80,7 @@ class Transition {
   navigateTo (url) {
     this.url = url
 
-    Actions.flow('transition')
+    LifeCycle.cycle('transition')
   }
 
   /**
@@ -214,6 +214,15 @@ class Transition {
       document.querySelector('head title').innerText = html.querySelector('head title').innerText
     }
 
+    // Reset scroll
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'auto'
+    })
+    window.scrollTop = 0
+    window.smoothScrollTop = 0
+
     done()
   }
 
@@ -238,9 +247,6 @@ class Transition {
     if (page) {
       var pageName = page.getAttribute('data-lg-page')
       var transition = false
-
-      window.scroll(0, 0)
-      window.smoothScrollTop = 0
 
       if (typeof this.transitions.out[pageName] === 'function') {
         transition = this.transitions.out[pageName]

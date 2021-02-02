@@ -1,4 +1,4 @@
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 
 class LottiePlayer {
@@ -9,23 +9,23 @@ class LottiePlayer {
     this.elements = []
 
     if (document.readyState === 'complete') {
-      this.addActions()
+      this.addHooks()
     } else {
-      window.addEventListener('load', this.addActions.bind(this), { once: true })
+      window.addEventListener('load', this.addHooks.bind(this), { once: true })
     }
 
     this.bindEvents()
   }
 
   /**
-   * Add actions
+   * Add life cycle hooks
    */
-  addActions () {
+  addHooks () {
     if (typeof lottie === 'object') {
-      Actions.add('pageInit', this.pageInit.bind(this))
-      Actions.add('pageKill', this.pageKill.bind(this))
+      LifeCycle.add('pageInit', this.pageInit.bind(this))
+      LifeCycle.add('pageKill', this.pageKill.bind(this))
 
-      if (Actions.flows.load.current > 0) {
+      if (LifeCycle.cycles.load.current > 0) {
         this.pageInit(() => {})
       }
     }

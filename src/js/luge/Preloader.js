@@ -1,11 +1,11 @@
-import Actions from 'Luge/Actions'
+import LifeCycle from 'Luge/LifeCycle'
 
 class PreLoader {
   /**
    * Constructor
    */
   constructor () {
-    Actions.add('siteIn', this.siteIn.bind(this))
+    LifeCycle.add('siteIn', this.siteIn.bind(this))
   }
 
   /**
