@@ -1,6 +1,7 @@
 import Actions from 'Luge/Actions'
 import Emitter from 'Luge/Emitter'
 import Luge from 'Luge/Core'
+import Ticker from 'Luge/Ticker'
 
 class SmoothScroll {
   /**
@@ -37,24 +38,27 @@ class SmoothScroll {
   pageInit (done) {
     var containers = document.querySelectorAll('[data-lg-smooth]')
 
-    if (containers) {
+    if (containers.length > 0) {
       window.smoothScrollTop = window.scrollTop
       this.hasSmoothScroll = true
       document.documentElement.classList.add('has-smooth-scroll')
+
+      this.containers = Array.from(containers).map(element => (
+        {
+          el: element,
+          bounding: element.getBoundingClientRect()
+        }))
+
+      Ticker.add('smoothScroll', this.tick.bind(this))
     } else {
       window.smoothScrollTop = 0
       this.hasSmoothScroll = false
       document.documentElement.classList.remove('has-smooth-scroll')
+
+      this.containers = null
+
+      Ticker.remove('smoothScroll')
     }
-
-    this.containers = Array.from(containers).map(element => (
-      {
-        el: element,
-        bounding: element.getBoundingClientRect()
-      }))
-
-    cancelAnimationFrame(this.requestId)
-    this.requestId = requestAnimationFrame(this.rafAnimation.bind(this))
 
     this.resizeHandler()
 
@@ -100,7 +104,7 @@ class SmoothScroll {
   /**
    * Raf animation
    */
-  rafAnimation () {
+  tick () {
     if (window.smoothScrollTop !== window.scrollTop) {
       window.smoothScrollTop = window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia)
 
@@ -120,8 +124,6 @@ class SmoothScroll {
         Emitter.emit('scroll')
       }
     }
-
-    this.requestId = requestAnimationFrame(this.rafAnimation.bind(this))
   }
 }
 
