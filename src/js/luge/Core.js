@@ -71,6 +71,14 @@ class Luge {
   }
 
   /**
+   * Set settings
+   */
+  setSettings (settings) {
+    Object.assign(this.settings, settings)
+    console.log(this.settings)
+  }
+
+  /**
    * Site initialization
    * @param {Function} done Done function
    */

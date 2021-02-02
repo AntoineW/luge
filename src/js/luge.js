@@ -17,17 +17,25 @@ import Transition from 'Luge/Transition'
 
 // Public methods
 window.luge = {
+  emitter: {
+    off: Emitter.off.bind(Emitter),
+    on: Emitter.on.bind(Emitter),
+    once: Emitter.once.bind(Emitter)
+  },
   lifecycle: {
     add: LifeCycle.add.bind(LifeCycle)
   },
-  addReveal: Reveal.add.bind(Reveal),
-  addTick: Ticker.add.bind(Ticker),
-  addTransition: Transition.add.bind(Transition),
-  removeTick: Ticker.remove.bind(Ticker),
-  off: Emitter.off.bind(Emitter),
-  on: Emitter.on.bind(Emitter),
-  once: Emitter.once.bind(Emitter),
-  settings: Luge.settings
+  reveal: {
+    add: Reveal.add.bind(Reveal)
+  },
+  ticker: {
+    add: Ticker.add.bind(Ticker),
+    remove: Ticker.remove.bind(Ticker)
+  },
+  transition: {
+    add: Transition.add.bind(Transition)
+  },
+  settings: Luge.setSettings.bind(Luge)
 }
 
 // Site init on DOM ready
