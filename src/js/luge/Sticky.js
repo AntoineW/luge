@@ -34,7 +34,7 @@ class Sticky {
   pageInit (done) {
     var elements = document.querySelectorAll('[data-lg-sticky]')
 
-    if (elements) {
+    if (elements.length > 0) {
       elements.forEach(element => {
         this.elements.push({
           el: element,
