@@ -49,7 +49,7 @@ class SmoothScroll {
           bounding: element.getBoundingClientRect()
         }))
 
-      Ticker.add('smoothScroll', this.tick.bind(this))
+      Ticker.add(this.tick, this)
     } else {
       window.smoothScrollTop = 0
       this.hasSmoothScroll = false
@@ -57,7 +57,7 @@ class SmoothScroll {
 
       this.containers = null
 
-      Ticker.remove('smoothScroll')
+      Ticker.remove(this.tick)
     }
 
     this.resizeHandler()

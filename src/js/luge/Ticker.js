@@ -3,7 +3,7 @@ class Ticker {
    * Constructor
    */
   constructor () {
-    this.callbacks = {}
+    this.callbacks = []
 
     this.rafID = null
 
@@ -12,14 +12,21 @@ class Ticker {
 
   /**
    * Add a tick function
-   * @param {String} id Tick ID
    * @param {Function} callback Tick function
    */
-  add (id, callback) {
-    console.log(this.callbacks, callback, id)
+  add (callback, ctx) {
+    var exists = false
+    this.callbacks.forEach(object => {
+      if (object.cb === callback) {
+        exists = true
+      }
+    })
 
-    if (id in this.callbacks === false) {
-      this.callbacks[id] = callback
+    if (!exists) {
+      this.callbacks.push({
+        cb: callback,
+        ctx: ctx
+      })
     }
   }
 
@@ -27,21 +34,23 @@ class Ticker {
    * Remove a tick function
    * @param {String} id Tick ID
    */
-  remove (id) {
-    if (id in this.callbacks) {
-      delete this.callbacks[id]
-    }
+  remove (callback) {
+    var self = this
 
-    console.log(this.callbacks)
+    this.callbacks.forEach((object, index) => {
+      if (object.cb === callback) {
+        delete self.callbacks[index]
+      }
+    })
   }
 
   /**
    * Call tick functions
    */
   tick () {
-    for (var id in this.callbacks) {
-      this.callbacks[id]()
-    }
+    this.callbacks.forEach(object => {
+      object.cb.apply(object.ctx)
+    })
 
     this.rafID = requestAnimationFrame(this.tick.bind(this))
   }
