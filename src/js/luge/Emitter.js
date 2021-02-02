@@ -56,12 +56,12 @@ class Emitter {
    * @param {Function} callback Handler function
    */
   off (name, callback) {
+    var self = this
+
     if (this.events[name]) {
       this.events[name].forEach((object, index) => {
         if (object.cb === callback) {
-          if (object.once) {
-            delete self.events[name][index]
-          }
+          delete self.events[name][index]
         }
       })
     }
