@@ -152,6 +152,8 @@ class Reveal {
 
               if (typeof self.reveals.in[element.name] === 'function') {
                 self.reveals.in[element.name](element.el)
+              } else if (typeof element.el.revealIn === 'function') {
+                element.el.revealIn()
               }
 
               element.el.setAttribute('data-lg-reveal-state', state)
@@ -166,6 +168,8 @@ class Reveal {
 
               if (typeof self.reveals.out[element.name] === 'function') {
                 self.reveals.out[element.name](element.el)
+              } else if (typeof element.el.revealOut === 'function') {
+                element.el.revealOut()
               }
             }
 
