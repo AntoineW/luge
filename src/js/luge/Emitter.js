@@ -10,13 +10,13 @@ class Emitter {
    * Attach handler to event
    * @param {String} name Event name
    * @param {Function} callback Handler function
-   * @param {Object} ctx Context
+   * @param {Object} context Context
    * @param {Boolean} once Call handler only once
    */
-  on (name, callback, ctx, once = false) {
+  on (name, callback, context, once = false) {
     (this.events[name] || (this.events[name] = [])).push({
       cb: callback,
-      ctx: ctx,
+      context: context,
       once: once
     })
   }
@@ -25,10 +25,10 @@ class Emitter {
    * Single event handler
    * @param {String} name Event name
    * @param {Function} callback Handler function
-   * @param {Object} ctx Context
+   * @param {Object} context Context
    */
-  once (name, callback, ctx) {
-    this.on(name, callback, ctx, true)
+  once (name, callback, context) {
+    this.on(name, callback, context, true)
   }
 
   /**
@@ -41,7 +41,7 @@ class Emitter {
 
     if (this.events[name]) {
       this.events[name].forEach((object, index) => {
-        object.cb.apply(object.ctx, data)
+        object.cb.apply(object.context, data)
 
         if (object.once) {
           delete self.events[name][index]

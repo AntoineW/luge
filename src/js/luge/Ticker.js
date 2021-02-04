@@ -14,7 +14,7 @@ class Ticker {
    * Add a tick function
    * @param {Function} callback Tick function
    */
-  add (callback, ctx) {
+  add (callback, context) {
     var exists = false
     this.callbacks.forEach(object => {
       if (object.cb === callback) {
@@ -25,7 +25,7 @@ class Ticker {
     if (!exists) {
       this.callbacks.push({
         cb: callback,
-        ctx: ctx
+        context: context
       })
     }
   }
@@ -49,7 +49,7 @@ class Ticker {
    */
   tick () {
     this.callbacks.forEach(object => {
-      object.cb.apply(object.ctx)
+      object.cb.apply(object.context)
     })
 
     this.rafID = requestAnimationFrame(this.tick.bind(this))
