@@ -1,5 +1,6 @@
 import 'whatwg-fetch'
 import LifeCycle from 'Luge/LifeCycle'
+import Helpers from 'Luge/Helpers'
 
 class Transition {
   /**
@@ -245,7 +246,7 @@ class Transition {
     var page = document.querySelector('[data-lg-page]')
 
     if (page) {
-      var pageName = page.getAttribute('data-lg-page')
+      var pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
       var transition = false
 
       if (typeof this.transitions.out[pageName] === 'function') {
@@ -301,7 +302,7 @@ class Transition {
     var page = document.querySelector('[data-lg-page]')
 
     if (page) {
-      var pageName = page.getAttribute('data-lg-page')
+      var pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
       var transition = false
 
       page.style.opacity = ''
@@ -367,8 +368,10 @@ class Transition {
    * @param {Function} callback Callback function
    * @param {String} pageName Page name
    */
-  add (type, callback, pageName = 'default') {
+  add (type, pageName = 'default', callback) {
     if (this.transitions[type]) {
+      pageName = Helpers.toCamelCase(pageName)
+
       if (this.transitions[type][pageName]) {
         console.log('Transition animation for ' + pageName + ' page already exists.')
       } else {

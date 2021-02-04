@@ -1,5 +1,6 @@
 import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
+import Helpers from 'Luge/Helpers'
 
 class Reveal {
   /**
@@ -38,7 +39,7 @@ class Reveal {
     this.elements = Array.from(elements).map(element => (
       {
         el: element,
-        name: element.getAttribute('data-lg-reveal')
+        name: Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
       }
     ))
 
@@ -192,6 +193,8 @@ class Reveal {
    */
   add (type, revealName, callback) {
     if (this.reveals[type]) {
+      revealName = Helpers.toCamelCase(revealName)
+
       if (this.reveals[type][revealName]) {
         console.log('Reveal animation named ' + revealName + ' already exists.')
       } else {
