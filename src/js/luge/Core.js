@@ -9,7 +9,8 @@ class Luge {
   constructor () {
     // Options
     this.settings = {
-      smoothInertia: 0.1
+      smoothInertia: 0.1,
+      preloaderDuration: 0
     }
 
     // Timeouts

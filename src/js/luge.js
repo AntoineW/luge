@@ -25,6 +25,9 @@ window.luge = {
   lifecycle: {
     add: LifeCycle.add.bind(LifeCycle)
   },
+  preloader: {
+    add: Preloader.add.bind(Preloader)
+  },
   reveal: {
     add: Reveal.add.bind(Reveal)
   },

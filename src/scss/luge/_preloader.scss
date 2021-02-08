@@ -7,5 +7,54 @@
   height: 100%;
 
   background: white;
+  opacity: 1;
   z-index: 999;
+
+  &.is-hidden {
+    opacity: 0;
+  }
+}
+
+/* Fade */
+[data-lg-preloader="fade"] {
+  transition: opacity 0.3s linear;
+}
+
+/* Slide */
+[data-lg-preloader^="slide"] {
+  transition: transform 0.5s ease(in-out-cubic);
+
+  &.is-hidden {
+    opacity: 1;
+  }
+}
+
+[data-lg-preloader="slide-right"],
+[data-lg-preloader="slide-left"] {
+  &.is-hidden {
+    transform: scaleX(0);
+  }
+}
+
+[data-lg-preloader="slide-right"] {
+  transform-origin: 100% 50%;
+}
+
+[data-lg-preloader="slide-left"] {
+  transform-origin: 0 50%;
+}
+
+[data-lg-preloader="slide-top"],
+[data-lg-preloader="slide-bottom"] {
+  &.is-hidden {
+    transform: scaleY(0);
+  }
+}
+
+[data-lg-preloader="slide-top"] {
+  transform-origin: 50% 0;
+}
+
+[data-lg-preloader="slide-bottom"] {
+  transform-origin: 50% 100%;
 }
