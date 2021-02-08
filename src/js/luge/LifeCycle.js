@@ -114,7 +114,7 @@ class LifeCycle {
       // Check if all events are done
       if (wait.length > 1) {
         wait.forEach(eventName => {
-          if (self.events[eventName].done <= self.events[eventName].callbacks.length) {
+          if (self.events[eventName].done === 0 || self.events[eventName].done < self.events[eventName].callbacks.length) {
             next = false
           }
         })
