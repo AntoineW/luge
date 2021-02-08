@@ -14,7 +14,6 @@ class SmoothScroll {
     }
 
     this.containers = null
-    this.inertia = 0.1
     this.hasSmoothScroll = false
     window.smoothScrollTop = 0
 
