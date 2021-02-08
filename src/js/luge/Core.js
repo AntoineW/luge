@@ -10,7 +10,8 @@ class Luge {
     // Options
     this.settings = {
       smoothInertia: 0.1,
-      preloaderDuration: 0
+      preloaderDuration: 0,
+      revealStagger: 0.2
     }
 
     // Timeouts

@@ -1,6 +1,7 @@
 import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 import Helpers from 'Luge/Helpers'
+import Luge from 'Luge/Core'
 
 class Reveal {
   /**
@@ -161,7 +162,7 @@ class Reveal {
             }, delay ? revealInTimeout : 0)
 
             if (delay) {
-              revealInTimeout += revealInDelay
+              revealInTimeout += Luge.settings.revealStagger * 1000
             }
           } else if (isOut) {
             if (element.el.hasAttribute('data-lg-reveal-state')) {
