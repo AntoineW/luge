@@ -24,18 +24,17 @@ class PreLoader {
       var remaining = Luge.settings.preloaderDuration - elapsed
 
       if (remaining <= 0) {
-        var callback = this.remove.bind(this, done)
-
         if (typeof this.intro === 'function') {
-          this.intro(callback)
+          this.intro(done, this.remove.bind(this))
         } else {
+          var clear = this.clear.bind(this, done)
           var duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
 
           if (duration !== '' && duration !== '0s') {
-            this.el.addEventListener('transitionend', callback, { once: true })
+            this.el.addEventListener('transitionend', clear, { once: true })
             this.el.classList.add('is-hidden')
           } else {
-            callback()
+            clear()
           }
         }
       } else {
@@ -45,14 +44,21 @@ class PreLoader {
   }
 
   /**
-   * Remove preloader
+   * Clear preloader
    * @param {Function} done Done callback
+   */
+  clear (done) {
+    this.remove()
+
+    done()
+  }
+
+  /**
+   * Remove preloader from done
    */
   remove (done) {
     this.el.parentNode.removeChild(this.el)
     this.el = null
-
-    done()
   }
 
   /**
