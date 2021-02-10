@@ -15,6 +15,11 @@
   }
 }
 
+/* Lottie */
+[data-lg-preloader="lottie"] {
+  background: none;
+}
+
 /* Fade */
 [data-lg-preloader="fade"] {
   transition: opacity 0.3s linear;

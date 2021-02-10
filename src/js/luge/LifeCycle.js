@@ -14,7 +14,8 @@ class LifeCycle {
       'pageFetch',
       'pageOut',
       'pageCreate',
-      'pageKill'
+      'pageKill',
+      'siteReload'
     ]
 
     this.events = {}
@@ -35,8 +36,13 @@ class LifeCycle {
           'siteIn',
           'pageIn',
           'reveal'
-        ],
-        current: 0
+        ]
+      },
+      reload: {
+        events: [
+          'pageOut',
+          'siteReload'
+        ]
       },
       transition: {
         events: [
@@ -47,8 +53,7 @@ class LifeCycle {
           'pageLoad',
           'pageIn',
           'reveal'
-        ],
-        current: 0
+        ]
       }
     }
   }

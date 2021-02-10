@@ -9,6 +9,8 @@ class Transition {
   constructor () {
     this.url = window.location.href
     this.pageFetched = null
+    this.currentPage = null
+    this.reload = false
 
     this.transitions = {
       in: {},
@@ -81,7 +83,23 @@ class Transition {
   navigateTo (url) {
     this.url = url
 
-    LifeCycle.cycle('transition')
+    if (this.reload) {
+      // Prefetch new URL
+      const prefetchLink = document.createElement('link')
+      prefetchLink.rel = 'prefetch'
+      prefetchLink.href = url
+      document.head.appendChild(prefetchLink)
+
+      // Change URL after pageOut
+      LifeCycle.add('siteReload', (done) => {
+        window.location = url
+      })
+
+      // Call cycle
+      LifeCycle.cycle('reload')
+    } else {
+      LifeCycle.cycle('transition')
+    }
   }
 
   /**
@@ -89,11 +107,16 @@ class Transition {
    * @param {Function} done Done function
    */
   siteInit (done) {
+    this.currentPage = document.querySelector('[data-lg-page]')
+    this.reload = this.currentPage.hasAttribute('data-lg-reload')
+
     this.initLoader()
 
     done()
 
-    window.addEventListener('popstate', this.historyStateChanged.bind(this))
+    if (!this.reload) {
+      window.addEventListener('popstate', this.historyStateChanged.bind(this))
+    }
   }
 
   /**
@@ -185,20 +208,19 @@ class Transition {
     var html = new DOMParser().parseFromString(this.pageFetched, 'text/html')
 
     // Get containers
-    var currentPage = document.querySelector('[data-lg-page]')
     var newPage = html.querySelector('[data-lg-page]')
 
     if (newPage) {
       // Switch containers
-      currentPage.insertAdjacentElement('beforebegin', newPage)
+      this.currentPage.insertAdjacentElement('beforebegin', newPage)
 
       newPage.style.opacity = 0
 
-      currentPage.style.opacity = 0
-      currentPage.style.position = 'absolute'
-      currentPage.style.top = 0
-      currentPage.style.left = '-999em'
-      currentPage.style.width = '100%'
+      this.currentPage.style.opacity = 0
+      this.currentPage.style.position = 'absolute'
+      this.currentPage.style.top = 0
+      this.currentPage.style.left = '-999em'
+      this.currentPage.style.width = '100%'
 
       // Switch classes
       document.querySelector('body').className = html.querySelector('body').className
@@ -232,8 +254,11 @@ class Transition {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    var oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
+    var oldPage = this.currentPage
     oldPage.parentNode.removeChild(oldPage)
+
+    this.currentPage = document.querySelector('[data-lg-page]')
+    this.reload = this.currentPage.hasAttribute('data-lg-reload')
 
     done()
   }
@@ -243,6 +268,7 @@ class Transition {
    * @param {Function} done Done function
    */
   pageOut (done) {
+    var self = this
     var page = document.querySelector('[data-lg-page]')
 
     if (page) {
@@ -269,7 +295,10 @@ class Transition {
             loader.playerOut.play()
 
             loader.playerOut.addEventListener('complete', () => {
-              loader.playerOut.renderer.svgElement.style.opacity = ''
+              if (!self.reload) {
+                loader.playerOut.renderer.svgElement.style.opacity = ''
+              }
+
               done()
             }, { once: true })
           } else {
