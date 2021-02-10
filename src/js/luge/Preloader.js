@@ -9,37 +9,47 @@ class PreLoader {
     this.intro = false
     this.startTime = Date.now()
 
-    LifeCycle.add('siteIn', this.siteIn.bind(this))
+    LifeCycle.add('siteInit', this.siteInit.bind(this))
   }
 
   /**
    * Initialization
    * @param {Function} done Done function
    */
-  siteIn (done) {
+  siteInit (done) {
     this.el = document.querySelector('[data-lg-preloader]')
 
     if (this.el) {
-      var elapsed = (Date.now() - this.startTime) / 1000
-      var remaining = Luge.settings.preloaderDuration - elapsed
+      LifeCycle.add('siteIn', this.siteIn.bind(this))
+    }
 
-      if (remaining <= 0) {
-        if (typeof this.intro === 'function') {
-          this.intro(done, this.remove.bind(this))
-        } else {
-          var clear = this.clear.bind(this, done)
-          var duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
+    done()
+  }
 
-          if (duration !== '' && duration !== '0s') {
-            this.el.addEventListener('transitionend', clear, { once: true })
-            this.el.classList.add('is-hidden')
-          } else {
-            clear()
-          }
-        }
+  /**
+   * Intro animation
+   * @param {Function} done Done function
+   */
+  siteIn (done) {
+    var elapsed = (Date.now() - this.startTime) / 1000
+    var remaining = Luge.settings.preloaderDuration - elapsed
+
+    if (remaining <= 0) {
+      if (typeof this.intro === 'function') {
+        this.intro(done, this.remove.bind(this))
       } else {
-        setTimeout(this.siteIn.bind(this, done), remaining * 1000)
+        var clear = this.clear.bind(this, done)
+        var duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
+
+        if (duration !== '' && duration !== '0s') {
+          this.el.addEventListener('transitionend', clear, { once: true })
+          this.el.classList.add('is-hidden')
+        } else {
+          clear()
+        }
       }
+    } else {
+      setTimeout(this.siteIn.bind(this, done), remaining * 1000)
     }
   }
 
