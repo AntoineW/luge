@@ -108,11 +108,8 @@ class Parallax {
         element.type = element.el.getAttribute('data-lg-parallax')
         element.anchor = element.el.getAttribute('data-lg-parallax-anchor')
 
-        if (element.type === 'image') {
-          element.target = element.el.querySelector('img')
-          element.el.style.overflow = 'hidden'
-        } else if (element.type === 'video') {
-          element.target = element.el.querySelector('video')
+        if (element.type === 'media') {
+          element.target = element.el.querySelector('img, svg, video')
           element.el.style.overflow = 'hidden'
         }
       })
@@ -165,7 +162,7 @@ class Parallax {
           }
         }
 
-        if (element.type === 'image' || element.type === 'video') {
+        if (element.type === 'media') {
           var movement = (element.amplitude * 5) * progress
 
           element.target.style.transform = 'translate3d(0, ' + movement + '%, 0) scale(1.' + (String(Math.abs(element.amplitude)).replace('.', '')) + ')'
