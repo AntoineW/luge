@@ -7,6 +7,7 @@ class PreLoader {
    */
   constructor () {
     this.intro = false
+    this.playerIn = false
     this.startTime = Date.now()
 
     LifeCycle.add('siteInit', this.siteInit.bind(this))
@@ -20,6 +21,8 @@ class PreLoader {
     this.el = document.querySelector('[data-lg-preloader]')
 
     if (this.el) {
+      this.initLottie()
+
       LifeCycle.add('siteIn', this.siteIn.bind(this))
     }
 
@@ -35,17 +38,24 @@ class PreLoader {
     var remaining = Luge.settings.preloaderDuration - elapsed
 
     if (remaining <= 0) {
-      if (typeof this.intro === 'function') {
-        this.intro(done, this.remove.bind(this))
-      } else {
-        var clear = this.clear.bind(this, done)
-        var duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
+      var clear = this.clear.bind(this, done)
 
-        if (duration !== '' && duration !== '0s') {
-          this.el.addEventListener('transitionend', clear, { once: true })
-          this.el.classList.add('is-hidden')
+      if (this.playerIn) {
+        this.playerIn.play()
+
+        this.playerIn.addEventListener('complete', clear, { once: true })
+      } else {
+        if (typeof this.intro === 'function') {
+          this.intro(done, this.remove.bind(this))
         } else {
-          clear()
+          var duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
+
+          if (duration !== '' && duration !== '0s') {
+            this.el.addEventListener('transitionend', clear, { once: true })
+            this.el.classList.add('is-hidden')
+          } else {
+            clear()
+          }
         }
       }
     } else {
@@ -58,6 +68,10 @@ class PreLoader {
    * @param {Function} done Done callback
    */
   clear (done) {
+    if (this.playerIn) {
+      this.playerIn.destroy()
+    }
+
     this.remove()
 
     done()
@@ -77,6 +91,37 @@ class PreLoader {
    */
   add (callback) {
     this.intro = callback
+  }
+
+  /**
+   * Init lottie
+   */
+  initLottie () {
+    var self = this
+
+    if (this.el.getAttribute('data-lg-preloader') === 'lottie' && typeof lottie === 'object') {
+      var animIn = this.el.getAttribute('data-lg-preloader-in')
+      var playerIn = false
+
+      if (animIn) {
+        playerIn = lottie.loadAnimation({
+          container: this.el,
+          renderer: 'svg',
+          loop: false,
+          autoplay: false,
+          path: animIn,
+          rendererSettings: {
+            preserveAspectRatio: 'none'
+          }
+        })
+      }
+
+      playerIn.addEventListener('DOMLoaded', () => {
+        self.el.setAttribute('style', '')
+      }, { once: true })
+
+      this.playerIn = playerIn
+    }
   }
 }
 
