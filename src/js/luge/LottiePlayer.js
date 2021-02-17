@@ -93,8 +93,7 @@ class LottiePlayer {
    * Set bounding
    */
   setBounding () {
-    var scrollTop = (window.smoothScrollTop ? window.smoothScrollTop : window.scrollTop)
-    scrollTop = Math.max(scrollTop, 0)
+    var scrollTop = window.unifiedScrollTop
 
     this.elements.forEach(element => {
       var bounding = element.getBoundingClientRect()

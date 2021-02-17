@@ -27,9 +27,9 @@ class Luge {
 
     // Scroll
     window.scrollTop = window.pageYOffset
+    window.unifiedScrollTop = window.scrollTop
     this.previousScrollTop = window.pageYOffset
     this.isScrolling = false
-    this.hasSmoothScroll = false
 
     // Mouse
     window.mouseX = 0
@@ -67,7 +67,6 @@ class Luge {
     }
 
     LifeCycle.add('siteInit', this.siteInit.bind(this), 999)
-    LifeCycle.add('pageInit', this.pageInit.bind(this), 999)
 
     this.bindEvents()
   }
@@ -86,16 +85,6 @@ class Luge {
    */
   siteInit (done) {
     this.scrollHandler()
-
-    done()
-  }
-
-  /**
-   * Page initialization
-   * @param {Function} done Done function
-   */
-  pageInit (done) {
-    this.hasSmoothScroll = document.documentElement.classList.contains('has-smooth-scroll')
 
     done()
   }
@@ -172,7 +161,8 @@ class Luge {
 
     this.previousScrollTop = window.scrollTop
 
-    if (!this.hasSmoothScroll) {
+    if (!window.hasSmoothScroll) {
+      window.unifiedScrollTop = window.scrollTop
       Emitter.emit('scroll')
     }
   }

@@ -71,8 +71,7 @@ class Sticky {
    */
   setBounding () {
     if (this.elements) {
-      var scrollTop = (window.smoothScrollTop ? window.smoothScrollTop : window.scrollTop)
-      scrollTop = Math.max(scrollTop, 0)
+      var scrollTop = window.unifiedScrollTop
 
       this.elements.forEach(function (element) {
         element.el.style.top = ''

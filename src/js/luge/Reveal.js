@@ -2,6 +2,7 @@ import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
 import Helpers from 'Luge/Helpers'
 import Luge from 'Luge/Core'
+import ScrollObserver from 'Luge/ScrollObserver'
 
 class Reveal {
   /**
@@ -44,6 +45,10 @@ class Reveal {
       }
     ))
 
+    elements.forEach(element => {
+      ScrollObserver.add(element)
+    })
+
     this.setBounding()
 
     done()
@@ -84,8 +89,7 @@ class Reveal {
    * Set bounding
    */
   setBounding () {
-    var scrollTop = (window.smoothScrollTop ? window.smoothScrollTop : window.scrollTop)
-    scrollTop = Math.max(scrollTop, 0)
+    var scrollTop = window.unifiedScrollTop
 
     this.elements.forEach(element => {
       element.bounding = element.el.getBoundingClientRect()

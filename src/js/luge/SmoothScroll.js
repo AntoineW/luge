@@ -14,7 +14,7 @@ class SmoothScroll {
     }
 
     this.containers = null
-    this.hasSmoothScroll = false
+    window.hasSmoothScroll = false
     window.smoothScrollTop = 0
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
@@ -39,7 +39,8 @@ class SmoothScroll {
 
     if (containers.length > 0) {
       window.smoothScrollTop = window.scrollTop
-      this.hasSmoothScroll = true
+      window.unifiedScrollTop = window.smoothScrollTop
+      window.hasSmoothScroll = true
       document.documentElement.classList.add('has-smooth-scroll')
 
       this.containers = Array.from(containers).map(element => (
@@ -51,7 +52,8 @@ class SmoothScroll {
       Ticker.add(this.tick, this)
     } else {
       window.smoothScrollTop = 0
-      this.hasSmoothScroll = false
+      window.unifiedScrollTop = window.scrollTop
+      window.hasSmoothScroll = false
       document.documentElement.classList.remove('has-smooth-scroll')
 
       this.containers = null
@@ -119,7 +121,8 @@ class SmoothScroll {
         })
       }
 
-      if (this.hasSmoothScroll) {
+      if (window.hasSmoothScroll) {
+        window.unifiedScrollTop = window.smoothScrollTop
         Emitter.emit('scroll')
       }
     }
