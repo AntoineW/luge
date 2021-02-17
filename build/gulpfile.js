@@ -38,12 +38,18 @@ function stylesDemo() {
 /**
  * Script task
  */
-function scripts() {
+function scriptsDev() {
   return src('../src/js/luge.js')
-    .pipe(webpackStream( require('./webpack.' + (process.env.NODE_ENV === 'production' ? 'prod' : 'dev') + '.js') ))
+    .pipe(webpackStream( require('./webpack.dev.js') ))
     .pipe(browserSync.reload({
       stream: true
     }));
+}
+
+function scriptsProd() {
+  return src('../src/js/luge.js')
+    .pipe(webpackStream( require('./webpack.prod.js') ))
+    .pipe(dest('../dist/js/'));
 }
 
 /**
@@ -60,7 +66,7 @@ function serve(cb) {
   watch('../demo/src/**/*.scss', stylesDemo);
 
   // Watch .js files
-  watch('../src/**/*.js', scripts);
+  watch('../src/**/*.js', scriptsDev);
 
   // Watch .html files
   watch(['../demo/*.html']).on('change', browserSync.reload);
@@ -68,5 +74,5 @@ function serve(cb) {
   cb();
 }
 
-exports.build = series(styles, scripts);
+exports.build = series(styles, scriptsProd);
 exports.default = serve;

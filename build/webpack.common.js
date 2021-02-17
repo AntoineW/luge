@@ -5,6 +5,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin')
 const { webpack } = require('./config.json')
 
 module.exports = {
+  mode: 'none',
   target: 'web',
   entry: {
     'luge': '../src/js/luge.js',
@@ -47,7 +48,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin(),
     new WriteFilePlugin({
       test: /^(?!.*(hot)).*/,
     })
