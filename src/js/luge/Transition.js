@@ -277,8 +277,8 @@ class Transition {
 
       if (typeof this.transitions.out[pageName] === 'function') {
         transition = this.transitions.out[pageName]
-      } else if (typeof page.pageOut === 'function') {
-        transition = page.pageOut
+      } else if (typeof page.onpageout === 'function') {
+        transition = page.onpageout
       } else if (typeof this.transitions.out.default === 'function') {
         transition = this.transitions.out.default
       }
@@ -338,8 +338,8 @@ class Transition {
 
       if (typeof this.transitions.in[pageName] === 'function') {
         transition = this.transitions.in[pageName]
-      } else if (typeof page.pageIn === 'function') {
-        transition = page.pageIn
+      } else if (typeof page.onpagein === 'function') {
+        transition = page.onpagein
       } else if (typeof this.transitions.in.default === 'function') {
         transition = this.transitions.in.default
       }

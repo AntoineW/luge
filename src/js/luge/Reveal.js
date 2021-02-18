@@ -20,7 +20,7 @@ class Reveal {
     this.canReveal = false
 
     // Listeners
-    this.onViewportIntersect = this.onViewportIntersect.bind(this)
+    this.onScrollProgress = this.onScrollProgress.bind(this)
 
     LifeCycle.add('pageInit', this.pageInit.bind(this), 11)
     LifeCycle.add('pageKill', this.pageKill.bind(this))
@@ -60,7 +60,7 @@ class Reveal {
     if (!this.elements.includes(element)) {
       ScrollObserver.add(element)
 
-      element.addEventListener('viewportintersect', this.onViewportIntersect)
+      element.addEventListener('scrollprogress', this.onScrollProgress)
 
       this.elements.push(element)
     }
@@ -71,9 +71,7 @@ class Reveal {
    * @param {HTMLElement} element Element to remove
    */
   removeElement (element) {
-    ScrollObserver.remove(element)
-
-    element.removeEventListener('viewportintersect', this.onViewportIntersect)
+    element.removeEventListener('scrollprogress', this.onScrollProgress)
 
     if (this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
@@ -97,13 +95,14 @@ class Reveal {
   }
 
   /**
-   * viewportintersect event handler
+   * Scroll progress event handler
    * @param {Event} e Custom event
    */
-  onViewportIntersect (e) {
+  onScrollProgress (e) {
     var element = e.target
+    var threshold = Luge.settings.revealThreshold
 
-    if (element.viewportPosition === 'in') {
+    if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.isRevealed) {
       if (this.toRevealOut.includes(element)) {
         this.toRevealOut.splice(this.toRevealOut.indexOf(element), 1)
       }
@@ -111,7 +110,7 @@ class Reveal {
       if (!this.toRevealIn.includes(element)) {
         this.toRevealIn.push(element)
       }
-    } else {
+    } else if ((element.scrollProgress < threshold || element.scrollProgress > (1 - threshold)) && element.isRevealed) {
       if (this.toRevealIn.includes(element)) {
         this.toRevealIn.splice(this.toRevealIn.indexOf(element), 1)
       }
@@ -167,6 +166,7 @@ class Reveal {
 
         setTimeout(function () {
           element.dispatchEvent(new CustomEvent('revealin'))
+          element.isRevealed = true
 
           if (typeof self.reveals.in[name] === 'function') {
             self.reveals.in[name](element)
@@ -191,6 +191,7 @@ class Reveal {
 
         if (element.hasAttribute('data-lg-reveal-state')) {
           element.dispatchEvent(new CustomEvent('revealout'))
+          element.isRevealed = false
 
           if (typeof self.reveals.out[name] === 'function') {
             self.reveals.out[name](element)

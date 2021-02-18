@@ -67,10 +67,11 @@ class ScrollObserver {
    * @param {HTMLElement} element Element
    */
   setElementBounding (element) {
-    element.bounding = element.el.getBoundingClientRect()
-    element.start = element.bounding.top + window.unifiedScrollTop - window.innerHeight + (window.innerHeight * element.threshold)
-    element.middle = element.start + window.innerHeight / 2 + element.el.clientHeight / 2
-    element.end = element.start + element.el.clientHeight + (window.innerHeight * (1 - element.threshold * 2))
+    var bounding = element.getBoundingClientRect()
+
+    element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
+    element.scrollMiddle = element.scrollStart + window.innerHeight / 2 + element.clientHeight / 2
+    element.scrollEnd = element.scrollStart + element.clientHeight + window.innerHeight
   }
 
   /**
@@ -81,7 +82,7 @@ class ScrollObserver {
 
     this.elements.forEach(element => {
       var position = ''
-      var progress = (scrollTop - element.start) / (element.end - element.start)
+      var progress = (scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart)
 
       if (progress < 0) {
         position = 'under'
@@ -91,17 +92,23 @@ class ScrollObserver {
         position = 'in'
       }
 
-      element.el.scrollProgress = progress
+      element.scrollProgress = progress
 
-      if (element.el.viewportPosition !== position) {
-        element.el.viewportPosition = position
+      if (element.viewportPosition !== position) {
+        element.viewportPosition = position
 
-        element.el.dispatchEvent(new CustomEvent('viewportintersect'))
-        element.el.dispatchEvent(new CustomEvent('viewport' + position))
-      }
+        element.dispatchEvent(new CustomEvent('viewportintersect'))
+        element.dispatchEvent(new CustomEvent('viewport' + position))
 
-      if (position === 'in') {
-        element.el.dispatchEvent(new CustomEvent('scrollprogress'))
+        if (position !== 'in') {
+          element.dispatchEvent(new CustomEvent('viewportout'))
+        }
+
+        element.dispatchEvent(new CustomEvent('scrollprogress'))
+      } else {
+        if (progress >= 0 && progress <= 1) {
+          element.dispatchEvent(new CustomEvent('scrollprogress'))
+        }
       }
     })
   }
@@ -109,17 +116,13 @@ class ScrollObserver {
   /**
    * Add scroll element
    * @param {HTMLElement} element Element
-   * @param {Number} threshold Trigger threshold
    */
-  add (element, threshold = 0.15) {
-    var object = {
-      el: element,
-      threshold: threshold
+  add (element) {
+    if (!this.elements.includes(element)) {
+      this.setElementBounding(element)
+
+      this.elements.push(element)
     }
-
-    this.setElementBounding(object)
-
-    this.elements.push(object)
   }
 
   /**
@@ -127,15 +130,9 @@ class ScrollObserver {
    * @param {HTMLElement} element Element
    */
   remove (element) {
-    var newElements = []
-
-    this.elements.forEach(object => {
-      if (object.el !== element) {
-        newElements.push(object)
-      }
-    })
-
-    this.elements = newElements
+    if (this.elements.includes(element)) {
+      this.elements.splice(this.elements.indexOf(element), 1)
+    }
   }
 }
 

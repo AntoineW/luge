@@ -11,7 +11,8 @@ class Luge {
     this.settings = {
       smoothInertia: 0.1,
       preloaderDuration: 0,
-      revealStagger: 0.2
+      revealStagger: 0.2,
+      revealThreshold: 0.15
     }
 
     // Timeouts
@@ -76,7 +77,6 @@ class Luge {
    */
   setSettings (settings) {
     Object.assign(this.settings, settings)
-    console.log(this.settings)
   }
 
   /**

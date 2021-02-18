@@ -1,5 +1,6 @@
 import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
+import ScrollObserver from 'Luge/ScrollObserver'
 
 class Parallax {
   /**
@@ -13,18 +14,11 @@ class Parallax {
 
     this.elements = []
 
+    // Listeners
+    this.onScrollProgress = this.onScrollProgress.bind(this)
+
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
-
-    this.bindEvents()
-  }
-
-  /**
-   * Bind events
-   */
-  bindEvents () {
-    Emitter.on('resize', this.resizeHandler, this)
-    Emitter.on('scroll', this.scrollHandler, this)
   }
 
   /**
@@ -47,11 +41,9 @@ class Parallax {
       element.parallax = enable
 
       if (enable) {
-        this.elements.push({ el: element })
+        this.addElement(element)
       }
     })
-
-    this.resizeHandler()
 
     done()
   }
@@ -61,115 +53,83 @@ class Parallax {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    this.elements = []
+    var self = this
+
+    this.elements.forEach(element => {
+      self.removeElement(element)
+    })
 
     done()
   }
 
   /**
-   * Resize handler
+   * Add element to observer
+   * @param {HTMLElement} element Element to add
    */
-  resizeHandler () {
-    this.setBounding()
-    this.checkElements()
-  }
+  addElement (element) {
+    if (!this.elements.includes(element)) {
+      ScrollObserver.add(element)
 
-  /**
-   * Set bounding
-   */
-  setBounding () {
-    if (this.elements) {
-      var scrollTop = window.unifiedScrollTop
+      element.addEventListener('scrollprogress', this.onScrollProgress)
 
-      this.elements.forEach(function (element) {
-        element.bounding = element.el.getBoundingClientRect()
+      // Get parallax options
+      element.parallaxAmplitude = element.getAttribute('data-lg-parallax-amplitude') ? element.getAttribute('data-lg-parallax-amplitude') : 1
 
-        // Set bounding
-        element.start = element.bounding.top + scrollTop - window.innerHeight
-        element.end = element.start + element.el.offsetHeight + window.innerHeight
+      if (typeof element.parallaxAmplitude === 'string') {
+        var randAmplitude = element.parallaxAmplitude.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
 
-        // Elements above the fold start at their position
-        element.start = Math.max(element.start, 0)
-
-        // Get parallax options
-        element.amplitude = element.el.getAttribute('data-lg-parallax-amplitude') ? element.el.getAttribute('data-lg-parallax-amplitude') : 1
-
-        if (typeof element.amplitude === 'string') {
-          var randAmplitude = element.amplitude.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
-
-          if (randAmplitude) {
-            element.amplitude = Number(randAmplitude[1]) + ((Number(randAmplitude[2]) - Number(randAmplitude[1])) * Math.random())
-          } else {
-            element.amplitude = Number(element.amplitude)
-          }
+        if (randAmplitude) {
+          element.parallaxAmplitude = Number(randAmplitude[1]) + ((Number(randAmplitude[2]) - Number(randAmplitude[1])) * Math.random())
+        } else {
+          element.parallaxAmplitude = Number(element.parallaxAmplitude)
         }
+      }
 
-        element.type = element.el.getAttribute('data-lg-parallax')
-        element.anchor = element.el.getAttribute('data-lg-parallax-anchor')
+      element.parallaxAnchor = element.getAttribute('data-lg-parallax-anchor')
 
-        if (element.type === 'media') {
-          element.target = element.el.querySelector('img, svg, video')
-          element.el.style.overflow = 'hidden'
-        }
-      })
+      if (element.getAttribute('data-lg-parallax') === 'media') {
+        element.style.overflow = 'hidden'
+      }
+
+      this.elements.push(element)
     }
   }
 
   /**
-   * Sroll handler
+   * Remove element from observer
+   * @param {HTMLElement} element Element to remove
    */
-  scrollHandler () {
-    this.checkElements()
+  removeElement (element) {
+    element.removeEventListener('scrollprogress', this.onScrollProgress)
+
+    if (this.elements.includes(element)) {
+      this.elements.splice(this.elements.indexOf(element), 1)
+    }
   }
 
   /**
-   * Check position
+   * Scroll progress event handler
+   * @param {Event} e Custom event
    */
-  checkElements () {
-    if (this.elements) {
-      var scrollTop = window.unifiedScrollTop
+  onScrollProgress (e) {
+    var element = e.target
 
-      this.elements.forEach(function (element, index) {
-        var progress = 0
+    var progress = 1 - element.scrollProgress * 2
 
-        if (scrollTop > element.end) {
-          progress = -1
-        } else if (scrollTop < element.start) {
-          progress = 1
-        } else {
-          progress = ((scrollTop - element.start) / (element.end - element.start))
+    if (element.parallaxAnchor === 'bottom') {
+      progress += 1
+    } else if (element.parallaxAnchor === 'top') {
+      progress -= 1
+    }
 
-          // Stick progress to limits
-          if (progress > 0.995) {
-            progress = 1
-          } else if (progress < 0.005) {
-            progress = 0
-          }
+    if (element.getAttribute('data-lg-parallax') === 'media') {
+      var movement = (element.parallaxAmplitude * 5) * progress
 
-          if (element.start > 0) {
-            progress = 1 - progress * 2
+      element.querySelector('img, svg, video').style.transform = 'translate3d(0, ' + movement + '%, 0) scale(1.' + (String(Math.abs(element.parallaxAmplitude)).replace('.', '')) + ')'
+    } else {
+      movement = element.clientHeight * progress * element.parallaxAmplitude / 2
 
-            if (element.anchor === 'bottom') {
-              progress += 1
-            } else if (element.anchor === 'top') {
-              progress -= 1
-            }
-          } else {
-            // Above the fold elements
-            progress = -progress
-          }
-        }
-
-        if (element.type === 'media') {
-          var movement = (element.amplitude * 5) * progress
-
-          element.target.style.transform = 'translate3d(0, ' + movement + '%, 0) scale(1.' + (String(Math.abs(element.amplitude)).replace('.', '')) + ')'
-        } else {
-          movement = element.el.clientHeight * progress * element.amplitude / 2
-
-          element.el.style.transform = 'translate3d(0, ' + movement + 'px, 0)'
-        }
-      })
+      element.style.transform = 'translate3d(0, ' + movement + 'px, 0)'
     }
   }
 }

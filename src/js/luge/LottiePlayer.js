@@ -1,5 +1,6 @@
 import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
+import ScrollObserver from 'Luge/ScrollObserver'
 
 class LottiePlayer {
   /**
@@ -8,13 +9,14 @@ class LottiePlayer {
   constructor () {
     this.elements = []
 
+    // Listeners
+    this.onViewportIntersect = this.onViewportIntersect.bind(this)
+
     if (document.readyState === 'complete') {
       this.addHooks()
     } else {
       window.addEventListener('load', this.addHooks.bind(this), { once: true })
     }
-
-    this.bindEvents()
   }
 
   /**
@@ -32,14 +34,6 @@ class LottiePlayer {
   }
 
   /**
-   * Bind events
-   */
-  bindEvents () {
-    Emitter.on('resize', this.resizeHandler, this)
-    Emitter.on('scroll', this.scrollHandler, this)
-  }
-
-  /**
    * Initialization
    * @param {Function} done Done function
    */
@@ -50,14 +44,14 @@ class LottiePlayer {
 
     this.elements.forEach(element => {
       if (!element.player) {
+        ScrollObserver.add(element)
+
         self.initPlayer(element)
 
         element.addEventListener('revealin', self.play)
+        element.addEventListener('viewportintersect', self.onViewportIntersect)
       }
     })
-
-    this.setBounding()
-    this.checkElements()
 
     done()
   }
@@ -72,6 +66,7 @@ class LottiePlayer {
 
     oldPage.querySelectorAll('[data-lg-lottie]').forEach(element => {
       element.removeEventListener('revealin', self.play)
+      element.removeEventListener('viewportintersect', self.onViewportIntersect)
 
       if (element.player) {
         element.player.destroy()
@@ -82,60 +77,23 @@ class LottiePlayer {
   }
 
   /**
-   * Resize handler
+   * Viewport intersect event handler
+   * @param {Event} e Custom event
    */
-  resizeHandler () {
-    this.setBounding()
-    this.checkElements()
-  }
+  onViewportIntersect (e) {
+    var element = e.target
 
-  /**
-   * Set bounding
-   */
-  setBounding () {
-    var scrollTop = window.unifiedScrollTop
-
-    this.elements.forEach(element => {
-      var bounding = element.getBoundingClientRect()
-      element.start = bounding.top + scrollTop - window.innerHeight
-      element.end = element.start + element.clientHeight + window.innerHeight
-    })
-  }
-
-  /**
-   * Sroll handler
-   */
-  scrollHandler () {
-    this.checkElements()
-  }
-
-  /**
-   * Check position
-   */
-  checkElements () {
-    var scrollTop = window.scrollTop
-    scrollTop = Math.max(scrollTop, 0)
-
-    var self = this
-    var threshold = 0
-
-    this.elements.forEach(function (element, index) {
-      var inViewport = false
-
-      if (scrollTop <= element.end - threshold && scrollTop >= element.start + threshold) {
-        inViewport = true
+    if (element.viewportPosition === 'in') {
+      if (element.player.isPaused && element.player.scrollPaused) {
+        element.player.scrollPaused = false
+        element.player.play()
       }
-
-      if (element.inViewport !== inViewport) {
-        if (!inViewport) {
-          element.player.pause()
-        } else {
-          element.player.play()
-        }
+    } else {
+      if (!element.player.isPaused) {
+        element.player.scrollPaused = true
+        element.player.pause()
       }
-
-      element.inViewport = inViewport
-    })
+    }
   }
 
   /**
