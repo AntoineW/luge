@@ -10,6 +10,7 @@ import LottiePlayer from 'Luge/LottiePlayer'
 import Parallax from 'Luge/Parallax'
 import Preloader from 'Luge/Preloader'
 import Reveal from 'Luge/Reveal'
+import ScrollObserver from 'Luge/ScrollObserver'
 import SmoothScroll from 'Luge/SmoothScroll'
 import Sticky from 'Luge/Sticky'
 import Ticker from 'Luge/Ticker'
@@ -30,6 +31,10 @@ window.luge = {
   },
   reveal: {
     add: Reveal.add.bind(Reveal)
+  },
+  scrollobserver: {
+    add: ScrollObserver.add.bind(ScrollObserver),
+    remove: ScrollObserver.remove.bind(ScrollObserver)
   },
   ticker: {
     add: Ticker.add.bind(Ticker),

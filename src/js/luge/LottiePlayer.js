@@ -52,7 +52,7 @@ class LottiePlayer {
       if (!element.player) {
         self.initPlayer(element)
 
-        element.addEventListener('revealIn', self.play)
+        element.addEventListener('revealin', self.play)
       }
     })
 
@@ -71,7 +71,7 @@ class LottiePlayer {
     var oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
 
     oldPage.querySelectorAll('[data-lg-lottie]').forEach(element => {
-      element.removeEventListener('revealIn', self.play)
+      element.removeEventListener('revealin', self.play)
 
       if (element.player) {
         element.player.destroy()

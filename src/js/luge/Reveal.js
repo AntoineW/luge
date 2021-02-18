@@ -10,11 +10,17 @@ class Reveal {
    */
   constructor () {
     this.elements = []
+    this.toRevealIn = []
+    this.toRevealOut = []
+
     this.reveals = {
       in: {},
       out: {}
     }
     this.canReveal = false
+
+    // Listeners
+    this.onViewportIntersect = this.onViewportIntersect.bind(this)
 
     LifeCycle.add('pageInit', this.pageInit.bind(this), 11)
     LifeCycle.add('pageKill', this.pageKill.bind(this))
@@ -37,21 +43,41 @@ class Reveal {
    */
   pageInit (done) {
     var elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
-
-    this.elements = Array.from(elements).map(element => (
-      {
-        el: element,
-        name: Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
-      }
-    ))
+    var self = this
 
     elements.forEach(element => {
-      ScrollObserver.add(element)
+      self.addElement(element)
     })
 
-    this.setBounding()
-
     done()
+  }
+
+  /**
+   * Add element to observer
+   * @param {HTMLElement} element Element to add
+   */
+  addElement (element) {
+    if (!this.elements.includes(element)) {
+      ScrollObserver.add(element)
+
+      element.addEventListener('viewportintersect', this.onViewportIntersect)
+
+      this.elements.push(element)
+    }
+  }
+
+  /**
+   * Remove element from observer
+   * @param {HTMLElement} element Element to remove
+   */
+  removeElement (element) {
+    ScrollObserver.remove(element)
+
+    element.removeEventListener('viewportintersect', this.onViewportIntersect)
+
+    if (this.elements.includes(element)) {
+      this.elements.splice(this.elements.indexOf(element), 1)
+    }
   }
 
   /**
@@ -59,10 +85,41 @@ class Reveal {
    * @param {Function} done Done function
    */
   pageKill (done) {
+    var self = this
+
     this.canReveal = false
-    this.elements = []
+
+    this.elements.forEach(element => {
+      self.removeElement(element)
+    })
 
     done()
+  }
+
+  /**
+   * viewportintersect event handler
+   * @param {Event} e Custom event
+   */
+  onViewportIntersect (e) {
+    var element = e.target
+
+    if (element.viewportPosition === 'in') {
+      if (this.toRevealOut.includes(element)) {
+        this.toRevealOut.splice(this.toRevealOut.indexOf(element), 1)
+      }
+
+      if (!this.toRevealIn.includes(element)) {
+        this.toRevealIn.push(element)
+      }
+    } else {
+      if (this.toRevealIn.includes(element)) {
+        this.toRevealIn.splice(this.toRevealIn.indexOf(element), 1)
+      }
+
+      if (!this.toRevealOut.includes(element)) {
+        this.toRevealOut.push(element)
+      }
+    }
   }
 
   /**
@@ -72,7 +129,7 @@ class Reveal {
   reveal (done) {
     this.canReveal = true
 
-    this.checkElements()
+    this.revealElements()
 
     done()
   }
@@ -81,112 +138,78 @@ class Reveal {
    * Resize handler
    */
   resizeHandler () {
-    this.setBounding()
-    this.checkElements()
-  }
-
-  /**
-   * Set bounding
-   */
-  setBounding () {
-    var scrollTop = window.unifiedScrollTop
-
-    this.elements.forEach(element => {
-      element.bounding = element.el.getBoundingClientRect()
-      element.start = element.bounding.top + scrollTop - window.innerHeight
-      element.middle = element.start + element.el.clientHeight / 2
-      element.end = element.start + element.el.clientHeight + window.innerHeight
-    })
+    this.revealElements()
   }
 
   /**
    * Sroll handler
    */
   scrollHandler () {
-    this.checkElements()
+    this.revealElements()
   }
 
   /**
-   * Check position
+   * Reveal elements
    */
-  checkElements () {
-    if (this.canReveal) {
-      var scrollTop = window.scrollTop
-      scrollTop = Math.max(scrollTop, 0)
+  revealElements () {
+    var self = this
 
-      var self = this
-      var threshold = window.innerHeight * 0.15
-      var revealInDelay = 200
+    if (this.canReveal) {
       var revealInTimeout = 0
 
-      this.elements.forEach(function (element, index) {
-        var state = ''
-        var isIn = false
+      this.toRevealIn.forEach(element => {
+        var name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
+
         var delay = true
-        var isOut = false
-
-        if (scrollTop > element.end - threshold) {
-          if (element.el.getAttribute('data-lg-reveal-state') === null && !element.el.hasAttribute('data-lg-reveal-multiple')) {
-            // Show element when above the viewport
-            isIn = true
-            state = 'is-in'
-            delay = false
-          } else {
-            isOut = true
-            state = 'is-out is-out--top'
-          }
-        } else if (scrollTop < element.start + threshold) {
-          isOut = true
-          state = 'is-out is-out--bottom'
-        } else {
-          isIn = true
-          state = 'is-in'
-
-          if (element.el.hasAttribute('data-lg-reveal-multiple')) {
-            if (scrollTop < element.middle) {
-              state += ' is-in--bottom'
-            } else {
-              state += ' is-in--top'
-            }
-          }
+        if (element.getAttribute('data-lg-reveal-state') === null) {
+          delay = false
         }
 
-        if (element.el.getAttribute('data-lg-reveal-state') !== state) {
-          if (isIn) {
-            setTimeout(function () {
-              element.el.dispatchEvent(new CustomEvent('revealIn'))
+        setTimeout(function () {
+          element.dispatchEvent(new CustomEvent('revealin'))
 
-              if (typeof self.reveals.in[element.name] === 'function') {
-                self.reveals.in[element.name](element.el)
-              } else if (typeof element.el.revealIn === 'function') {
-                element.el.revealIn()
-              }
-
-              element.el.setAttribute('data-lg-reveal-state', state)
-            }, delay ? revealInTimeout : 0)
-
-            if (delay) {
-              revealInTimeout += Luge.settings.revealStagger * 1000
-            }
-          } else if (isOut) {
-            if (element.el.hasAttribute('data-lg-reveal-state')) {
-              element.el.dispatchEvent(new CustomEvent('revealOut'))
-
-              if (typeof self.reveals.out[element.name] === 'function') {
-                self.reveals.out[element.name](element.el)
-              } else if (typeof element.el.revealOut === 'function') {
-                element.el.revealOut()
-              }
-            }
-
-            element.el.setAttribute('data-lg-reveal-state', state)
+          if (typeof self.reveals.in[name] === 'function') {
+            self.reveals.in[name](element)
+          } else if (typeof element.onrevealin === 'function') {
+            element.onrevealin()
           }
+
+          element.setAttribute('data-lg-reveal-state', 'is-in')
+        }, delay ? revealInTimeout : 0)
+
+        if (delay) {
+          revealInTimeout += Luge.settings.revealStagger * 1000
         }
 
-        if (isIn && !element.el.hasAttribute('data-lg-reveal-multiple')) {
-          delete self.elements[index]
+        if (!element.hasAttribute('data-lg-reveal-multiple')) {
+          self.removeElement(element)
         }
       })
+
+      this.toRevealOut.forEach(element => {
+        var name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
+
+        if (element.hasAttribute('data-lg-reveal-state')) {
+          element.dispatchEvent(new CustomEvent('revealout'))
+
+          if (typeof self.reveals.out[name] === 'function') {
+            self.reveals.out[name](element)
+          } else if (typeof element.onrevealout === 'function') {
+            element.onrevealout()
+          }
+        }
+
+        if (element.viewportPosition === 'above') {
+          var state = 'is-out is-out--top'
+        } else if (element.viewportPosition === 'under') {
+          state = 'is-out is-out--bottom'
+        }
+
+        element.setAttribute('data-lg-reveal-state', state)
+      })
+
+      this.toRevealIn = []
+      this.toRevealOut = []
     }
   }
 
