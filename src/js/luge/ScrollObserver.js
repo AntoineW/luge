@@ -42,6 +42,7 @@ class ScrollObserver {
    */
   resizeHandler () {
     this.setBounding()
+    this.checkElements()
   }
 
   /**
@@ -67,6 +68,7 @@ class ScrollObserver {
    * @param {HTMLElement} element Element
    */
   setElementBounding (element) {
+    element.style = ''
     var bounding = element.getBoundingClientRect()
 
     element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
