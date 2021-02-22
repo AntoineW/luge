@@ -1,6 +1,10 @@
+/**
+ * @todo Optimize tick function
+ */
 import LifeCycle from 'Luge/LifeCycle'
-import Emitter from 'Luge/Emitter'
+import Luge from 'Luge/Core'
 import ScrollObserver from 'Luge/ScrollObserver'
+import Ticker from 'Luge/Ticker'
 
 class ScrollAnimation {
   /**
@@ -29,18 +33,13 @@ class ScrollAnimation {
       'scaleZ'
     ]
 
-    // Presets
-    this.presets = {
-      parallax: {
-        y: ['100%', '-100%']
-      }
-    }
-
     // Listeners
     this.onScrollProgress = this.onScrollProgress.bind(this)
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
+
+    Ticker.add(this.tick, this)
   }
 
   /**
@@ -67,6 +66,52 @@ class ScrollAnimation {
       ScrollObserver.add(element)
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
+
+      // Set values
+      var scrollAnimation = {}
+
+      // Yoyo
+      scrollAnimation.yoyo = element.hasAttribute('data-lg-scroll-yoyo')
+
+      // Inertia
+      scrollAnimation.inertia = element.hasAttribute('data-lg-scroll-inertia') ? element.getAttribute('data-lg-scroll-inertia') : Luge.settings.scrollInertia
+
+      // Get properties
+      if (element.hasAttribute('data-lg-scroll-animate')) {
+        var properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
+
+        var declarations = {}
+
+        for (var property in properties) {
+          if (this.allowedProperties.includes(property) ||
+              this.transformProperties.includes(property)) {
+            var values = properties[property]
+            var fromValue = String(values[0])
+            var toValue = String(values[1])
+
+            var unit = fromValue.match(/\d+([a-zA-Z%]+)/m)
+            if (unit) {
+              unit = unit[1]
+            } else if (property.indexOf('rotate') === 0) {
+              unit = 'deg'
+            }
+
+            fromValue = Number(fromValue.replace(unit, ''))
+            toValue = Number(toValue.replace(unit, ''))
+
+            declarations[property] = {
+              from: fromValue,
+              to: toValue,
+              current: fromValue,
+              unit: unit
+            }
+          }
+        }
+      }
+
+      scrollAnimation.properties = declarations
+
+      element.scrollAnimation = scrollAnimation
 
       this.elements.push(element)
     }
@@ -104,68 +149,50 @@ class ScrollAnimation {
    */
   onScrollProgress (e) {
     var element = e.target
-    var properties = null
-    var preset = element.getAttribute('data-lg-scroll')
     var progress = element.scrollProgress
 
     // Yoyo
-    if (element.hasAttribute('data-lg-scroll-yoyo')) {
+    if (element.scrollAnimation.yoyo) {
       progress = 1 - Math.abs(1 - progress * 2)
     }
 
-    // Get properties
-    if (preset !== '' && this.presets[preset]) {
-      properties = this.presets[preset]
-    } else if (element.hasAttribute('data-lg-scroll-animate')) {
-      properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
+    // Get dest value
+    for (var [key, property] of Object.entries(element.scrollAnimation.properties)) {
+      property.dest = property.from + (property.to - property.from) * progress
     }
+  }
 
-    if (properties) {
+  /**
+   * Raf animation
+   */
+  tick () {
+    this.elements.forEach(element => {
       var declarations = {}
 
-      for (var property in properties) {
-        if (this.allowedProperties.includes(property) ||
-            this.transformProperties.includes(property)) {
-          var values = properties[property]
+      for (var [key, property] of Object.entries(element.scrollAnimation.properties)) {
+        property.current += (property.dest - property.current) * element.scrollAnimation.inertia
 
-          if (['x', 'y', 'z'].includes(property)) {
-            var unit = values[0].match(/\d+([a-z%]+)/m)[1]
-            var fromValue = Number(values[0].replace(unit, ''))
-            var toValue = Number(values[1].replace(unit, ''))
-
-            var currentValue = fromValue + (toValue - fromValue) * progress
-
-            if (declarations.translate3d || (declarations.translate3d = {})) {
-              declarations.translate3d[property] = currentValue + unit
-            }
-          } else {
-            fromValue = Number(String(values[0]).replace(/[a-zA-Z]*/g, ''))
-            toValue = Number(String(values[1]).replace(/[a-zA-Z]*/g, ''))
-
-            currentValue = fromValue + (toValue - fromValue) * progress
-
-            declarations[property] = currentValue
+        if (['x', 'y', 'z'].includes(key)) {
+          if (declarations.translate3d || (declarations.translate3d = {})) {
+            declarations.translate3d[key] = property.current + property.unit
           }
+        } else {
+          declarations[key] = property.current + property.unit
         }
       }
 
       // Handle transform shorthand
       var transform = []
-      for (property in declarations) {
-        if (this.transformProperties.includes(property)) {
+      for ([key, property] of Object.entries(declarations)) {
+        if (this.transformProperties.includes(key)) {
           // Convert object style property value to string
-          if (property === 'translate3d') {
-            var value = Object.assign({ x: 0, y: 0, z: 0 }, declarations[property])
+          if (key === 'translate3d') {
+            var value = Object.assign({ x: 0, y: 0, z: 0 }, property)
 
-            declarations[property] = value.x + ', ' + value.y + ', ' + value.z
+            property = value.x + ', ' + value.y + ', ' + value.z
           }
 
-          // Add deg unit for rotate
-          if (property.indexOf('rotate') === 0) {
-            declarations[property] += 'deg'
-          }
-
-          transform.push(property + '(' + declarations[property] + ')')
+          transform.push(key + '(' + property + ')')
         }
       }
 
@@ -178,12 +205,10 @@ class ScrollAnimation {
         willChange.push('transform')
       }
 
-      for (property in declarations) {
-        var propertyValue = declarations[property]
-
-        if (!this.transformProperties.includes(property)) {
-          styles.push(property + ': ' + propertyValue)
-          willChange.push(property)
+      for ([key, property] of Object.entries(declarations)) {
+        if (!this.transformProperties.includes(key)) {
+          styles.push(key + ': ' + property)
+          willChange.push(key)
         }
       }
 
@@ -192,7 +217,7 @@ class ScrollAnimation {
       styles = styles.join('; ')
 
       element.setAttribute('style', styles)
-    }
+    })
   }
 }
 
