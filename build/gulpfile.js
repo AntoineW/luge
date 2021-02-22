@@ -69,7 +69,7 @@ function serve(cb) {
   watch('../src/**/*.js', scriptsDev);
 
   // Watch .html files
-  watch(['../demo/*.html']).on('change', browserSync.reload);
+  watch(['../demo/*.php']).on('change', browserSync.reload);
 
   cb();
 }
