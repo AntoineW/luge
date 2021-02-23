@@ -23,7 +23,7 @@ class ScrollObserver {
    * @param {Function} done Done function
    */
   init (done) {
-    var self = this
+    const self = this
 
     // Self clean, remove elements that are no longer in DOM
     this.elements.forEach(element => {
@@ -56,7 +56,7 @@ class ScrollObserver {
    * Set elements bouding
    */
   setBounding () {
-    var self = this
+    const self = this
 
     this.elements.forEach(element => {
       self.setElementBounding(element)
@@ -69,7 +69,7 @@ class ScrollObserver {
    */
   setElementBounding (element) {
     element.style = ''
-    var bounding = element.getBoundingClientRect()
+    const bounding = element.getBoundingClientRect()
 
     element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
     element.scrollMiddle = element.scrollStart + window.innerHeight / 2 + element.clientHeight / 2
@@ -80,11 +80,11 @@ class ScrollObserver {
    * Check elements positions
    */
   checkElements () {
-    var scrollTop = window.unifiedScrollTop
+    const scrollTop = window.unifiedScrollTop
 
     this.elements.forEach(element => {
-      var position = ''
-      var progress = (scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart)
+      let position = ''
+      const progress = (scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart)
 
       if (progress < 0) {
         position = 'under'

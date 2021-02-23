@@ -36,8 +36,8 @@ class Emitter {
    * @param {String} name Event Name
    */
   emit (name) {
-    var self = this
-    var data = [].slice.call(arguments, 1)
+    const self = this
+    const data = [].slice.call(arguments, 1)
 
     if (this.events[name]) {
       this.events[name].forEach((object, index) => {
@@ -56,7 +56,7 @@ class Emitter {
    * @param {Function} callback Handler function
    */
   off (name, callback) {
-    var self = this
+    const self = this
 
     if (this.events[name]) {
       this.events[name].forEach((object, index) => {

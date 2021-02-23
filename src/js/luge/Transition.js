@@ -51,8 +51,8 @@ class Transition {
    * @param {Event} e Mouse event
    */
   linkHandler (e) {
-    var element = e.currentTarget
-    var href = element.getAttribute('href')
+    const element = e.currentTarget
+    const href = element.getAttribute('href')
 
     if (href &&
       !element.closest('#wpadminbar') &&
@@ -133,13 +133,13 @@ class Transition {
    * Init loader
    */
   initLoader () {
-    var loader = document.querySelector('[data-lg-loader]')
+    const loader = document.querySelector('[data-lg-loader]')
 
     if (loader && loader.getAttribute('data-lg-loader') === 'lottie' && typeof lottie === 'object') {
-      var animOut = loader.getAttribute('data-lg-loader-out')
-      var playerOut = false
-      var animIn = loader.getAttribute('data-lg-loader-in')
-      var playerIn = false
+      const animOut = loader.getAttribute('data-lg-loader-out')
+      let playerOut = false
+      let animIn = loader.getAttribute('data-lg-loader-in')
+      let playerIn = false
 
       if (animOut) {
         playerOut = lottie.loadAnimation({
@@ -185,7 +185,7 @@ class Transition {
    * @param {Function} done Done function
    */
   pageFetch (done) {
-    var self = this
+    const self = this
 
     if (this.url) {
       fetch(this.url, { credentials: 'include' })
@@ -205,10 +205,10 @@ class Transition {
    */
   pageCreate (done) {
     // Convert data to HTML
-    var html = new DOMParser().parseFromString(this.pageFetched, 'text/html')
+    const html = new DOMParser().parseFromString(this.pageFetched, 'text/html')
 
     // Get containers
-    var newPage = html.querySelector('[data-lg-page]')
+    const newPage = html.querySelector('[data-lg-page]')
 
     if (newPage) {
       // Switch containers
@@ -254,7 +254,7 @@ class Transition {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    var oldPage = this.currentPage
+    const oldPage = this.currentPage
     oldPage.parentNode.removeChild(oldPage)
 
     this.currentPage = document.querySelector('[data-lg-page]')
@@ -268,12 +268,12 @@ class Transition {
    * @param {Function} done Done function
    */
   pageOut (done) {
-    var self = this
-    var page = document.querySelector('[data-lg-page]')
+    const self = this
+    const page = document.querySelector('[data-lg-page]')
 
     if (page) {
-      var pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
-      var transition = false
+      const pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
+      let transition = false
 
       if (typeof this.transitions.out[pageName] === 'function') {
         transition = this.transitions.out[pageName]
@@ -286,7 +286,7 @@ class Transition {
       if (transition) {
         transition(page, done)
       } else {
-        var loader = document.querySelector('[data-lg-loader]')
+        const loader = document.querySelector('[data-lg-loader]')
 
         if (loader) {
           if (loader.playerOut) {
@@ -302,7 +302,7 @@ class Transition {
               done()
             }, { once: true })
           } else {
-            var duration = window.getComputedStyle(document.querySelector('[data-lg-loader]')).getPropertyValue('transition-duration')
+            const duration = window.getComputedStyle(document.querySelector('[data-lg-loader]')).getPropertyValue('transition-duration')
 
             if (duration !== '' && duration !== '0s') {
               loader.addEventListener('transitionend', done, { once: true })
@@ -328,11 +328,11 @@ class Transition {
    * @param {Function} done Done function
    */
   pageIn (done) {
-    var page = document.querySelector('[data-lg-page]')
+    const page = document.querySelector('[data-lg-page]')
 
     if (page) {
-      var pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
-      var transition = false
+      const pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
+      let transition = false
 
       page.style.opacity = ''
 
@@ -347,7 +347,7 @@ class Transition {
       if (transition) {
         transition(page, done)
       } else {
-        var loader = document.querySelector('[data-lg-loader]')
+        const loader = document.querySelector('[data-lg-loader]')
 
         if (loader && loader.classList.contains('is-visible')) {
           if (loader.playerIn) {
@@ -365,7 +365,7 @@ class Transition {
               done()
             }, { once: true })
           } else {
-            var duration = window.getComputedStyle(document.querySelector('[data-lg-loader]')).getPropertyValue('transition-duration')
+            const duration = window.getComputedStyle(document.querySelector('[data-lg-loader]')).getPropertyValue('transition-duration')
 
             if (duration !== '' && duration !== '0s') {
               loader.addEventListener('transitionend', done, { once: true })

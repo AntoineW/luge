@@ -15,7 +15,7 @@ class Ticker {
    * @param {Function} callback Tick function
    */
   add (callback, context) {
-    var exists = false
+    let exists = false
     this.callbacks.forEach(object => {
       if (object.cb === callback) {
         exists = true
@@ -35,7 +35,7 @@ class Ticker {
    * @param {String} id Tick ID
    */
   remove (callback) {
-    var self = this
+    const self = this
 
     this.callbacks.forEach((object, index) => {
       if (object.cb === callback) {

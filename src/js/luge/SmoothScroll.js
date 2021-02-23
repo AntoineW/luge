@@ -35,7 +35,7 @@ class SmoothScroll {
    * @param {Function} done Done function
    */
   pageInit (done) {
-    var containers = document.querySelectorAll('[data-lg-smooth]')
+    const containers = document.querySelectorAll('[data-lg-smooth]')
 
     if (containers.length > 0) {
       window.smoothScrollTop = window.scrollTop
@@ -85,7 +85,7 @@ class SmoothScroll {
       this.containers.forEach(function (container) { container.el.removeAttribute('style') })
 
       this.containers.forEach(function (container) {
-        var parent = container.el.parentNode
+        const parent = container.el.parentNode
 
         // Get bounding
         container.bounding = container.el.getBoundingClientRect()
@@ -107,10 +107,10 @@ class SmoothScroll {
    */
   tick () {
     if (window.smoothScrollTop !== window.scrollTop) {
-      window.smoothScrollTop = window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia)
+      window.smoothScrollTop = Math.max(window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia), 0)
 
       // Round smooth scroll
-      var gap = window.smoothScrollTop - window.scrollTop
+      const gap = window.smoothScrollTop - window.scrollTop
       if (gap > -0.1 && gap < 0.1) {
         window.smoothScrollTop = window.scrollTop
       }

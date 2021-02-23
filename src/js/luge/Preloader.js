@@ -34,11 +34,11 @@ class PreLoader {
    * @param {Function} done Done function
    */
   siteIn (done) {
-    var elapsed = (Date.now() - this.startTime) / 1000
-    var remaining = Luge.settings.preloaderDuration - elapsed
+    const elapsed = (Date.now() - this.startTime) / 1000
+    const remaining = Luge.settings.preloaderDuration - elapsed
 
     if (remaining <= 0) {
-      var clear = this.clear.bind(this, done)
+      const clear = this.clear.bind(this, done)
 
       if (this.playerIn) {
         this.playerIn.play()
@@ -48,7 +48,7 @@ class PreLoader {
         if (typeof this.intro === 'function') {
           this.intro(done, this.remove.bind(this))
         } else {
-          var duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
+          const duration = window.getComputedStyle(this.el).getPropertyValue('transition-duration')
 
           if (duration !== '' && duration !== '0s') {
             this.el.addEventListener('transitionend', clear, { once: true })
@@ -97,11 +97,11 @@ class PreLoader {
    * Init lottie
    */
   initLottie () {
-    var self = this
+    const self = this
 
     if (this.el.getAttribute('data-lg-preloader') === 'lottie' && typeof lottie === 'object') {
-      var animIn = this.el.getAttribute('data-lg-preloader-in')
-      var playerIn = false
+      const animIn = this.el.getAttribute('data-lg-preloader-in')
+      let playerIn = false
 
       if (animIn) {
         playerIn = lottie.loadAnimation({

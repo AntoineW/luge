@@ -39,7 +39,7 @@ class Luge {
 
     // Browser detect
     window.browser = Bowser.getParser(window.navigator.userAgent)
-    var isLight = false
+    let isLight = false
 
     if (window.browser.is('mobile') || window.browser.is('tablet')) {
       isLight = true
@@ -190,6 +190,5 @@ class Luge {
     Emitter.emit('scrollEnd')
   }
 }
-var luge = new Luge()
 
-export { luge as default }
+export default new Luge()

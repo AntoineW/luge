@@ -27,8 +27,8 @@ class Parallax {
    */
   pageInit (done) {
     document.querySelectorAll('[data-lg-parallax]').forEach(element => {
-      var disable = element.getAttribute('data-lg-parallax-disable')
-      var enable = true
+      const disable = element.getAttribute('data-lg-parallax-disable')
+      let enable = true
 
       if (disable) {
         if ((disable === 'mobile' && !window.browser.is('desktop')) ||
@@ -53,7 +53,7 @@ class Parallax {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    var self = this
+    const self = this
 
     this.elements.forEach(element => {
       self.removeElement(element)
@@ -76,7 +76,7 @@ class Parallax {
       element.parallaxAmplitude = element.getAttribute('data-lg-parallax-amplitude') ? element.getAttribute('data-lg-parallax-amplitude') : 1
 
       if (typeof element.parallaxAmplitude === 'string') {
-        var randAmplitude = element.parallaxAmplitude.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
+        const randAmplitude = element.parallaxAmplitude.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
 
         if (randAmplitude) {
           element.parallaxAmplitude = Number(randAmplitude[1]) + ((Number(randAmplitude[2]) - Number(randAmplitude[1])) * Math.random())
@@ -112,9 +112,9 @@ class Parallax {
    * @param {Event} e Custom event
    */
   onScrollProgress (e) {
-    var element = e.target
+    const element = e.target
 
-    var progress = 1 - element.scrollProgress * 2
+    let progress = 1 - element.scrollProgress * 2
 
     if (element.parallaxAnchor === 'bottom') {
       progress += 1
@@ -123,11 +123,11 @@ class Parallax {
     }
 
     if (element.getAttribute('data-lg-parallax') === 'media') {
-      var movement = (element.parallaxAmplitude * 5) * progress
+      const movement = (element.parallaxAmplitude * 5) * progress
 
       element.querySelector('img, svg, video').style.transform = 'translate3d(0, ' + movement + '%, 0) scale(1.' + (String(Math.abs(element.parallaxAmplitude)).replace('.', '')) + ')'
     } else {
-      movement = element.clientHeight * progress * element.parallaxAmplitude / 2
+      const movement = element.clientHeight * progress * element.parallaxAmplitude / 2
 
       element.style.transform = 'translate3d(0, ' + movement + 'px, 0)'
     }

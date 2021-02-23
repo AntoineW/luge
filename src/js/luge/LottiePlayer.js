@@ -39,7 +39,7 @@ class LottiePlayer {
    * @param {Function} done Done function
    */
   pageInit (done) {
-    var self = this
+    const self = this
     this.elements = document.querySelectorAll('[data-lg-lottie]')
     this.toLoad = 0
 
@@ -62,8 +62,8 @@ class LottiePlayer {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    var self = this
-    var oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
+    const self = this
+    const oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
 
     oldPage.querySelectorAll('[data-lg-lottie]').forEach(element => {
       element.removeEventListener('revealin', self.play)
@@ -86,7 +86,7 @@ class LottiePlayer {
    * @param {Event} e Custom event
    */
   onViewportIntersect (e) {
-    var element = e.target
+    const element = e.target
 
     if (element.viewportPosition === 'in') {
       if (element.player.isPaused && element.player.scrollPaused) {
@@ -106,7 +106,7 @@ class LottiePlayer {
    * @param {HTMLElement} element Container
    */
   initPlayer (element) {
-    var self = this
+    const self = this
 
     this.toLoad++
 
@@ -121,10 +121,10 @@ class LottiePlayer {
     element.setAttribute('data-lg-lottie-state', 'is-paused')
 
     // Get options
-    var scroll = element.hasAttribute('data-lg-lottie-scroll')
-    var loop = element.hasAttribute('data-lg-lottie-loop')
-    var loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame'))
-    var reverse = element.hasAttribute('data-lg-lottie-reverse')
+    const scroll = element.hasAttribute('data-lg-lottie-scroll')
+    const loop = element.hasAttribute('data-lg-lottie-loop')
+    const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame'))
+    const reverse = element.hasAttribute('data-lg-lottie-reverse')
 
     if (scroll) {
       ScrollObserver.add(element)
@@ -133,7 +133,7 @@ class LottiePlayer {
     } else {
       element.player.addEventListener('enterFrame', function () {
         if (element.player.totalFrames > 0) {
-          var currentFrame = Math.round(element.player.currentFrame)
+          const currentFrame = Math.round(element.player.currentFrame)
 
           if (element.player.playDirection === 1) {
             if (currentFrame === element.player.totalFrames - 1) {
@@ -210,7 +210,7 @@ class LottiePlayer {
    * @param {Event} e Custom event
    */
   onScrollProgress (e) {
-    var element = e.target
+    const element = e.target
 
     element.player.goToAndStop(element.player.totalFrames * element.scrollProgress, true)
   }

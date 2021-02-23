@@ -32,7 +32,7 @@ class Sticky {
    * @param {Function} done Done function
    */
   pageInit (done) {
-    var elements = document.querySelectorAll('[data-lg-sticky]')
+    const elements = document.querySelectorAll('[data-lg-sticky]')
 
     if (elements.length > 0) {
       elements.forEach(element => {
@@ -71,17 +71,17 @@ class Sticky {
    */
   setBounding () {
     if (this.elements) {
-      var scrollTop = window.unifiedScrollTop
+      const scrollTop = window.unifiedScrollTop
 
       this.elements.forEach(function (element) {
         element.el.style.top = ''
         element.el.style.transform = ''
 
-        var bounding = element.el.getBoundingClientRect()
+        const bounding = element.el.getBoundingClientRect()
 
         // Set bounding
         if (element.position === 'bottom') {
-          var top = Math.ceil(window.innerHeight - (bounding.bottom + scrollTop)) + 1
+          let top = Math.ceil(window.innerHeight - (bounding.bottom + scrollTop)) + 1
           top = Math.max(top, 0)
           element.el.style.top = top + 'px'
 
@@ -110,12 +110,11 @@ class Sticky {
    */
   checkElements () {
     if (this.elements) {
-      var scrollTop = (window.smoothScrollTop ? window.smoothScrollTop : window.scrollTop)
-      scrollTop = Math.max(scrollTop, 0)
+      const scrollTop = window.unifiedScrollTop
 
       this.elements.forEach(function (element) {
         if (scrollTop >= element.start) {
-          var gap = Math.min(scrollTop - element.start, element.maxGap)
+          const gap = Math.min(scrollTop - element.start, element.maxGap)
 
           element.el.style.transform = 'translate3d(0, ' + gap + 'px, 0)'
 

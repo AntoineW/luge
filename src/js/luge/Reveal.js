@@ -42,8 +42,8 @@ class Reveal {
    * @param {Function} done Done function
    */
   pageInit (done) {
-    var elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
-    var self = this
+    const elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
+    const self = this
 
     elements.forEach(element => {
       self.addElement(element)
@@ -83,7 +83,7 @@ class Reveal {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    var self = this
+    const self = this
 
     this.canReveal = false
 
@@ -99,8 +99,8 @@ class Reveal {
    * @param {Event} e Custom event
    */
   onScrollProgress (e) {
-    var element = e.target
-    var threshold = Luge.settings.revealThreshold
+    const element = e.target
+    const threshold = Luge.settings.revealThreshold
 
     if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.isRevealed) {
       if (this.toRevealOut.includes(element)) {
@@ -151,15 +151,15 @@ class Reveal {
    * Reveal elements
    */
   revealElements () {
-    var self = this
+    const self = this
 
     if (this.canReveal) {
-      var revealInTimeout = 0
+      let revealInTimeout = 0
 
       this.toRevealIn.forEach(element => {
-        var name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
+        const name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
 
-        var delay = true
+        let delay = true
         if (element.getAttribute('data-lg-reveal-state') === null) {
           delay = false
         }
@@ -187,7 +187,7 @@ class Reveal {
       })
 
       this.toRevealOut.forEach(element => {
-        var name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
+        const name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
 
         if (element.hasAttribute('data-lg-reveal-state')) {
           element.dispatchEvent(new CustomEvent('revealout'))
@@ -200,8 +200,9 @@ class Reveal {
           }
         }
 
+        let state = ''
         if (element.viewportPosition === 'above') {
-          var state = 'is-out is-out--top'
+          state = 'is-out is-out--top'
         } else if (element.viewportPosition === 'under') {
           state = 'is-out is-out--bottom'
         }

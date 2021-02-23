@@ -75,11 +75,11 @@ class LifeCycle {
    * @param {String} cycleName Cycle name
    */
   proceed (cycleName) {
-    var events = this.cycles[cycleName].events
-    var current = this.cycles[cycleName].current
+    const events = this.cycles[cycleName].events
+    const current = this.cycles[cycleName].current
 
     if (current < events.length) {
-      var event = events[current]
+      const event = events[current]
 
       // Do current event
       if (Array.isArray(event)) {
@@ -99,15 +99,15 @@ class LifeCycle {
    * @param {String} cycleName Cycle name
    */
   next (cycleName) {
-    var self = this
-    var events = this.cycles[cycleName].events
-    var current = this.cycles[cycleName].current
+    const self = this
+    const events = this.cycles[cycleName].events
+    const current = this.cycles[cycleName].current
 
     if (current < events.length) {
-      var event = events[current]
+      const event = events[current]
 
-      var next = true
-      var wait = []
+      let next = true
+      let wait = []
 
       // Get events to wait for
       if (typeof event === 'string') {
@@ -160,7 +160,7 @@ class LifeCycle {
 
     // Call hooked callbacks
     if (this.events[eventName].callbacks.length > 0) {
-      var callbacks = this.events[eventName].callbacks.sort((a, b) => {
+      const callbacks = this.events[eventName].callbacks.sort((a, b) => {
         return a.position - b.position
       })
 

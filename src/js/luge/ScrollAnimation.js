@@ -44,8 +44,8 @@ class ScrollAnimation {
    * @param {Function} done Done function
    */
   pageInit (done) {
-    var elements = document.querySelectorAll('[data-lg-scroll]')
-    var self = this
+    const elements = document.querySelectorAll('[data-lg-scroll]')
+    const self = this
 
     elements.forEach(element => {
       self.addElement(element)
@@ -65,7 +65,7 @@ class ScrollAnimation {
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
       // Set values
-      var scrollAnimation = {}
+      const scrollAnimation = {}
 
       // Yoyo
       scrollAnimation.yoyo = element.hasAttribute('data-lg-scroll-yoyo')
@@ -75,18 +75,18 @@ class ScrollAnimation {
 
       // Get properties
       if (element.hasAttribute('data-lg-scroll-animate')) {
-        var properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
+        const properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
 
-        var declarations = {}
+        const declarations = {}
 
-        for (var property in properties) {
+        for (const property in properties) {
           if (this.allowedProperties.includes(property) ||
               this.transformProperties.includes(property)) {
-            var values = properties[property]
-            var fromValue = String(values[0])
-            var toValue = String(values[1])
+            const values = properties[property]
+            let fromValue = String(values[0])
+            let toValue = String(values[1])
 
-            var unit = fromValue.match(/\d+([a-zA-Z%]+)/m)
+            let unit = fromValue.match(/\d+([a-zA-Z%]+)/m)
             if (unit) {
               unit = unit[1]
             } else if (property.indexOf('rotate') === 0) {
@@ -104,9 +104,11 @@ class ScrollAnimation {
             }
           }
         }
-      }
 
-      scrollAnimation.properties = declarations
+        scrollAnimation.properties = declarations
+      } else {
+        scrollAnimation.properties = {}
+      }
 
       element.scrollAnimation = scrollAnimation
 
@@ -131,7 +133,7 @@ class ScrollAnimation {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    var self = this
+    const self = this
 
     this.elements.forEach(element => {
       self.removeElement(element)
@@ -145,8 +147,8 @@ class ScrollAnimation {
    * @param {Event} e Custom event
    */
   onScrollProgress (e) {
-    var element = e.target
-    var progress = element.scrollProgress
+    const element = e.target
+    let progress = element.scrollProgress
 
     // Yoyo
     if (element.scrollAnimation.yoyo) {
@@ -154,7 +156,7 @@ class ScrollAnimation {
     }
 
     // Get dest value
-    for (var [key, property] of Object.entries(element.scrollAnimation.properties)) {
+    for (const [key, property] of Object.entries(element.scrollAnimation.properties)) {
       property.dest = property.from + (property.to - property.from) * progress
       element.scrollAnimation.atDest = false
     }
@@ -164,16 +166,16 @@ class ScrollAnimation {
    * Raf animation
    */
   tick () {
-    for (var element of this.elements) {
+    for (const element of this.elements) {
       // Early break if at dest
       if (element.scrollAnimation.atDest) {
         continue
       }
 
-      var declarations = {}
-      var atDest = true
+      const declarations = {}
+      let atDest = true
 
-      for (var [key, property] of Object.entries(element.scrollAnimation.properties)) {
+      for (const [key, property] of Object.entries(element.scrollAnimation.properties)) {
         property.current += (property.dest - property.current) * element.scrollAnimation.inertia
 
         if (Math.abs(property.dest - property.current) > 0.01) {
@@ -190,30 +192,34 @@ class ScrollAnimation {
       }
 
       // Handle transform shorthand
-      var transform = []
-      for ([key, property] of Object.entries(declarations)) {
+      const transform = []
+      for (const [key, property] of Object.entries(declarations)) {
         if (this.transformProperties.includes(key)) {
           // Convert object style property value to string
-          if (key === 'translate3d') {
-            var value = Object.assign({ x: 0, y: 0, z: 0 }, property)
+          if (typeof property === 'object') {
+            if (key === 'translate3d') {
+              const value = Object.assign({ x: 0, y: 0, z: 0 }, property)
 
-            property = value.x + ', ' + value.y + ', ' + value.z
+              property.string = value.x + ', ' + value.y + ', ' + value.z
+            } else {
+              property.string = Object.values(property).join(', ')
+            }
           }
 
-          transform.push(key + '(' + property + ')')
+          transform.push(key + '(' + (typeof property === 'string' ? property : property.string) + ')')
         }
       }
 
       // Create style rule
-      var styles = []
-      var willChange = []
+      const styles = []
+      const willChange = []
 
       if (transform.length > 0) {
         styles.push('transform: ' + transform.join(' '))
         willChange.push('transform')
       }
 
-      for ([key, property] of Object.entries(declarations)) {
+      for (const [key, property] of Object.entries(declarations)) {
         if (!this.transformProperties.includes(key)) {
           styles.push(key + ': ' + property)
           willChange.push(key)
@@ -222,9 +228,7 @@ class ScrollAnimation {
 
       styles.push('will-change: ' + willChange.join(', '))
 
-      styles = styles.join('; ')
-
-      element.setAttribute('style', styles)
+      element.setAttribute('style', styles.join('; '))
 
       // Block future style update if element is at destination
       if (atDest) {
