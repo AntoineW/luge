@@ -1,6 +1,3 @@
-/**
- * @todo Optimize tick function
- */
 import LifeCycle from 'Luge/LifeCycle'
 import Luge from 'Luge/Core'
 import ScrollObserver from 'Luge/ScrollObserver'
@@ -159,6 +156,7 @@ class ScrollAnimation {
     // Get dest value
     for (var [key, property] of Object.entries(element.scrollAnimation.properties)) {
       property.dest = property.from + (property.to - property.from) * progress
+      element.scrollAnimation.atDest = false
     }
   }
 
@@ -166,11 +164,21 @@ class ScrollAnimation {
    * Raf animation
    */
   tick () {
-    this.elements.forEach(element => {
+    for (var element of this.elements) {
+      // Early break if at dest
+      if (element.scrollAnimation.atDest) {
+        continue
+      }
+
       var declarations = {}
+      var atDest = true
 
       for (var [key, property] of Object.entries(element.scrollAnimation.properties)) {
         property.current += (property.dest - property.current) * element.scrollAnimation.inertia
+
+        if (Math.abs(property.dest - property.current) > 0.01) {
+          atDest = false
+        }
 
         if (['x', 'y', 'z'].includes(key)) {
           if (declarations.translate3d || (declarations.translate3d = {})) {
@@ -217,7 +225,13 @@ class ScrollAnimation {
       styles = styles.join('; ')
 
       element.setAttribute('style', styles)
-    })
+
+      // Block future style update if element is at destination
+      if (atDest) {
+        element.scrollAnimation.atDest = true
+        continue
+      }
+    }
   }
 }
 
