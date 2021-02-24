@@ -12,7 +12,9 @@ class ScrollAnimation {
 
     // Properties
     this.allowedProperties = [
-      'opacity'
+      'opacity',
+      'background-x',
+      'background-y'
     ]
 
     this.transformProperties = [
@@ -29,6 +31,16 @@ class ScrollAnimation {
       'scaleY',
       'scaleZ'
     ]
+
+    // Presets
+    this.presets = {
+      'background-x': {
+        'background-x': ['0%', '100%']
+      },
+      'background-y': {
+        'background-y': ['0%', '100%']
+      }
+    }
 
     // Listeners
     this.onScrollProgress = this.onScrollProgress.bind(this)
@@ -67,16 +79,35 @@ class ScrollAnimation {
       // Set values
       const scrollAnimation = {}
 
+      // Smooth progress
+      scrollAnimation.smoothProgress = element.scrollProgress ?? 0
+
       // Yoyo
       scrollAnimation.yoyo = element.hasAttribute('data-lg-scroll-yoyo')
 
       // Inertia
       scrollAnimation.inertia = element.hasAttribute('data-lg-scroll-inertia') ? element.getAttribute('data-lg-scroll-inertia') : Luge.settings.scrollInertia
 
-      // Get properties
-      if (element.hasAttribute('data-lg-scroll-animate')) {
-        const properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
+      if (typeof scrollAnimation.inertia === 'string') {
+        const randInertia = scrollAnimation.inertia.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
 
+        if (randInertia) {
+          scrollAnimation.inertia = Number(randInertia[1]) + ((Number(randInertia[2]) - Number(randInertia[1])) * Math.random())
+        } else {
+          scrollAnimation.inertia = Number(scrollAnimation.inertia)
+        }
+      }
+
+      // Get properties
+      let properties = false
+
+      if (element.hasAttribute('data-lg-scroll-animate')) {
+        properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
+      } else if (this.presets[element.getAttribute('data-lg-scroll')]) {
+        properties = this.presets[element.getAttribute('data-lg-scroll')]
+      }
+
+      if (properties) {
         const declarations = {}
 
         for (const property in properties) {
@@ -96,7 +127,14 @@ class ScrollAnimation {
             fromValue = Number(fromValue.replace(unit, ''))
             toValue = Number(toValue.replace(unit, ''))
 
-            declarations[property] = {
+            let safeProperty = property
+            if (property === 'background-x') {
+              safeProperty = 'background-position-x'
+            } else if (property === 'background-y') {
+              safeProperty = 'background-position-y'
+            }
+
+            declarations[safeProperty] = {
               from: fromValue,
               to: toValue,
               current: fromValue,
@@ -106,8 +144,6 @@ class ScrollAnimation {
         }
 
         scrollAnimation.properties = declarations
-      } else {
-        scrollAnimation.properties = {}
       }
 
       element.scrollAnimation = scrollAnimation
@@ -148,18 +184,8 @@ class ScrollAnimation {
    */
   onScrollProgress (e) {
     const element = e.target
-    let progress = element.scrollProgress
 
-    // Yoyo
-    if (element.scrollAnimation.yoyo) {
-      progress = 1 - Math.abs(1 - progress * 2)
-    }
-
-    // Get dest value
-    for (const [key, property] of Object.entries(element.scrollAnimation.properties)) {
-      property.dest = property.from + (property.to - property.from) * progress
-      element.scrollAnimation.atDest = false
-    }
+    element.scrollAnimation.atDest = false
   }
 
   /**
@@ -172,68 +198,80 @@ class ScrollAnimation {
         continue
       }
 
-      const declarations = {}
-      let atDest = true
-
-      for (const [key, property] of Object.entries(element.scrollAnimation.properties)) {
-        property.current += (property.dest - property.current) * element.scrollAnimation.inertia
-
-        if (Math.abs(property.dest - property.current) > 0.01) {
-          atDest = false
-        }
-
-        if (['x', 'y', 'z'].includes(key)) {
-          if (declarations.translate3d || (declarations.translate3d = {})) {
-            declarations.translate3d[key] = property.current + property.unit
-          }
-        } else {
-          declarations[key] = property.current + property.unit
-        }
+      // Yoyo
+      let progress = element.scrollProgress
+      if (element.scrollAnimation.yoyo) {
+        progress = 1 - Math.abs(1 - progress * 2)
       }
 
-      // Handle transform shorthand
-      const transform = []
-      for (const [key, property] of Object.entries(declarations)) {
-        if (this.transformProperties.includes(key)) {
-          // Convert object style property value to string
-          if (typeof property === 'object') {
-            if (key === 'translate3d') {
-              const value = Object.assign({ x: 0, y: 0, z: 0 }, property)
+      element.scrollAnimation.smoothProgress += (progress - element.scrollAnimation.smoothProgress) * element.scrollAnimation.inertia
 
-              property.string = value.x + ', ' + value.y + ', ' + value.z
-            } else {
-              property.string = Object.values(property).join(', ')
+      if (element.scrollAnimation.properties) {
+        const declarations = {}
+
+        for (const [key, property] of Object.entries(element.scrollAnimation.properties)) {
+          property.current = property.from + (property.to - property.from) * element.scrollAnimation.smoothProgress
+
+          if (['x', 'y', 'z'].includes(key)) {
+            if (declarations.translate3d || (declarations.translate3d = {})) {
+              declarations.translate3d[key] = property.current + property.unit
             }
+          } else {
+            declarations[key] = property.current + property.unit
           }
-
-          transform.push(key + '(' + (typeof property === 'string' ? property : property.string) + ')')
         }
-      }
 
-      // Create style rule
-      const styles = []
-      const willChange = []
+        // Handle transform shorthand
+        const transform = []
+        for (const [key, property] of Object.entries(declarations)) {
+          if (this.transformProperties.includes(key)) {
+            // Convert object style property value to string
+            if (typeof property === 'object') {
+              if (key === 'translate3d') {
+                const value = Object.assign({ x: 0, y: 0, z: 0 }, property)
 
-      if (transform.length > 0) {
-        styles.push('transform: ' + transform.join(' '))
-        willChange.push('transform')
-      }
+                property.string = value.x + ', ' + value.y + ', ' + value.z
+              } else {
+                property.string = Object.values(property).join(', ')
+              }
+            }
 
-      for (const [key, property] of Object.entries(declarations)) {
-        if (!this.transformProperties.includes(key)) {
-          styles.push(key + ': ' + property)
-          willChange.push(key)
+            transform.push(key + '(' + (typeof property !== 'object' ? property : property.string) + ')')
+          }
         }
+
+        // Create style rule
+        const styles = {}
+        const willChange = []
+
+        if (transform.length > 0) {
+          styles.transform = transform.join(' ')
+          willChange.push('transform')
+        }
+
+        for (const [key, property] of Object.entries(declarations)) {
+          if (!this.transformProperties.includes(key)) {
+            styles[key] = property
+            willChange.push(key)
+          }
+        }
+
+        for (const [key, property] of Object.entries(styles)) {
+          element.style.setProperty(key, property)
+        }
+
+        element.style.setProperty('will-change', willChange.join(', '))
+      } else {
+        const diff = Math.round((element.scrollProgress - element.scrollAnimation.smoothProgress) * 1000) / 1000
+
+        element.style.setProperty('--progress', element.scrollAnimation.smoothProgress)
+        element.style.setProperty('--abs-diff', Math.abs(diff))
+        element.style.setProperty('--diff', diff)
       }
-
-      styles.push('will-change: ' + willChange.join(', '))
-
-      element.setAttribute('style', styles.join('; '))
 
       // Block future style update if element is at destination
-      if (atDest) {
+      if (Math.abs(progress - element.scrollAnimation.smoothProgress) < 0.0001) {
         element.scrollAnimation.atDest = true
-        continue
       }
     }
   }
