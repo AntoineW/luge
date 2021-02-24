@@ -68,12 +68,16 @@ class ScrollObserver {
    * @param {HTMLElement} element Element
    */
   setElementBounding (element) {
+    const style = element.style
     element.style = ''
+
     const bounding = element.getBoundingClientRect()
 
     element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
     element.scrollMiddle = element.scrollStart + window.innerHeight / 2 + element.clientHeight / 2
     element.scrollEnd = element.scrollStart + element.clientHeight + window.innerHeight
+
+    element.style = style
   }
 
   /**
@@ -105,12 +109,10 @@ class ScrollObserver {
         if (position !== 'in') {
           element.dispatchEvent(new CustomEvent('viewportout'))
         }
+      }
 
+      if (progress >= 0 && progress <= 1) {
         element.dispatchEvent(new CustomEvent('scrollprogress'))
-      } else {
-        if (progress >= 0 && progress <= 1) {
-          element.dispatchEvent(new CustomEvent('scrollprogress'))
-        }
       }
     })
   }
