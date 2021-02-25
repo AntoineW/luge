@@ -92,6 +92,8 @@ class Parallax {
       }
 
       this.elements.push(element)
+
+      this.moveElement(element)
     }
   }
 
@@ -112,8 +114,10 @@ class Parallax {
    * @param {Event} e Custom event
    */
   onScrollProgress (e) {
-    const element = e.target
+    this.moveElement(e.target)
+  }
 
+  moveElement (element) {
     let progress = 1 - element.scrollProgress * 2
 
     if (element.parallaxAnchor === 'bottom') {
