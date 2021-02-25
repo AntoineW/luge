@@ -34,32 +34,26 @@
   }
 }
 
-[data-lg-preloader="slide-right"],
-[data-lg-preloader="slide-left"] {
+[data-lg-preloader="slide-right"] {
   &.is-hidden {
-    transform: scaleX(0);
+    transform: translate3d(100%, 0, 0);
   }
 }
 
-[data-lg-preloader="slide-right"] {
-  transform-origin: 100% 50%;
-}
-
 [data-lg-preloader="slide-left"] {
-  transform-origin: 0 50%;
-}
-
-[data-lg-preloader="slide-top"],
-[data-lg-preloader="slide-bottom"] {
   &.is-hidden {
-    transform: scaleY(0);
+    transform: translate3d(-100%, 0, 0);
   }
 }
 
 [data-lg-preloader="slide-top"] {
-  transform-origin: 50% 0;
+  &.is-hidden {
+    transform: translate3d(0, -100%, 0);
+  }
 }
 
 [data-lg-preloader="slide-bottom"] {
-  transform-origin: 50% 100%;
+  &.is-hidden {
+    transform: translate3d(0, 100%, 0);
+  }
 }
