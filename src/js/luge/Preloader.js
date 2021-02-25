@@ -121,13 +121,13 @@ class PreLoader {
           }
         })
 
-        if (element.hasAttribute('data-lg-preloader-reverse')) {
+        if (this.el.hasAttribute('data-lg-preloader-reverse')) {
           playerIn.setDirection(-1)
         }
       }
 
       playerIn.addEventListener('DOMLoaded', () => {
-        if (element.hasAttribute('data-lg-preloader-reverse')) {
+        if (self.el.hasAttribute('data-lg-preloader-reverse')) {
           playerIn.goToAndStop(playerIn.totalFrames - 1, true)
         }
 
