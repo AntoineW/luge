@@ -80,7 +80,7 @@ class ScrollAnimation {
       const scrollAnimation = {}
 
       // Smooth progress
-      scrollAnimation.smoothProgress = element.scrollProgress ?? 0
+      scrollAnimation.smoothProgress = (element.scrollProgress !== undefined ? element.scrollProgress : 0)
 
       // Yoyo
       scrollAnimation.yoyo = element.hasAttribute('data-lg-scroll-yoyo')
