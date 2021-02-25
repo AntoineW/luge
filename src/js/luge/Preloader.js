@@ -10,6 +10,8 @@ class PreLoader {
     this.playerIn = false
     this.startTime = Date.now()
 
+    this.preloaderDuration = Luge.settings.preloaderDuration ?? 0
+
     LifeCycle.add('siteInit', this.siteInit.bind(this))
   }
 
@@ -21,6 +23,10 @@ class PreLoader {
     this.el = document.querySelector('[data-lg-preloader]')
 
     if (this.el) {
+      if (this.el.hasAttribute('data-lg-preloader-duration')) {
+        this.preloaderDuration = this.el.getAttribute('data-lg-preloader-duration')
+      }
+
       this.initLottie()
 
       LifeCycle.add('siteIn', this.siteIn.bind(this))
@@ -35,7 +41,7 @@ class PreLoader {
    */
   siteIn (done) {
     const elapsed = (Date.now() - this.startTime) / 1000
-    const remaining = Luge.settings.preloaderDuration - elapsed
+    const remaining = this.preloaderDuration - elapsed
 
     if (remaining <= 0) {
       const clear = this.clear.bind(this, done)
@@ -114,9 +120,17 @@ class PreLoader {
             preserveAspectRatio: 'none'
           }
         })
+
+        if (element.hasAttribute('data-lg-preloader-reverse')) {
+          playerIn.setDirection(-1)
+        }
       }
 
       playerIn.addEventListener('DOMLoaded', () => {
+        if (element.hasAttribute('data-lg-preloader-reverse')) {
+          playerIn.goToAndStop(playerIn.totalFrames - 1, true)
+        }
+
         self.el.setAttribute('style', '')
       }, { once: true })
 
