@@ -5,7 +5,8 @@ class ScrollObserver {
   constructor () {
     this.elements = []
 
-    LifeCycle.add('reveal', this.init.bind(this))
+    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    LifeCycle.add('reveal', this.reveal.bind(this))
 
     this.bindEvents()
   }
@@ -19,19 +20,21 @@ class ScrollObserver {
   }
 
   /**
-   * Initialization
+   * Kill
    * @param {Function} done Done function
    */
-  init (done) {
-    const self = this
+  pageKill (done) {
+    this.elements = []
 
-    // Self clean, remove elements that are no longer in DOM
-    this.elements.forEach(element => {
-      if (!document.body.contains(element.el)) {
-        self.remove(element.el)
-      }
-    })
+    done()
+  }
 
+  /**
+   * Reveal
+   * @param {Function} done Done function
+   */
+  reveal (done) {
+    this.setBounding()
     this.checkElements()
 
     done()
@@ -68,8 +71,8 @@ class ScrollObserver {
    * @param {HTMLElement} element Element
    */
   setElementBounding (element) {
-    const style = element.style
-    element.style = ''
+    const style = element.getAttribute('style')
+    element.setAttribute('style', '')
 
     const bounding = element.getBoundingClientRect()
 
@@ -77,7 +80,7 @@ class ScrollObserver {
     element.scrollMiddle = element.scrollStart + window.innerHeight / 2 + element.clientHeight / 2
     element.scrollEnd = element.scrollStart + element.clientHeight + window.innerHeight
 
-    element.style = style
+    element.setAttribute('style', style)
   }
 
   /**
@@ -85,14 +88,13 @@ class ScrollObserver {
    */
   checkElements () {
     const scrollTop = window.unifiedScrollTop
-
     this.elements.forEach(element => {
       let position = ''
-      const progress = (scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart)
+      const progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
 
-      if (progress < 0) {
+      if (progress <= 0) {
         position = 'under'
-      } else if (progress > 1) {
+      } else if (progress >= 1) {
         position = 'above'
       } else {
         position = 'in'
@@ -111,7 +113,7 @@ class ScrollObserver {
         }
       }
 
-      if (progress >= 0 && progress <= 1) {
+      if (progress > 0 && progress < 1) {
         element.dispatchEvent(new CustomEvent('scrollprogress'))
       }
     })
