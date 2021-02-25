@@ -108,7 +108,7 @@ class Transition {
    */
   siteInit (done) {
     this.currentPage = document.querySelector('[data-lg-page]')
-    this.reload = this.currentPage.hasAttribute('data-lg-reload')
+    this.reload = (this.currentPage && this.currentPage.hasAttribute('data-lg-reload'))
 
     this.initLoader()
 
