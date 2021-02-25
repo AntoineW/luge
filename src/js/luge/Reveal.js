@@ -62,6 +62,20 @@ class Reveal {
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
+      const reveal = {}
+
+      reveal.name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
+      reveal.multiple = element.hasAttribute('data-lg-reveal-multiple')
+      reveal.stagger = element.getAttribute('data-lg-reveal-stagger') ?? false
+
+      if (reveal.stagger) {
+        Array.from(element.children).forEach(child => {
+          child.setAttribute('data-lg-reveal-child', '')
+        })
+      }
+
+      element.reveal = reveal
+
       this.elements.push(element)
     }
   }
@@ -157,8 +171,6 @@ class Reveal {
       let revealInTimeout = 0
 
       this.toRevealIn.forEach(element => {
-        const name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
-
         let delay = true
         if (element.getAttribute('data-lg-reveal-state') === null) {
           delay = false
@@ -168,13 +180,21 @@ class Reveal {
           element.dispatchEvent(new CustomEvent('revealin'))
           element.isRevealed = true
 
-          if (typeof self.reveals.in[name] === 'function') {
-            self.reveals.in[name](element)
+          if (typeof self.reveals.in[element.reveal.name] === 'function') {
+            self.reveals.in[element.reveal.name](element)
           } else if (typeof element.onrevealin === 'function') {
             element.onrevealin()
           }
 
           element.setAttribute('data-lg-reveal-state', 'is-in')
+
+          if (element.reveal.stagger) {
+            Array.from(element.children).forEach((child, index) => {
+              setTimeout(() => {
+                child.setAttribute('data-lg-reveal-state', 'is-in')
+              }, index * element.reveal.stagger * 1000)
+            })
+          }
         }, delay ? revealInTimeout : 0)
 
         if (delay) {
@@ -187,14 +207,12 @@ class Reveal {
       })
 
       this.toRevealOut.forEach(element => {
-        const name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
-
         if (element.hasAttribute('data-lg-reveal-state')) {
           element.dispatchEvent(new CustomEvent('revealout'))
           element.isRevealed = false
 
-          if (typeof self.reveals.out[name] === 'function') {
-            self.reveals.out[name](element)
+          if (typeof self.reveals.out[element.reveal.name] === 'function') {
+            self.reveals.out[element.reveal.name](element)
           } else if (typeof element.onrevealout === 'function') {
             element.onrevealout()
           }
@@ -208,6 +226,14 @@ class Reveal {
         }
 
         element.setAttribute('data-lg-reveal-state', state)
+
+        if (element.reveal.stagger) {
+          Array.from(element.children).forEach((child, index) => {
+            setTimeout(() => {
+              child.setAttribute('data-lg-reveal-state', state)
+            }, index * element.reveal.stagger * 1000)
+          })
+        }
       })
 
       this.toRevealIn = []
