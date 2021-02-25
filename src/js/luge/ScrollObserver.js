@@ -6,7 +6,7 @@ class ScrollObserver {
     this.elements = []
 
     LifeCycle.add('pageKill', this.pageKill.bind(this))
-    LifeCycle.add('reveal', this.reveal.bind(this))
+    LifeCycle.add('pageInit', this.init.bind(this), 20)
 
     this.bindEvents()
   }
@@ -30,10 +30,10 @@ class ScrollObserver {
   }
 
   /**
-   * Reveal
+   * Initialization
    * @param {Function} done Done function
    */
-  reveal (done) {
+  init (done) {
     this.setBounding()
     this.checkElements()
 
@@ -84,39 +84,48 @@ class ScrollObserver {
   }
 
   /**
-   * Check elements positions
+   * Check all elements positions
    */
   checkElements () {
-    const scrollTop = window.unifiedScrollTop
     this.elements.forEach(element => {
-      let position = ''
-      const progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
-
-      if (progress <= 0) {
-        position = 'under'
-      } else if (progress >= 1) {
-        position = 'above'
-      } else {
-        position = 'in'
-      }
-
-      element.scrollProgress = progress
-
-      if (element.viewportPosition !== position) {
-        element.viewportPosition = position
-
-        element.dispatchEvent(new CustomEvent('viewportintersect'))
-        element.dispatchEvent(new CustomEvent('viewport' + position))
-
-        if (position !== 'in') {
-          element.dispatchEvent(new CustomEvent('viewportout'))
-        }
-      }
-
-      if (progress > 0 && progress < 1) {
-        element.dispatchEvent(new CustomEvent('scrollprogress'))
-      }
+      this.checkElement(element)
     })
+  }
+
+  /**
+   * Check individual element position
+   * @param {HTMLElement} element Element to check
+   */
+  checkElement (element) {
+    const scrollTop = window.unifiedScrollTop
+
+    let position = ''
+    const progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
+
+    if (progress <= 0) {
+      position = 'under'
+    } else if (progress >= 1) {
+      position = 'above'
+    } else {
+      position = 'in'
+    }
+
+    element.scrollProgress = progress
+
+    if (element.viewportPosition !== position) {
+      element.viewportPosition = position
+
+      element.dispatchEvent(new CustomEvent('viewportintersect'))
+      element.dispatchEvent(new CustomEvent('viewport' + position))
+
+      if (position !== 'in') {
+        element.dispatchEvent(new CustomEvent('viewportout'))
+      }
+    }
+
+    if (progress > 0 && progress < 1) {
+      element.dispatchEvent(new CustomEvent('scrollprogress'))
+    }
   }
 
   /**
@@ -125,8 +134,6 @@ class ScrollObserver {
    */
   add (element) {
     if (!this.elements.includes(element)) {
-      this.setElementBounding(element)
-
       this.elements.push(element)
     }
   }
