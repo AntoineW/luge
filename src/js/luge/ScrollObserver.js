@@ -61,6 +61,14 @@ class ScrollObserver {
   setBounding () {
     const self = this
 
+    window.maxScrollTop = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    ) - window.innerHeight
+
     this.elements.forEach(element => {
       self.setElementBounding(element)
     })
@@ -77,8 +85,11 @@ class ScrollObserver {
     const bounding = element.getBoundingClientRect()
 
     element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
-    element.scrollMiddle = element.scrollStart + window.innerHeight / 2 + element.clientHeight / 2
+
     element.scrollEnd = element.scrollStart + element.clientHeight + window.innerHeight
+    element.scrollEnd = Math.min(element.scrollEnd, window.maxScrollTop)
+
+    element.scrollMiddle = element.scrollStart + (element.scrollEnd - element.scrollStart) / 2
 
     element.setAttribute('style', style)
   }
