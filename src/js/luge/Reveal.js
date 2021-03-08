@@ -66,7 +66,16 @@ class Reveal {
 
       reveal.name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
       reveal.multiple = element.hasAttribute('data-lg-reveal-multiple')
-      reveal.stagger = element.getAttribute('data-lg-reveal-stagger') ?? false
+
+      if (element.hasAttribute('data-lg-reveal-stagger')) {
+        if (String(element.getAttribute('data-lg-reveal-stagger')) !== '') {
+          reveal.stagger = element.getAttribute('data-lg-reveal-stagger')
+        } else {
+          reveal.stagger = Luge.settings.revealStagger
+        }
+      } else {
+        reveal.stagger = false
+      }
 
       if (reveal.stagger) {
         Array.from(element.children).forEach(child => {
@@ -171,10 +180,7 @@ class Reveal {
       let revealInTimeout = 0
 
       this.toRevealIn.forEach(element => {
-        let delay = true
-        if (element.getAttribute('data-lg-reveal-state') === null) {
-          delay = false
-        }
+        const delay = true
 
         setTimeout(function () {
           element.dispatchEvent(new CustomEvent('revealin'))

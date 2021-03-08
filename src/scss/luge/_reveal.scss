@@ -1,6 +1,10 @@
 @mixin reveal {
   &:not([data-lg-reveal-stagger]),
   & [data-lg-reveal-child] {
+    &:not([data-lg-reveal-state]) {
+      transition: none;
+    }
+
     @content;
   }
 }
@@ -9,6 +13,7 @@
 [data-lg-reveal] {
   @include reveal {
     opacity: 0;
+    will-change: opacity, transform;
 
     &[data-lg-reveal-state~="is-in"] {
       opacity: 1;
@@ -289,6 +294,101 @@
 
     &[data-lg-reveal-state~="is-out--top"] {
       transform: translate3d(0, -15%, 0);
+    }
+  }
+}
+
+/* Layer */
+[data-lg-reveal^="layer"] {
+  @include reveal {
+    position: relative;
+
+    opacity: 1;
+    transition: transform 0.8s ease(out-cubic) 0s, clip-path 0.4s ease(in-cubic) 0s;
+
+    &:after {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+
+      background: white;
+      content: '';
+      transition: transform 0.4s ease(out-cubic) 0.4s;
+      z-index: 999;
+    }
+
+    &[data-lg-reveal-state~="is-in"] {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      transform: translate3d(0, 0, 0);
+    }
+  }
+}
+
+[data-lg-reveal^="layer-top"],
+[data-lg-reveal^="layer-bottom"] {
+  @include reveal {
+    &[data-lg-reveal-state~="is-in"] {
+      &:after {
+        transform: scaleY(0);
+      }
+    }
+  }
+}
+
+[data-lg-reveal^="layer-top"] {
+  @include reveal {
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    transform: translate3d(0, 10%, 0);
+
+    &:after {
+      transform-origin: 50% 0;
+    }
+  }
+}
+
+[data-lg-reveal^="layer-bottom"] {
+  @include reveal {
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    transform: translate3d(0, -10%, 0);
+
+    &:after {
+      transform-origin: 50% 100%;
+    }
+  }
+}
+
+[data-lg-reveal^="layer-right"],
+[data-lg-reveal^="layer-left"] {
+  @include reveal {
+    &[data-lg-reveal-state~="is-in"] {
+      &:after {
+        transform: scaleX(0);
+      }
+    }
+  }
+}
+
+[data-lg-reveal^="layer-right"] {
+  @include reveal {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    transform: translate3d(-10%, 0, 0);
+
+    &:after {
+      transform-origin: 100% 50%;
+    }
+  }
+}
+
+[data-lg-reveal^="layer-left"] {
+  @include reveal {
+    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    transform: translate3d(10%, 0, 0);
+
+    &:after {
+      transform-origin: 0 50%;
     }
   }
 }

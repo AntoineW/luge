@@ -12,7 +12,7 @@ class Luge {
       scrollInertia: 1,
       smoothInertia: 0.1,
       preloaderDuration: 0,
-      revealStagger: 0.2,
+      revealStagger: 0.1,
       revealThreshold: 0.15
     }
 
