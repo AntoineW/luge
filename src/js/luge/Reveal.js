@@ -58,6 +58,11 @@ class Reveal {
    */
   addElement (element) {
     if (!this.elements.includes(element)) {
+      // Don't add child elements
+      if (!element.hasAttribute('data-lg-reveal-stagger') && element.closest('[data-lg-reveal-stagger]') !== null) {
+        return
+      }
+
       ScrollObserver.add(element)
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
@@ -75,6 +80,12 @@ class Reveal {
         }
       } else {
         reveal.stagger = false
+      }
+
+      if (element.hasAttribute('data-lg-reveal-delay')) {
+        reveal.delay = Number(element.getAttribute('data-lg-reveal-delay')) * 1000
+      } else {
+        reveal.delay = 0
       }
 
       if (reveal.stagger) {
@@ -181,6 +192,8 @@ class Reveal {
 
       this.toRevealIn.forEach(element => {
         const delay = true
+
+        revealInTimeout += element.reveal.delay
 
         setTimeout(function () {
           element.dispatchEvent(new CustomEvent('revealin'))
