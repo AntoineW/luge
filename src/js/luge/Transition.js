@@ -1,5 +1,6 @@
 import 'whatwg-fetch'
 import LifeCycle from 'Luge/LifeCycle'
+import Emitter from 'Luge/Emitter'
 import Helpers from 'Luge/Helpers'
 
 class Transition {
@@ -235,6 +236,8 @@ class Transition {
 
       // Set title
       document.querySelector('head title').innerText = html.querySelector('head title').innerText
+
+      Emitter.emit('pageTransition', html)
     }
 
     // Reset scroll
