@@ -39,7 +39,8 @@ window.luge = {
   },
   ticker: {
     add: Ticker.add.bind(Ticker),
-    remove: Ticker.remove.bind(Ticker)
+    remove: Ticker.remove.bind(Ticker),
+    tick: Ticker.tick.bind(Ticker)
   },
   transition: {
     add: Transition.add.bind(Transition)

@@ -9,6 +9,7 @@ class Luge {
   constructor () {
     // Options
     this.settings = {
+      externalTicker: false,
       scrollInertia: 1,
       smoothInertia: 0.1,
       preloaderDuration: 0,

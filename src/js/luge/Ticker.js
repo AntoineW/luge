@@ -1,3 +1,5 @@
+import Luge from 'Luge/Core'
+
 class Ticker {
   /**
    * Constructor
@@ -5,9 +7,9 @@ class Ticker {
   constructor () {
     this.callbacks = []
 
-    this.rafID = null
-
-    requestAnimationFrame(this.tick.bind(this))
+    if (!Luge.settings.externalTicker) {
+      requestAnimationFrame(this.tick.bind(this))
+    }
   }
 
   /**
@@ -52,7 +54,9 @@ class Ticker {
       object.cb.apply(object.context)
     })
 
-    this.rafID = requestAnimationFrame(this.tick.bind(this))
+    if (!Luge.settings.externalTicker) {
+      requestAnimationFrame(this.tick.bind(this))
+    }
   }
 }
 
