@@ -123,7 +123,7 @@ class LottiePlayer {
     // Get options
     const scroll = element.hasAttribute('data-lg-lottie-scroll')
     const loop = element.hasAttribute('data-lg-lottie-loop')
-    const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame'))
+    const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame')) ?? 0
     const reverse = element.hasAttribute('data-lg-lottie-reverse')
 
     if (scroll) {
