@@ -140,12 +140,14 @@ class LifeCycle {
    * @param {String} eventName Event name
    * @param {Function} callback Callback function
    * @param {Int} position Execution order
+   * @param {String} cycleName Cycle name
    */
-  add (eventName, callback, position = 10) {
+  add (eventName, callback, position = 10, cycleName = null) {
     if (this.events[eventName]) {
       this.events[eventName].callbacks.push({
         callback: callback,
-        position: position
+        position: position,
+        cycle: cycleName
       })
     }
   }
@@ -165,7 +167,9 @@ class LifeCycle {
       })
 
       callbacks.forEach(object => {
-        object.callback(() => this.done(cycleName, eventName))
+        if (object.cycle === null || object.cycle === cycleName) {
+          object.callback(() => this.done(cycleName, eventName))
+        }
       })
     } else {
       this.done(cycleName, eventName)
