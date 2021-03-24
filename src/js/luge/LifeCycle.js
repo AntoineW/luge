@@ -169,6 +169,8 @@ class LifeCycle {
       callbacks.forEach(object => {
         if (object.cycle === null || object.cycle === cycleName) {
           object.callback(() => this.done(cycleName, eventName))
+        } else {
+          this.done(cycleName, eventName)
         }
       })
     } else {
