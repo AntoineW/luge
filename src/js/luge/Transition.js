@@ -136,6 +136,10 @@ class Transition {
   initLoader () {
     const loader = document.querySelector('[data-lg-loader]')
 
+    if (loader) {
+      loader.classList.add('lg-loader', 'lg-loader--' + loader.getAttribute('data-lg-loader'))
+    }
+
     if (loader && loader.getAttribute('data-lg-loader') === 'lottie' && typeof lottie === 'object') {
       const animOut = loader.getAttribute('data-lg-loader-out')
       let playerOut = false

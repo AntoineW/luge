@@ -23,6 +23,8 @@ class PreLoader {
     this.el = document.querySelector('[data-lg-preloader]')
 
     if (this.el) {
+      this.el.classList.add('lg-preloader', 'lg-preloader--' + this.el.getAttribute('data-lg-preloader'))
+
       if (this.el.hasAttribute('data-lg-preloader-duration')) {
         this.preloaderDuration = this.el.getAttribute('data-lg-preloader-duration')
       }

@@ -1,5 +1,5 @@
 /* Loader */
-[data-lg-loader] {
+.lg-loader {
   position: fixed;
   top: 0;
   left: 0;
@@ -18,7 +18,7 @@
 }
 
 /* Lottie */
-[data-lg-loader="lottie"] {
+.lg-loader--lottie {
   background: none;
 
   svg {
@@ -33,17 +33,21 @@
 }
 
 /* Fade */
-[data-lg-loader="fade"] {
+.lg-loader--fade {
   transition: opacity 0.3s linear;
 }
 
 /* Slide */
-[data-lg-loader^="slide"] {
+.lg-loader--slide,
+.lg-loader--slide-top,
+.lg-loader--slide-right,
+.lg-loader--slide-bottom,
+.lg-loader--slide-left {
   opacity: 1;
 }
 
-[data-lg-loader="slide-right"],
-[data-lg-loader="slide-left"] {
+.lg-loader--slide-right,
+.lg-loader--slide-left {
   transform: scaleX(0);
   transition: transform 0.5s ease(out-cubic);
 
@@ -53,7 +57,7 @@
   }
 }
 
-[data-lg-loader="slide-right"] {
+.lg-loader--slide-right {
   transform-origin: 0 50%;
 
   &.is-visible {
@@ -61,7 +65,7 @@
   }
 }
 
-[data-lg-loader="slide-left"] {
+.lg-loader--slide-left {
   transform-origin: 100% 50%;
 
   &.is-visible {
@@ -69,8 +73,8 @@
   }
 }
 
-[data-lg-loader="slide-top"],
-[data-lg-loader="slide-bottom"] {
+.lg-loader--slide-top,
+.lg-loader--slide-bottom {
   transform: scaleY(0);
   transition: transform 0.5s ease(out-cubic);
 
@@ -80,7 +84,7 @@
   }
 }
 
-[data-lg-loader="slide-top"] {
+.lg-loader--slide-top {
   transform-origin: 50% 100%;
 
   &.is-visible {
@@ -88,7 +92,7 @@
   }
 }
 
-[data-lg-loader="slide-bottom"] {
+.lg-loader--slide-bottom {
   transform-origin: 50% 0;
 
   &.is-visible {

@@ -90,8 +90,12 @@ class Reveal {
 
       if (reveal.stagger) {
         Array.from(element.children).forEach(child => {
+          child.classList.add('lg-reveal', 'lg-reveal--' + element.getAttribute('data-lg-reveal'), 'is-out')
+
           child.setAttribute('data-lg-reveal-child', '')
         })
+      } else {
+        element.classList.add('lg-reveal', 'lg-reveal--' + element.getAttribute('data-lg-reveal'), 'is-out')
       }
 
       element.reveal = reveal
@@ -192,6 +196,7 @@ class Reveal {
 
       this.toRevealIn.forEach(element => {
         const delay = true
+        const revealName = element.getAttribute('data-lg-reveal')
 
         revealInTimeout += element.reveal.delay
 
@@ -210,9 +215,12 @@ class Reveal {
           if (element.reveal.stagger) {
             Array.from(element.children).forEach((child, index) => {
               setTimeout(() => {
+                self.setRevealClasses(child, revealName, 'is-in')
                 child.setAttribute('data-lg-reveal-state', 'is-in')
               }, index * element.reveal.stagger * 1000)
             })
+          } else {
+            self.setRevealClasses(element, revealName, 'is-in')
           }
         }, delay ? revealInTimeout : 0)
 
@@ -226,6 +234,8 @@ class Reveal {
       })
 
       this.toRevealOut.forEach(element => {
+        const revealName = element.getAttribute('data-lg-reveal')
+
         if (element.hasAttribute('data-lg-reveal-state')) {
           element.dispatchEvent(new CustomEvent('revealout'))
           element.isRevealed = false
@@ -238,10 +248,10 @@ class Reveal {
         }
 
         let state = ''
-        if (element.viewportPosition === 'above') {
-          state = 'is-out is-out--top'
-        } else if (element.viewportPosition === 'under') {
-          state = 'is-out is-out--bottom'
+        if (element.scrollProgress > 0.5) {
+          state = 'is-out is-out-top'
+        } else {
+          state = 'is-out is-out-bottom'
         }
 
         element.setAttribute('data-lg-reveal-state', state)
@@ -249,15 +259,35 @@ class Reveal {
         if (element.reveal.stagger) {
           Array.from(element.children).forEach((child, index) => {
             setTimeout(() => {
+              self.setRevealClasses(child, revealName, state)
               child.setAttribute('data-lg-reveal-state', state)
             }, index * element.reveal.stagger * 1000)
           })
+        } else {
+          self.setRevealClasses(element, revealName, state)
         }
       })
 
       this.toRevealIn = []
       this.toRevealOut = []
     }
+  }
+
+  /**
+   * Set reveal classes
+   * @param {HTMLElement} el Element
+   * @param {String} name Reveal name
+   * @param {String} states Reveal states
+   */
+  setRevealClasses (el, name, states) {
+    states = states.split(' ')
+    name = 'lg-reveal--' + name
+
+    el.classList.remove('is-in', 'is-out', 'is-out-top', 'is-out-bottom')
+
+    states.forEach(state => {
+      el.classList.add(state)
+    })
   }
 
   /**

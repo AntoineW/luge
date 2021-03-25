@@ -1,394 +1,329 @@
-@mixin reveal {
-  &:not([data-lg-reveal-stagger]),
-  & [data-lg-reveal-child] {
-    &:not([data-lg-reveal-state]) {
-      transition: none;
-    }
-
-    @content;
-  }
-}
-
 /* Reveal */
 [data-lg-reveal] {
-  @include reveal {
-    opacity: 0;
-    will-change: opacity, transform;
+  opacity: 0;
+  will-change: opacity, transform;
 
-    &[data-lg-reveal-state~="is-in"] {
-      opacity: 1;
-    }
+  &.is-in {
+    opacity: 1;
   }
 }
 
 /* Fade */
-[data-lg-reveal="fade"] {
-  @include reveal {
-    transition: opacity 0.3s linear;
+.lg-reveal--fade-top,
+.lg-reveal--fade-right,
+.lg-reveal--fade-bottom,
+.lg-reveal--fade-left,
+.lg-reveal--fade-x,
+.lg-reveal--fade-y,
+.lg-reveal--fade-rotate,
+.lg-reveal--fade-rotate-top,
+.lg-reveal--fade-rotate-right,
+.lg-reveal--fade-rotate-bottom,
+.lg-reveal--fade-rotate-left,
+.lg-reveal--fade-rotate-x,
+.lg-reveal--fade-rotate-y,
+.lg-reveal--fade-scale,
+.lg-reveal--fade-scale-top,
+.lg-reveal--fade-scale-right,
+.lg-reveal--fade-scale-bottom,
+.lg-reveal--fade-scale-left,
+.lg-reveal--fade-scale-x,
+.lg-reveal--fade-scale-y {
+  transition: opacity 0.4s linear 0.2s, transform 0.6s ease(in-cubic) 0s;
+
+  &.is-in {
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+    transition: opacity 0.4s linear 0s, transform 0.6s ease(out-cubic) 0s;
   }
 }
 
-[data-lg-reveal^="fade"] {
-  @include reveal {
-    transition: opacity 0.4s linear 0.2s, transform 0.6s ease(in-cubic) 0s;
-
-    &[data-lg-reveal-state~="is-in"] {
-      transform: translate3d(0, 0, 0) rotate(0) scale(1);
-      transition: opacity 0.4s linear 0s, transform 0.6s ease(out-cubic) 0s;
-    }
-  }
+.lg-reveal--fade {
+  transition: opacity 0.3s linear;
 }
 
-[data-lg-reveal="fade-top"] {
-  @include reveal {
-    transform: translate3d(0, -10%, 0);
-  }
+.lg-reveal--fade-top {
+  transform: translate3d(0, -10%, 0);
 }
 
-[data-lg-reveal="fade-right"] {
-  @include reveal {
+.lg-reveal--fade-right {
+  transform: translate3d(10%, 0, 0);
+}
+
+.lg-reveal--fade-bottom {
+  transform: translate3d(0, 10%, 0);
+}
+
+.lg-reveal--fade-left {
+  transform: translate3d(-10%, 0, 0);
+}
+
+.lg-reveal--fade-x {
+  transform: translate3d(-10%, 0, 0);
+
+  &.is-out-top {
     transform: translate3d(10%, 0, 0);
   }
 }
 
-[data-lg-reveal="fade-bottom"] {
-  @include reveal {
-    transform: translate3d(0, 10%, 0);
+.lg-reveal--fade-y {
+  transform: translate3d(0, 10%, 0);
+
+  &.is-out-top {
+    transform: translate3d(0, -10%, 0);
   }
 }
 
-[data-lg-reveal="fade-left"] {
-  @include reveal {
-    transform: translate3d(-10%, 0, 0);
-  }
+.lg-reveal--fade-rotate {
+  transform: rotate(-20deg);
 }
 
-[data-lg-reveal="fade-x"] {
-  @include reveal {
-    transform: translate3d(-10%, 0, 0);
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform: translate3d(10%, 0, 0);
-    }
-  }
+.lg-reveal--fade-rotate-top {
+  transform: translate3d(0, -30%, 0) rotate(-20deg);
 }
 
-[data-lg-reveal="fade-y"] {
-  @include reveal {
-    transform: translate3d(0, 10%, 0);
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform: translate3d(0, -10%, 0);
-    }
-  }
+.lg-reveal--fade-rotate-right {
+  transform: translate3d(30%, 0, 0) rotate(20deg);
 }
 
-[data-lg-reveal="fade-rotate"] {
-  @include reveal {
-    transform: rotate(-20deg);
-  }
+.lg-reveal--fade-rotate-bottom {
+  transform: translate3d(0, 30%, 0) rotate(20deg);
 }
 
-[data-lg-reveal="fade-rotate-top"] {
-  @include reveal {
-    transform: translate3d(0, -30%, 0) rotate(-20deg);
-  }
+.lg-reveal--fade-rotate-left {
+  transform: translate3d(-30%, 0, 0) rotate(-20deg);
 }
 
-[data-lg-reveal="fade-rotate-right"] {
-  @include reveal {
+.lg-reveal--fade-rotate-x {
+  transform: translate3d(-30%, 0, 0) rotate(-20deg);
+
+  &.is-out-top {
     transform: translate3d(30%, 0, 0) rotate(20deg);
   }
 }
 
-[data-lg-reveal="fade-rotate-bottom"] {
-  @include reveal {
-    transform: translate3d(0, 30%, 0) rotate(20deg);
+.lg-reveal--fade-rotate-y {
+  transform: translate3d(0, 30%, 0) rotate(20deg);
+
+  &.is-out-top {
+    transform: translate3d(0, -30%, 0) rotate(-20deg);
   }
 }
 
-[data-lg-reveal="fade-rotate-left"] {
-  @include reveal {
-    transform: translate3d(-30%, 0, 0) rotate(-20deg);
-  }
+.lg-reveal--fade-scale {
+  transform: scale(0.8);
 }
 
-[data-lg-reveal="fade-rotate-x"] {
-  @include reveal {
-    transform: translate3d(-30%, 0, 0) rotate(-20deg);
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform: translate3d(30%, 0, 0) rotate(20deg);
-    }
-  }
+.lg-reveal--fade-scale-top {
+  transform-origin: 50% 0;
 }
 
-[data-lg-reveal="fade-rotate-y"] {
-  @include reveal {
-    transform: translate3d(0, 30%, 0) rotate(20deg);
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform: translate3d(0, -30%, 0) rotate(-20deg);
-    }
-  }
+.lg-reveal--fade-scale-right {
+  transform-origin: 100% 50%;
 }
 
-[data-lg-reveal^="fade-scale"] {
-  @include reveal {
-    transform: scale(0.8);
-  }
+.lg-reveal--fade-scale-bottom {
+  transform-origin: 50% 100%;
 }
 
-[data-lg-reveal="fade-scale-top"] {
-  @include reveal {
-    transform-origin: 50% 0;
-  }
+.lg-reveal--fade-scale-left {
+  transform-origin: 0 50%;
 }
 
-[data-lg-reveal="fade-scale-right"] {
-  @include reveal {
+.lg-reveal--fade-scale-x {
+  transform-origin: 0 50%;
+
+  &.is-out-top {
     transform-origin: 100% 50%;
   }
 }
 
-[data-lg-reveal="fade-scale-bottom"] {
-  @include reveal {
-    transform-origin: 50% 100%;
-  }
-}
+.lg-reveal--fade-scale-y {
+  transform-origin: 50% 100%;
 
-[data-lg-reveal="fade-scale-left"] {
-  @include reveal {
-    transform-origin: 0 50%;
-  }
-}
-
-[data-lg-reveal="fade-scale-x"] {
-  @include reveal {
-    transform-origin: 0 50%;
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform-origin: 100% 50%;
-    }
-  }
-}
-
-[data-lg-reveal="fade-scale-y"] {
-  @include reveal {
-    transform-origin: 50% 100%;
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform-origin: 50% 0;
-    }
+  &.is-out-top {
+    transform-origin: 50% 0;
   }
 }
 
 /* Scale */
-[data-lg-reveal^="scale"] {
-  @include reveal {
-    opacity: 1;
-    transition: transform 0.6s ease(in-cubic) 0s;
-    transform: scale(0);
-    transform-origin: 50% 50%;
+.lg-reveal--scale,
+.lg-reveal--scale-top,
+.lg-reveal--scale-right,
+.lg-reveal--scale-bottom,
+.lg-reveal--scale-left,
+.lg-reveal--scale-x,
+.lg-reveal--scale-y {
+  opacity: 1;
+  transition: transform 0.6s ease(in-cubic) 0s;
+  transform: scale(0);
 
-    &[data-lg-reveal-state~="is-in"] {
-      transform: scale(1);
-      transition: transform 0.6s ease(out-cubic) 0s;
-    }
+  &.is-in {
+    transform: scale(1);
+    transition: transform 0.6s ease(out-cubic) 0s;
   }
 }
 
-[data-lg-reveal="scale-top"] {
-  @include reveal {
-    transform-origin: 50% 0;
-  }
+.lg-reveal--scale-top {
+  transform-origin: 50% 0;
 }
 
-[data-lg-reveal="scale-right"] {
-  @include reveal {
+.lg-reveal--scale-right {
+  transform-origin: 100% 50%;
+}
+
+.lg-reveal--scale-bottom {
+  transform-origin: 50% 100%;
+}
+
+.lg-reveal--scale-left {
+  transform-origin: 0 50%;
+}
+
+.lg-reveal--scale-x {
+  transform-origin: 0 50%;
+
+  &.is-out-top {
     transform-origin: 100% 50%;
   }
 }
 
-[data-lg-reveal="scale-bottom"] {
-  @include reveal {
-    transform-origin: 50% 100%;
-  }
-}
+.lg-reveal--scale-y {
+  transform-origin: 50% 100%;
 
-[data-lg-reveal="scale-left"] {
-  @include reveal {
-    transform-origin: 0 50%;
-  }
-}
-
-[data-lg-reveal="scale-x"] {
-  @include reveal {
-    transform-origin: 0 50%;
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform-origin: 100% 50%;
-    }
-  }
-}
-
-[data-lg-reveal="scale-y"] {
-  @include reveal {
-    transform-origin: 50% 100%;
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform-origin: 50% 0;
-    }
+  &.is-out-top {
+    transform-origin: 50% 0;
   }
 }
 
 /* Slide */
-[data-lg-reveal^="slide"] {
-  @include reveal {
-    opacity: 1;
-    transition: transform 0.6s ease(in-out-cubic) 0s;
+.lg-reveal--slide,
+.lg-reveal--slide-top,
+.lg-reveal--slide-bottom,
+.lg-reveal--slide-right,
+.lg-reveal--slide-left,
+.lg-reveal--slide-x,
+.lg-reveal--slide-y {
+  opacity: 1;
+  transition: transform 0.6s ease(in-out-cubic) 0s;
 
-    &[data-lg-reveal-state~="is-in"] {
-      transform: translate3d(0, 0, 0);
-    }
+  &.is-in {
+    transform: translate3d(0, 0, 0);
   }
 }
 
-[data-lg-reveal="slide-top"] {
-  @include reveal {
+.lg-reveal--slide-top {
+  transform: translate3d(0, -15%, 0);
+}
+
+.lg-reveal--slide-right {
+  transform: translate3d(15%, 0, 0);
+}
+
+.lg-reveal--slide-bottom {
+  transform: translate3d(0, 15%, 0);
+}
+
+.lg-reveal--slide,
+.lg-reveal--slide-left {
+  transform: translate3d(-15%, 0, 0);
+}
+
+.lg-reveal--slide-x {
+  transform: translate3d(-15%, 0, 0);
+
+  &.is-out-top {
+    transform: translate3d(15%, 0, 0);
+  }
+}
+.lg-reveal--slide-y {
+  transform: translate3d(0, 15%, 0);
+
+  &.is-out-top {
     transform: translate3d(0, -15%, 0);
   }
 }
 
-[data-lg-reveal="slide-right"] {
-  @include reveal {
-    transform: translate3d(15%, 0, 0);
-  }
-}
-
-[data-lg-reveal="slide-bottom"] {
-  @include reveal {
-    transform: translate3d(0, 15%, 0);
-  }
-}
-
-[data-lg-reveal="slide"],
-[data-lg-reveal="slide-left"] {
-  @include reveal {
-    transform: translate3d(-15%, 0, 0);
-  }
-}
-
-[data-lg-reveal="slide-x"] {
-  @include reveal {
-    transform: translate3d(-15%, 0, 0);
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform: translate3d(15%, 0, 0);
-    }
-  }
-}
-[data-lg-reveal="slide-y"] {
-  @include reveal {
-    transform: translate3d(0, 15%, 0);
-
-    &[data-lg-reveal-state~="is-out--top"] {
-      transform: translate3d(0, -15%, 0);
-    }
-  }
-}
-
 /* Layer */
-[data-lg-reveal^="layer"] {
-  @include reveal {
-    position: relative;
+.lg-reveal--layer,
+.lg-reveal--layer-top,
+.lg-reveal--layer-right,
+.lg-reveal--layer-bottom,
+.lg-reveal--layer-left {
+  position: relative;
 
-    opacity: 1;
-    transition: transform 0.8s ease(out-cubic) 0s, clip-path 0.4s ease(in-cubic) 0s;
+  opacity: 1;
+  transition: transform 0.8s ease(out-cubic) 0s, clip-path 0.4s ease(in-cubic) 0s;
 
+  &:after {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: white;
+    content: '';
+    transition: transform 0.4s ease(out-cubic) 0.4s;
+    z-index: 999;
+  }
+
+  &.is-in {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.lg-reveal--layer-top,
+.lg-reveal--layer-bottom {
+  &.is-in {
     &:after {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-
-      background: white;
-      content: '';
-      transition: transform 0.4s ease(out-cubic) 0.4s;
-      z-index: 999;
-    }
-
-    &[data-lg-reveal-state~="is-in"] {
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-      transform: translate3d(0, 0, 0);
+      transform: scaleY(0);
     }
   }
 }
 
-[data-lg-reveal^="layer-top"],
-[data-lg-reveal^="layer-bottom"] {
-  @include reveal {
-    &[data-lg-reveal-state~="is-in"] {
-      &:after {
-        transform: scaleY(0);
-      }
-    }
+.lg-reveal--layer-top {
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  transform: translate3d(0, 10%, 0);
+
+  &:after {
+    transform-origin: 50% 0;
   }
 }
 
-[data-lg-reveal^="layer-top"] {
-  @include reveal {
-    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-    transform: translate3d(0, 10%, 0);
+.lg-reveal--layer-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  transform: translate3d(0, -10%, 0);
 
+  &:after {
+    transform-origin: 50% 100%;
+  }
+}
+
+.lg-reveal--layer-right,
+.lg-reveal--layer-left {
+  &.is-in {
     &:after {
-      transform-origin: 50% 0;
+      transform: scaleX(0);
     }
   }
 }
 
-[data-lg-reveal^="layer-bottom"] {
-  @include reveal {
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    transform: translate3d(0, -10%, 0);
+.lg-reveal--layer-right {
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  transform: translate3d(-10%, 0, 0);
 
-    &:after {
-      transform-origin: 50% 100%;
-    }
+  &:after {
+    transform-origin: 100% 50%;
   }
 }
 
-[data-lg-reveal^="layer-right"],
-[data-lg-reveal^="layer-left"] {
-  @include reveal {
-    &[data-lg-reveal-state~="is-in"] {
-      &:after {
-        transform: scaleX(0);
-      }
-    }
-  }
-}
+.lg-reveal--layer-left {
+  clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+  transform: translate3d(10%, 0, 0);
 
-[data-lg-reveal^="layer-right"] {
-  @include reveal {
-    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-    transform: translate3d(-10%, 0, 0);
-
-    &:after {
-      transform-origin: 100% 50%;
-    }
-  }
-}
-
-[data-lg-reveal^="layer-left"] {
-  @include reveal {
-    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
-    transform: translate3d(10%, 0, 0);
-
-    &:after {
-      transform-origin: 0 50%;
-    }
+  &:after {
+    transform-origin: 0 50%;
   }
 }
