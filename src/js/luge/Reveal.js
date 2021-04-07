@@ -177,6 +177,14 @@ class Reveal {
   reveal (done) {
     this.canReveal = true
 
+    this.elements.forEach(element => {
+      if (element.scrollStart < 0) {
+        if (!this.toRevealIn.includes(element)) {
+          this.toRevealIn.push(element)
+        }
+      }
+    })
+
     this.revealElements()
 
     done()
