@@ -68,8 +68,9 @@ class Reveal {
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
       const reveal = {}
+      const revealName = element.getAttribute('data-lg-reveal')
 
-      reveal.name = Helpers.toCamelCase(element.getAttribute('data-lg-reveal'))
+      reveal.name = Helpers.toCamelCase(revealName)
       reveal.multiple = element.hasAttribute('data-lg-reveal-multiple')
 
       if (element.hasAttribute('data-lg-reveal-stagger')) {
@@ -90,12 +91,22 @@ class Reveal {
 
       if (reveal.stagger) {
         Array.from(element.children).forEach(child => {
-          child.classList.add('lg-reveal', 'lg-reveal--' + element.getAttribute('data-lg-reveal'), 'is-out')
+          const revealName = child.getAttribute('data-lg-reveal')
+
+          child.classList.add('lg-reveal', 'is-out')
+
+          if (revealName) {
+            child.classList.add('lg-reveal--' + revealName)
+          }
 
           child.setAttribute('data-lg-reveal-child', '')
         })
       } else {
-        element.classList.add('lg-reveal', 'lg-reveal--' + element.getAttribute('data-lg-reveal'), 'is-out')
+        element.classList.add('lg-reveal', 'is-out')
+
+        if (revealName) {
+          element.classList.add('lg-reveal--' + revealName)
+        }
       }
 
       element.reveal = reveal
