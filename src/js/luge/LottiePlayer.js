@@ -172,6 +172,7 @@ class LottiePlayer {
 
     // Set methods
     element.play = this.play
+    element.pause = this.pause
 
     // Loaded
     element.player.addEventListener('DOMLoaded', () => {
@@ -203,6 +204,15 @@ class LottiePlayer {
     this.player.goToAndPlay(0, true)
 
     this.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
+  }
+
+  /**
+   * Pause
+   */
+  pause () {
+    this.player.pause()
+
+    this.setAttribute('data-lg-lottie-state', 'is-paused')
   }
 
   /**
