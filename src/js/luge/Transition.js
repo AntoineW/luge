@@ -56,6 +56,7 @@ class Transition {
     const href = element.getAttribute('href')
 
     if (href &&
+      href.indexOf('#') !== 0 &&
       !element.closest('#wpadminbar') &&
       element.getAttribute('data-lg-transition') !== 'disabled' &&
       element.getAttribute('target') !== '_blank') {
@@ -395,7 +396,9 @@ class Transition {
    * History change
    */
   historyStateChanged () {
-    this.navigateTo(window.location.href)
+    if (window.location.hash === '') {
+      this.navigateTo(window.location.href)
+    }
   }
 
   /**
