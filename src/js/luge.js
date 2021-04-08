@@ -20,6 +20,7 @@ import Transition from 'Luge/Transition'
 // Public methods
 window.luge = {
   emitter: {
+    emit: Emitter.emit.bind(Emitter),
     off: Emitter.off.bind(Emitter),
     on: Emitter.on.bind(Emitter),
     once: Emitter.once.bind(Emitter)
