@@ -118,6 +118,7 @@ class LottiePlayer {
       path: element.getAttribute('data-lg-lottie')
     })
 
+    element.classList.add('lg-lottie')
     element.setAttribute('data-lg-lottie-state', 'is-paused')
 
     // Get options
@@ -176,6 +177,8 @@ class LottiePlayer {
 
     // Loaded
     element.player.addEventListener('DOMLoaded', () => {
+      element.classList.add('is-loaded')
+
       self.playerLoaded()
 
       // Autoplay
