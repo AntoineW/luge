@@ -110,10 +110,16 @@ class LottiePlayer {
 
     this.toLoad++
 
+    // Get options
+    const scroll = element.hasAttribute('data-lg-lottie-scroll')
+    const loop = element.hasAttribute('data-lg-lottie-loop')
+    const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame')) ?? 0
+    const reverse = element.hasAttribute('data-lg-lottie-reverse')
+
     element.player = lottie.loadAnimation({
       container: element,
       renderer: 'svg',
-      loop: false,
+      loop: (loop && !reverse),
       autoplay: false,
       path: element.getAttribute('data-lg-lottie')
     })
@@ -121,54 +127,50 @@ class LottiePlayer {
     element.classList.add('lg-lottie')
     element.setAttribute('data-lg-lottie-state', 'is-paused')
 
-    // Get options
-    const scroll = element.hasAttribute('data-lg-lottie-scroll')
-    const loop = element.hasAttribute('data-lg-lottie-loop')
-    const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame')) ?? 0
-    const reverse = element.hasAttribute('data-lg-lottie-reverse')
-
     if (scroll) {
       ScrollObserver.add(element)
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
     } else {
-      element.player.addEventListener('enterFrame', function () {
-        if (element.player.totalFrames > 0) {
-          const currentFrame = Math.round(element.player.currentFrame)
+      if (loop && reverse) {
+        element.player.addEventListener('enterFrame', function () {
+          if (element.player.totalFrames > 0) {
+            const currentFrame = Math.round(element.player.currentFrame)
 
-          if (element.player.playDirection === 1) {
-            if (currentFrame === element.player.totalFrames - 1) {
-              element.player.pause()
+            if (element.player.playDirection === 1) {
+              if (currentFrame === element.player.totalFrames - 1) {
+                element.player.pause()
 
-              if (reverse) {
-                setTimeout(() => {
-                  element.player.setDirection(-1)
-                  element.player.goToAndPlay(element.player.totalFrames, true)
+                if (reverse) {
+                  setTimeout(() => {
+                    element.player.setDirection(-1)
+                    element.player.goToAndPlay(element.player.totalFrames, true)
 
-                  element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--backward')
-                }, 0)
-              } else if (loop) {
-                setTimeout(() => {
-                  element.player.goToAndPlay(loopFrame, true)
-                }, 0)
+                    element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--backward')
+                  }, 0)
+                } else if (loop) {
+                  setTimeout(() => {
+                    element.player.goToAndPlay(loopFrame, true)
+                  }, 0)
+                }
               }
-            }
-          } else {
-            if (currentFrame === loopFrame) {
-              element.player.pause()
+            } else {
+              if (currentFrame === loopFrame) {
+                element.player.pause()
 
-              if (loop) {
-                setTimeout(() => {
-                  element.player.setDirection(1)
-                  element.player.goToAndPlay(loopFrame, true)
+                if (loop) {
+                  setTimeout(() => {
+                    element.player.setDirection(1)
+                    element.player.goToAndPlay(loopFrame, true)
 
-                  element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
-                }, 0)
+                    element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
+                  }, 0)
+                }
               }
             }
           }
-        }
-      })
+        })
+      }
     }
 
     // Set methods
