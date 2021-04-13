@@ -10,8 +10,6 @@ class PreLoader {
     this.playerIn = false
     this.startTime = Date.now()
 
-    this.preloaderDuration = Luge.settings.preloaderDuration ?? 0
-
     LifeCycle.add('siteInit', this.siteInit.bind(this))
   }
 
@@ -27,6 +25,8 @@ class PreLoader {
 
       if (this.el.hasAttribute('data-lg-preloader-duration')) {
         this.preloaderDuration = this.el.getAttribute('data-lg-preloader-duration')
+      } else {
+        this.preloaderDuration = Luge.settings.preloaderDuration ?? 0
       }
 
       this.initLottie()
