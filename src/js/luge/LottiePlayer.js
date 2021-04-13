@@ -27,6 +27,7 @@ class LottiePlayer {
     if (typeof lottie === 'object') {
       LifeCycle.add('pageInit', this.pageInit.bind(this))
       LifeCycle.add('pageKill', this.pageKill.bind(this))
+      LifeCycle.add('reveal', this.reveal.bind(this))
 
       if (LifeCycle.cycles.load.current > 0) {
         this.pageInit(() => {})
@@ -41,6 +42,7 @@ class LottiePlayer {
   pageInit (done) {
     const self = this
     this.elements = document.querySelectorAll('[data-lg-lottie]')
+    this.toAutoplay = []
     this.toLoad = 0
 
     this.elements.forEach(element => {
@@ -82,6 +84,20 @@ class LottiePlayer {
   }
 
   /**
+   * Reveal
+   * @param {Function} done Done function
+   */
+  reveal (done) {
+    this.toAutoplay.forEach(element => {
+      if (element.viewportPosition === 'in') {
+        element.play()
+      }
+    })
+
+    done()
+  }
+
+  /**
    * Viewport intersect event handler
    * @param {Event} e Custom event
    */
@@ -89,7 +105,7 @@ class LottiePlayer {
     const element = e.target
 
     if (element.viewportPosition === 'in') {
-      if (element.player.isPaused && element.player.scrollPaused) {
+      if (element.player.isPaused && (element.player.scrollPaused || element.hasAttribute('data-lg-lottie-autoplay'))) {
         element.player.scrollPaused = false
         element.player.play()
       }
@@ -111,6 +127,7 @@ class LottiePlayer {
     this.toLoad++
 
     // Get options
+    const autoplay = element.hasAttribute('data-lg-lottie-autoplay')
     const scroll = element.hasAttribute('data-lg-lottie-scroll')
     const loop = element.hasAttribute('data-lg-lottie-loop')
     const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame')) ?? 0
@@ -127,9 +144,11 @@ class LottiePlayer {
     element.classList.add('lg-lottie')
     element.setAttribute('data-lg-lottie-state', 'is-paused')
 
-    if (scroll) {
-      ScrollObserver.add(element)
+    if (autoplay) {
+      this.toAutoplay.push(element)
+    }
 
+    if (scroll) {
       element.addEventListener('scrollprogress', this.onScrollProgress)
     } else {
       if (loop && reverse) {
@@ -182,11 +201,6 @@ class LottiePlayer {
       element.classList.add('is-loaded')
 
       self.playerLoaded()
-
-      // Autoplay
-      if (element.hasAttribute('data-lg-lottie-autoplay')) {
-        element.player.goToAndPlay(0, true)
-      }
     }, { once: true })
   }
 

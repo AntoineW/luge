@@ -145,6 +145,9 @@ class ScrollObserver {
    */
   add (element) {
     if (!this.elements.includes(element)) {
+      this.setElementBounding(element)
+      this.checkElement(element)
+
       this.elements.push(element)
     }
   }
