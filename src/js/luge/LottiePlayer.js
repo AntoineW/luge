@@ -9,9 +9,13 @@ class LottiePlayer {
   constructor () {
     this.elements = []
 
+    this.doneLoad = null
+
     // Listeners
     this.onViewportIntersect = this.onViewportIntersect.bind(this)
     this.onScrollProgress = this.onScrollProgress.bind(this)
+
+    LifeCycle.add('pageLoad', this.pageLoad.bind(this))
 
     if (document.readyState === 'complete') {
       this.addHooks()
@@ -36,6 +40,14 @@ class LottiePlayer {
   }
 
   /**
+   * Page load
+   * @param {Function} done Done function
+   */
+  pageLoad (done) {
+    this.doneLoad = done
+  }
+
+  /**
    * Initialization
    * @param {Function} done Done function
    */
@@ -44,6 +56,7 @@ class LottiePlayer {
     this.elements = document.querySelectorAll('[data-lg-lottie]')
     this.toAutoplay = []
     this.toLoad = 0
+    this.requireds = 0
 
     this.elements.forEach(element => {
       if (!element.player) {
@@ -132,6 +145,7 @@ class LottiePlayer {
     const loop = element.hasAttribute('data-lg-lottie-loop')
     const loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame')) ?? 0
     const reverse = element.hasAttribute('data-lg-lottie-reverse')
+    const required = element.hasAttribute('data-lg-lottie-required')
 
     element.player = lottie.loadAnimation({
       container: element,
@@ -146,6 +160,10 @@ class LottiePlayer {
 
     if (autoplay) {
       this.toAutoplay.push(element)
+    }
+
+    if (required) {
+      this.requireds++
     }
 
     if (scroll) {
@@ -200,15 +218,25 @@ class LottiePlayer {
     element.player.addEventListener('DOMLoaded', () => {
       element.classList.add('is-loaded')
 
-      self.playerLoaded()
+      self.playerLoaded(required)
     }, { once: true })
   }
 
   /**
    * Player loaded
    */
-  playerLoaded () {
+  playerLoaded (required = false) {
     this.toLoad--
+
+    if (required) {
+      this.requireds--
+    }
+
+    // Call doneLoad when required animations have been loaded
+    if (this.requireds === 0 && typeof this.doneLoad === 'function') {
+      this.doneLoad()
+      this.doneLoad = null
+    }
 
     // Emit resize event when all animations are loaded
     if (this.toLoad === 0) {
