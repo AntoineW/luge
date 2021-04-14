@@ -58,16 +58,20 @@ class LottiePlayer {
     this.toLoad = 0
     this.requireds = 0
 
-    this.elements.forEach(element => {
-      if (!element.player) {
-        ScrollObserver.add(element)
+    if (this.elements.length > 0) {
+      this.elements.forEach(element => {
+        if (!element.player) {
+          ScrollObserver.add(element)
 
-        self.initPlayer(element)
+          self.initPlayer(element)
 
-        element.addEventListener('revealin', self.play)
-        element.addEventListener('viewportintersect', self.onViewportIntersect)
-      }
-    })
+          element.addEventListener('revealin', self.play)
+          element.addEventListener('viewportintersect', self.onViewportIntersect)
+        }
+      })
+    } else {
+      this.doneLoad()
+    }
 
     done()
   }
