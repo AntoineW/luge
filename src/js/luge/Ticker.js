@@ -8,6 +8,10 @@ class Ticker {
     this.callbacks = []
 
     if (!Luge.settings.externalTicker) {
+      this.fps = 60
+      this.fpsInterval = 1000 / this.fps
+      this.lastTickTime = null
+
       requestAnimationFrame(this.tick.bind(this))
     }
   }
@@ -49,10 +53,16 @@ class Ticker {
   /**
    * Call tick functions
    */
-  tick () {
-    this.callbacks.forEach(object => {
-      object.cb.apply(object.context)
-    })
+  tick (nowTime) {
+    const elapsedTime = nowTime - this.lastTickTime
+
+    if (elapsedTime > this.fpsInterval) {
+      this.callbacks.forEach(object => {
+        object.cb.apply(object.context)
+      })
+
+      this.lastTickTime = nowTime - (elapsedTime % this.fpsInterval)
+    }
 
     if (!Luge.settings.externalTicker) {
       requestAnimationFrame(this.tick.bind(this))
