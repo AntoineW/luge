@@ -91,12 +91,12 @@ class Reveal {
 
       if (reveal.stagger) {
         Array.from(element.children).forEach(child => {
-          const revealName = child.getAttribute('data-lg-reveal')
+          const childRevealName = child.getAttribute('data-lg-reveal')
 
           child.classList.add('lg-reveal', 'is-out')
 
-          if (revealName) {
-            child.classList.add('lg-reveal--' + revealName)
+          if (childRevealName || revealName) {
+            child.classList.add('lg-reveal--' + (childRevealName ?? revealName))
           }
 
           child.setAttribute('data-lg-reveal-child', '')

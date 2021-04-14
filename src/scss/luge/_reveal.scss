@@ -1,5 +1,6 @@
 /* Reveal */
-[data-lg-reveal] {
+[data-lg-reveal],
+.lg-reveal {
   opacity: 0;
   will-change: opacity, transform;
 
