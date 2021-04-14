@@ -241,8 +241,6 @@ class Transition {
 
       // Set title
       document.querySelector('head title').innerText = html.querySelector('head title').innerText
-
-      Emitter.emit('pageTransition', html)
     }
 
     // Reset scroll
@@ -253,6 +251,8 @@ class Transition {
     })
     window.scrollTop = 0
     window.smoothScrollTop = 0
+
+    Emitter.emit('pageTransition', html)
 
     done()
   }
