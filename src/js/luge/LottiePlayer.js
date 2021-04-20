@@ -44,7 +44,11 @@ class LottiePlayer {
    * @param {Function} done Done function
    */
   pageLoad (done) {
-    this.doneLoad = done
+    if (this.elements.length > 0) {
+      this.doneLoad = done
+    } else {
+      done()
+    }
   }
 
   /**
@@ -58,20 +62,16 @@ class LottiePlayer {
     this.toLoad = 0
     this.requireds = 0
 
-    if (this.elements.length > 0) {
-      this.elements.forEach(element => {
-        if (!element.player) {
-          ScrollObserver.add(element)
+    this.elements.forEach(element => {
+      if (!element.player) {
+        ScrollObserver.add(element)
 
-          self.initPlayer(element)
+        self.initPlayer(element)
 
-          element.addEventListener('revealin', self.play)
-          element.addEventListener('viewportintersect', self.onViewportIntersect)
-        }
-      })
-    } else {
-      this.doneLoad()
-    }
+        element.addEventListener('revealin', self.play)
+        element.addEventListener('viewportintersect', self.onViewportIntersect)
+      }
+    })
 
     done()
   }
