@@ -36,7 +36,7 @@ module.exports = {
           options: {
             presets: [
               ['@babel/preset-env', {
-                targets: '> 1%, not dead, not ie <= 11',
+                targets: '> 1%, not dead',
                 corejs: 3,
                 useBuiltIns: 'usage'
               }]
