@@ -115,7 +115,7 @@ class ScrollObserver {
 
     if (progress <= 0) {
       position = 'under'
-    } else if (progress >= 1) {
+    } else if (progress >= 1 && element.scrollEnd < window.maxScrollTop) {
       position = 'above'
     } else {
       position = 'in'
