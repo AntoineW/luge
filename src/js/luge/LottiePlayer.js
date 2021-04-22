@@ -168,6 +168,7 @@ class LottiePlayer {
     lottiePlayer.required = element.hasAttribute('data-lg-lottie-required')
     lottiePlayer.force = element.hasAttribute('data-lg-lottie-force')
     lottiePlayer.renderer = element.getAttribute('data-lg-lottie-renderer') ?? Luge.settings.lottieRenderer
+    lottiePlayer.noSubFrame = element.hasAttribute('data-lg-lottie-nosubframe') ?? Luge.settings.lottieNoSubFrame
 
     element.player = lottie.loadAnimation({
       container: element,
@@ -176,6 +177,10 @@ class LottiePlayer {
       autoplay: false,
       path: lottiePlayer.path
     })
+
+    if (lottiePlayer.noSubFrame) {
+      element.player.setSubframe(false)
+    }
 
     element.classList.add('lg-lottie')
     element.setAttribute('data-lg-lottie-state', 'is-paused')
