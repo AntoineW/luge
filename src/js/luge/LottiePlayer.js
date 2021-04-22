@@ -1,5 +1,6 @@
 import LifeCycle from 'Luge/LifeCycle'
 import Emitter from 'Luge/Emitter'
+import Luge from 'Luge/Core'
 import ScrollObserver from 'Luge/ScrollObserver'
 
 class LottiePlayer {
@@ -166,10 +167,11 @@ class LottiePlayer {
     lottiePlayer.reverse = element.hasAttribute('data-lg-lottie-reverse')
     lottiePlayer.required = element.hasAttribute('data-lg-lottie-required')
     lottiePlayer.force = element.hasAttribute('data-lg-lottie-force')
+    lottiePlayer.renderer = element.getAttribute('data-lg-lottie-renderer') ?? Luge.settings.lottieRenderer
 
     element.player = lottie.loadAnimation({
       container: element,
-      renderer: 'svg',
+      renderer: lottiePlayer.renderer,
       loop: (lottiePlayer.loop && !lottiePlayer.reverse),
       autoplay: false,
       path: lottiePlayer.path
