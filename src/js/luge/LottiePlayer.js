@@ -44,7 +44,17 @@ class LottiePlayer {
    * @param {Function} done Done function
    */
   pageLoad (done) {
+    let waitLoad = false
+
     if (this.elements.length > 0) {
+      this.elements.forEach(element => {
+        if (!element.player) {
+          waitLoad = true
+        }
+      })
+    }
+
+    if (waitLoad) {
       this.doneLoad = done
     } else {
       done()
