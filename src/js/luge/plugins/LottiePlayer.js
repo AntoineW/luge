@@ -1,13 +1,31 @@
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
 import Luge from 'Core/Core'
+import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
 
-class LottiePlayer {
+class LottiePlayer extends Plugin {
   /**
    * Constructor
    */
   constructor () {
+    super()
+
+    // Plugin properties
+    this.pluginSlug = 'lottie'
+    this.pluginAttributes = {
+      root: String,
+      autoplay: Boolean,
+      scroll: Boolean,
+      loop: Boolean,
+      loopFrame: [Number, 0],
+      reverse: Boolean,
+      required: Boolean,
+      force: Boolean,
+      renderer: [String, Luge.settings.lottieRenderer],
+      nosubframe: [Boolean, Luge.settings.lottieNoSubFrame]
+    }
+
     this.elements = []
 
     this.doneLoad = null
@@ -132,7 +150,7 @@ class LottiePlayer {
   onViewportIntersect (e) {
     const element = e.target
 
-    if (!element.lottiePlayer.force) {
+    if (!element.luge.lottie.force) {
       if (element.viewportPosition === 'in') {
         if (element.player.isPaused && (element.player.scrollPaused || element.hasAttribute('data-lg-lottie-autoplay'))) {
           element.player.scrollPaused = false
@@ -157,46 +175,35 @@ class LottiePlayer {
     this.toLoad++
 
     // Get options
-    const lottiePlayer = {}
-
-    lottiePlayer.path = element.getAttribute('data-lg-lottie')
-    lottiePlayer.autoplay = element.hasAttribute('data-lg-lottie-autoplay')
-    lottiePlayer.scroll = element.hasAttribute('data-lg-lottie-scroll')
-    lottiePlayer.loop = element.hasAttribute('data-lg-lottie-loop')
-    lottiePlayer.loopFrame = Number(element.getAttribute('data-lg-lottie-loop-frame')) ?? 0
-    lottiePlayer.reverse = element.hasAttribute('data-lg-lottie-reverse')
-    lottiePlayer.required = element.hasAttribute('data-lg-lottie-required')
-    lottiePlayer.force = element.hasAttribute('data-lg-lottie-force')
-    lottiePlayer.renderer = element.getAttribute('data-lg-lottie-renderer') ?? Luge.settings.lottieRenderer
-    lottiePlayer.noSubFrame = element.hasAttribute('data-lg-lottie-nosubframe') ?? Luge.settings.lottieNoSubFrame
+    const attributes = this.getAttributes(element)
 
     element.player = lottie.loadAnimation({
       container: element,
-      renderer: lottiePlayer.renderer,
-      loop: (lottiePlayer.loop && !lottiePlayer.reverse),
+      renderer: attributes.renderer,
+      loop: (attributes.loop && !attributes.reverse),
       autoplay: false,
-      path: lottiePlayer.path
+      path: attributes.root
     })
 
-    if (lottiePlayer.noSubFrame) {
+    if (attributes.noSubFrame) {
       element.player.setSubframe(false)
     }
 
     element.classList.add('lg-lottie')
     element.setAttribute('data-lg-lottie-state', 'is-paused')
 
-    if (lottiePlayer.autoplay) {
+    if (attributes.autoplay) {
       this.toAutoplay.push(element)
     }
 
-    if (lottiePlayer.required) {
+    if (attributes.required) {
       this.requireds++
     }
 
-    if (lottiePlayer.scroll) {
+    if (attributes.scroll) {
       element.addEventListener('scrollprogress', this.onScrollProgress)
     } else {
-      if (lottiePlayer.loop && lottiePlayer.reverse) {
+      if (attributes.loop && attributes.reverse) {
         element.player.addEventListener('enterFrame', function () {
           if (element.player.totalFrames > 0) {
             const currentFrame = Math.round(element.player.currentFrame)
@@ -205,27 +212,27 @@ class LottiePlayer {
               if (currentFrame === element.player.totalFrames - 1) {
                 element.player.pause()
 
-                if (lottiePlayer.reverse) {
+                if (attributes.reverse) {
                   setTimeout(() => {
                     element.player.setDirection(-1)
                     element.player.goToAndPlay(element.player.totalFrames, true)
 
                     element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--backward')
                   }, 0)
-                } else if (lottiePlayer.loop) {
+                } else if (attributes.loop) {
                   setTimeout(() => {
-                    element.player.goToAndPlay(lottiePlayer.loopFrame, true)
+                    element.player.goToAndPlay(attributes.loopFrame, true)
                   }, 0)
                 }
               }
             } else {
-              if (currentFrame === lottiePlayer.loopFrame) {
+              if (currentFrame === attributes.loopFrame) {
                 element.player.pause()
 
-                if (lottiePlayer.loop) {
+                if (attributes.loop) {
                   setTimeout(() => {
                     element.player.setDirection(1)
-                    element.player.goToAndPlay(lottiePlayer.loopFrame, true)
+                    element.player.goToAndPlay(attributes.loopFrame, true)
 
                     element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
                   }, 0)
@@ -245,10 +252,8 @@ class LottiePlayer {
     element.player.addEventListener('DOMLoaded', () => {
       element.classList.add('is-loaded')
 
-      self.playerLoaded(lottiePlayer.required)
+      self.playerLoaded(attributes.required)
     }, { once: true })
-
-    element.lottiePlayer = lottiePlayer
   }
 
   /**

@@ -1,13 +1,25 @@
 import LifeCycle from 'Core/LifeCycle'
 import Luge from 'Core/Core'
+import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
 
-class ScrollAnimation {
+class ScrollAnimation extends Plugin {
   /**
    * Constructor
    */
   constructor () {
+    super()
+
+    // Plugin properties
+    this.pluginSlug = 'scroll'
+    this.pluginAttributes = {
+      root: String,
+      yoyo: Boolean,
+      inertia: [String, Luge.settings.scrollInertia],
+      animate: String
+    }
+
     this.elements = []
 
     // Properties
@@ -52,6 +64,25 @@ class ScrollAnimation {
   }
 
   /**
+   * Get attributes
+   */
+  getAttributes (element) {
+    const data = super.getAttributes(element)
+
+    if (data.inertia) {
+      const randInertia = data.inertia.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
+
+      if (randInertia) {
+        data.inertia = Number(randInertia[1]) + ((Number(randInertia[2]) - Number(randInertia[1])) * Math.random())
+      } else {
+        data.inertia = Number(data.inertia)
+      }
+    }
+
+    return data
+  }
+
+  /**
    * Initialization
    * @param {Function} done Done function
    */
@@ -72,6 +103,8 @@ class ScrollAnimation {
    */
   addElement (element) {
     if (!this.elements.includes(element)) {
+      const attributes = this.getAttributes(element)
+
       ScrollObserver.add(element)
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
@@ -83,28 +116,18 @@ class ScrollAnimation {
       scrollAnimation.smoothProgress = (element.scrollProgress !== undefined ? element.scrollProgress : 0)
 
       // Yoyo
-      scrollAnimation.yoyo = element.hasAttribute('data-lg-scroll-yoyo')
+      scrollAnimation.yoyo = attributes.yoyo
 
       // Inertia
-      scrollAnimation.inertia = element.hasAttribute('data-lg-scroll-inertia') ? element.getAttribute('data-lg-scroll-inertia') : Luge.settings.scrollInertia
-
-      if (typeof scrollAnimation.inertia === 'string') {
-        const randInertia = scrollAnimation.inertia.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
-
-        if (randInertia) {
-          scrollAnimation.inertia = Number(randInertia[1]) + ((Number(randInertia[2]) - Number(randInertia[1])) * Math.random())
-        } else {
-          scrollAnimation.inertia = Number(scrollAnimation.inertia)
-        }
-      }
+      scrollAnimation.inertia = attributes.inertia
 
       // Get properties
       let properties = false
 
-      if (element.hasAttribute('data-lg-scroll-animate')) {
-        properties = JSON.parse(element.getAttribute('data-lg-scroll-animate').replace(/'/g, '"'))
-      } else if (this.presets[element.getAttribute('data-lg-scroll')]) {
-        properties = this.presets[element.getAttribute('data-lg-scroll')]
+      if (attributes.animate !== undefined) {
+        properties = JSON.parse(attributes.animate.replace(/'/g, '"'))
+      } else if (this.presets[attributes.root]) {
+        properties = this.presets[attributes.root]
       }
 
       if (properties) {
@@ -146,7 +169,7 @@ class ScrollAnimation {
         scrollAnimation.properties = declarations
       }
 
-      element.scrollAnimation = scrollAnimation
+      element.luge.scroll.animation = scrollAnimation
 
       this.elements.push(element)
     }
@@ -185,7 +208,7 @@ class ScrollAnimation {
   onScrollProgress (e) {
     const element = e.target
 
-    element.scrollAnimation.atDest = false
+    element.luge.scroll.animation.atDest = false
   }
 
   /**
@@ -194,23 +217,23 @@ class ScrollAnimation {
   tick () {
     for (const element of this.elements) {
       // Early break if at dest
-      if (element.scrollAnimation.atDest) {
+      if (element.luge.scroll.animation.atDest) {
         continue
       }
 
       // Yoyo
       let progress = element.scrollProgress
-      if (element.scrollAnimation.yoyo) {
+      if (element.luge.scroll.yoyo) {
         progress = 1 - Math.abs(1 - progress * 2)
       }
 
-      element.scrollAnimation.smoothProgress += (progress - element.scrollAnimation.smoothProgress) * element.scrollAnimation.inertia
+      element.luge.scroll.animation.smoothProgress += (progress - element.luge.scroll.animation.smoothProgress) * element.luge.scroll.inertia
 
-      if (element.scrollAnimation.properties) {
+      if (element.luge.scroll.animation.properties) {
         const declarations = {}
 
-        for (const [key, property] of Object.entries(element.scrollAnimation.properties)) {
-          property.current = property.from + (property.to - property.from) * element.scrollAnimation.smoothProgress
+        for (const [key, property] of Object.entries(element.luge.scroll.animation.properties)) {
+          property.current = property.from + (property.to - property.from) * element.luge.scroll.animation.smoothProgress
 
           if (['x', 'y', 'z'].includes(key)) {
             if (declarations.translate3d || (declarations.translate3d = {})) {
@@ -262,16 +285,16 @@ class ScrollAnimation {
 
         element.style.setProperty('will-change', willChange.join(', '))
       } else {
-        const diff = Math.round((element.scrollProgress - element.scrollAnimation.smoothProgress) * 1000) / 1000
+        const diff = Math.round((element.scrollProgress - element.luge.scroll.animation.smoothProgress) * 1000) / 1000
 
-        element.style.setProperty('--progress', element.scrollAnimation.smoothProgress)
+        element.style.setProperty('--progress', element.luge.scroll.animation.smoothProgress)
         element.style.setProperty('--abs-diff', Math.abs(diff))
         element.style.setProperty('--diff', diff)
       }
 
       // Block future style update if element is at destination
-      if (Math.abs(progress - element.scrollAnimation.smoothProgress) < 0.0001) {
-        element.scrollAnimation.atDest = true
+      if (Math.abs(progress - element.luge.scroll.animation.smoothProgress) < 0.0001) {
+        element.luge.scroll.animation.atDest = true
       }
     }
   }

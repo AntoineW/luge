@@ -2,13 +2,25 @@ import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
 import Helpers from 'Core/Helpers'
 import Luge from 'Core/Core'
+import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
 
-class Reveal {
+class Reveal extends Plugin {
   /**
    * Constructor
    */
   constructor () {
+    super()
+
+    // Plugin properties
+    this.pluginSlug = 'reveal'
+    this.pluginAttributes = {
+      root: String,
+      stagger: String,
+      multiple: Boolean,
+      delay: Number
+    }
+
     this.elements = []
     this.toRevealIn = []
     this.toRevealOut = []
@@ -27,6 +39,21 @@ class Reveal {
     LifeCycle.add('reveal', this.reveal.bind(this))
 
     this.bindEvents()
+  }
+
+  /**
+   * Get attributes
+   */
+  getAttributes (element) {
+    const data = super.getAttributes(element)
+
+    if (data.stagger !== undefined && data.stagger === '') {
+      data.stagger = Luge.settings.revealStagger
+    } else if (data.stagger === undefined) {
+      data.stagger = false
+    }
+
+    return data
   }
 
   /**
@@ -58,8 +85,10 @@ class Reveal {
    */
   addElement (element) {
     if (!this.elements.includes(element)) {
+      const attributes = this.getAttributes(element)
+
       // Don't add child elements
-      if (!element.hasAttribute('data-lg-reveal-stagger') && element.closest('[data-lg-reveal-stagger]') !== null) {
+      if (!attributes.stagger && element.closest('[data-lg-reveal-stagger]') !== null) {
         return
       }
 
@@ -68,30 +97,16 @@ class Reveal {
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
       const reveal = {}
-      const revealName = element.getAttribute('data-lg-reveal')
+      const revealName = attributes.root
 
       reveal.name = Helpers.toCamelCase(revealName)
-      reveal.multiple = element.hasAttribute('data-lg-reveal-multiple')
-
-      if (element.hasAttribute('data-lg-reveal-stagger')) {
-        if (String(element.getAttribute('data-lg-reveal-stagger')) !== '') {
-          reveal.stagger = element.getAttribute('data-lg-reveal-stagger')
-        } else {
-          reveal.stagger = Luge.settings.revealStagger
-        }
-      } else {
-        reveal.stagger = false
-      }
-
-      if (element.hasAttribute('data-lg-reveal-delay')) {
-        reveal.delay = Number(element.getAttribute('data-lg-reveal-delay')) * 1000
-      } else {
-        reveal.delay = 0
-      }
+      reveal.multiple = attributes.multiple
+      reveal.stagger = attributes.stagger
+      reveal.delay = attributes.delay * 1000
 
       if (reveal.stagger) {
         Array.from(element.children).forEach(child => {
-          const childRevealName = child.getAttribute('data-lg-reveal')
+          const childRevealName = child.dataset.lgReveal
 
           child.classList.add('lg-reveal', 'is-out')
 
@@ -99,7 +114,7 @@ class Reveal {
             child.classList.add('lg-reveal--' + (childRevealName ?? revealName))
           }
 
-          child.setAttribute('data-lg-reveal-child', '')
+          child.dataset.lgRevealChild = ''
         })
       } else {
         element.classList.add('lg-reveal', 'is-out')
@@ -151,7 +166,7 @@ class Reveal {
     const element = e.target
     const threshold = Luge.settings.revealThreshold
 
-    if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.isRevealed) {
+    if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed) {
       if (this.toRevealOut.includes(element)) {
         this.toRevealOut.splice(this.toRevealOut.indexOf(element), 1)
       }
@@ -159,7 +174,7 @@ class Reveal {
       if (!this.toRevealIn.includes(element)) {
         this.toRevealIn.push(element)
       }
-    } else if ((element.scrollProgress < threshold || element.scrollProgress > (1 - threshold)) && element.isRevealed) {
+    } else if ((element.scrollProgress < threshold || element.scrollProgress > (1 - threshold)) && element.luge.reveal.isRevealed) {
       if (this.toRevealIn.includes(element)) {
         this.toRevealIn.splice(this.toRevealIn.indexOf(element), 1)
       }
@@ -215,13 +230,13 @@ class Reveal {
 
       this.toRevealIn.forEach(element => {
         const delay = true
-        const revealName = element.getAttribute('data-lg-reveal')
+        const revealName = element.luge.reveal.root
 
         revealInTimeout += element.reveal.delay
 
         setTimeout(function () {
           element.dispatchEvent(new CustomEvent('revealin'))
-          element.isRevealed = true
+          element.luge.reveal.isRevealed = true
 
           if (typeof self.reveals.in[element.reveal.name] === 'function') {
             self.reveals.in[element.reveal.name](element)
@@ -229,13 +244,10 @@ class Reveal {
             element.onrevealin()
           }
 
-          element.setAttribute('data-lg-reveal-state', 'is-in')
-
           if (element.reveal.stagger) {
             Array.from(element.children).forEach((child, index) => {
               setTimeout(() => {
                 self.setRevealClasses(child, revealName, 'is-in')
-                child.setAttribute('data-lg-reveal-state', 'is-in')
               }, index * element.reveal.stagger * 1000)
             })
           } else {
@@ -247,17 +259,17 @@ class Reveal {
           revealInTimeout += Luge.settings.revealStagger * 1000
         }
 
-        if (!element.hasAttribute('data-lg-reveal-multiple')) {
+        if (!element.luge.reveal.multiple) {
           self.removeElement(element)
         }
       })
 
       this.toRevealOut.forEach(element => {
-        const revealName = element.getAttribute('data-lg-reveal')
+        const revealName = element.luge.reveal.root
 
-        if (element.hasAttribute('data-lg-reveal-state')) {
+        if (element.luge.reveal.isRevealed !== undefined) {
           element.dispatchEvent(new CustomEvent('revealout'))
-          element.isRevealed = false
+          element.luge.reveal.isRevealed = false
 
           if (typeof self.reveals.out[element.reveal.name] === 'function') {
             self.reveals.out[element.reveal.name](element)
@@ -273,13 +285,10 @@ class Reveal {
           state = 'is-out is-out-bottom'
         }
 
-        element.setAttribute('data-lg-reveal-state', state)
-
         if (element.reveal.stagger) {
           Array.from(element.children).forEach((child, index) => {
             setTimeout(() => {
               self.setRevealClasses(child, revealName, state)
-              child.setAttribute('data-lg-reveal-state', state)
             }, index * element.reveal.stagger * 1000)
           })
         } else {

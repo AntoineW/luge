@@ -7,6 +7,7 @@ import Luge from 'Core/Core'
 import Emitter from 'Core/Emitter'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
+import Transition from 'Core/Transition'
 
 import LottiePlayer from 'Plugins/LottiePlayer'
 import Parallax from 'Plugins/Parallax'
@@ -15,7 +16,6 @@ import Reveal from 'Plugins/Reveal'
 import ScrollAnimation from 'Plugins/ScrollAnimation'
 import SmoothScroll from 'Plugins/SmoothScroll'
 import Sticky from 'Plugins/Sticky'
-import Transition from 'Plugins/Transition'
 
 // Public methods
 window.luge = {

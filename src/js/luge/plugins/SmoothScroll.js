@@ -1,13 +1,20 @@
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
 import Luge from 'Core/Core'
+import Plugin from 'Core/Plugin'
 import Ticker from 'Core/Ticker'
 
-class SmoothScroll {
+class SmoothScroll extends Plugin {
   /**
    * Constructor
    */
   constructor () {
+    super()
+
+    // Plugin properties
+    this.pluginSlug = 'smooth'
+    this.pluginAttributes = {}
+
     // Disable smooth scroll on light browsers
     if (window.browser.light) {
       return

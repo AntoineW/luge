@@ -1,11 +1,20 @@
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
+import Plugin from 'Core/Plugin'
 
-class Sticky {
+class Sticky extends Plugin {
   /**
    * Constructor
    */
   constructor () {
+    super()
+
+    // Plugin properties
+    this.pluginSlug = 'sticky'
+    this.pluginAttributes = {
+      root: String
+    }
+
     // Disable sticky on light browsers
     if (window.browser.light) {
       return
@@ -36,9 +45,11 @@ class Sticky {
 
     if (elements.length > 0) {
       elements.forEach(element => {
+        const attributes = this.getAttributes(element)
+
         this.elements.push({
           el: element,
-          position: element.getAttribute('data-lg-sticky')
+          position: attributes.root
         })
       })
     }

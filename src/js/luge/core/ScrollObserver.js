@@ -111,7 +111,11 @@ class ScrollObserver {
     const scrollTop = window.unifiedScrollTop
 
     let position = ''
-    const progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
+    let progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
+
+    if (isNaN(progress)) {
+      progress = 0
+    }
 
     if (progress <= 0) {
       position = 'under'
