@@ -6,6 +6,7 @@ class Ticker {
    */
   constructor () {
     this.callbacks = []
+    this.onceCallbacks = []
 
     if (!Luge.settings.externalTicker) {
       this.fps = 60
@@ -19,6 +20,7 @@ class Ticker {
   /**
    * Add a tick function
    * @param {Function} callback Tick function
+   * @param {Object} context Context
    */
   add (callback, context) {
     let exists = false
@@ -51,14 +53,33 @@ class Ticker {
   }
 
   /**
+   * Execute function at next tick
+   * @param {Function} callback Function to execute
+   * @param {Object} context Context
+   */
+  nextTick (callback, context) {
+    this.onceCallbacks.push({
+      cb: callback,
+      context: context
+    })
+  }
+
+  /**
    * Call tick functions
    */
   tick (nowTime) {
+    const self = this
     const elapsedTime = nowTime - this.lastTickTime
 
     if (elapsedTime > this.fpsInterval) {
       this.callbacks.forEach(object => {
-        object.cb.apply(object.context)
+        object.cb.apply(object.context, [nowTime])
+      })
+
+      this.onceCallbacks.forEach((object, index) => {
+        object.cb.apply(object.context, [nowTime])
+
+        delete self.onceCallbacks[index]
       })
 
       this.lastTickTime = nowTime - (elapsedTime % this.fpsInterval)
