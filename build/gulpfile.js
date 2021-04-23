@@ -4,9 +4,10 @@ const sass = require('gulp-sass');
 const sassGlob = require('gulp-sass-glob');
 const autoprefixer = require('gulp-autoprefixer');
 const browserSync = require('browser-sync');
+const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 
-const { webpack } = require('./config.json')
+const { serverAddress } = require('./config.json')
 
 sass.compiler = require('node-sass');
 
@@ -40,7 +41,8 @@ function stylesDemo() {
  */
 function scriptsDev() {
   return src('../src/js/luge.js')
-    .pipe(webpackStream( require('./webpack.dev.js') ))
+    .pipe(webpackStream( require('./webpack.dev.js'), webpack ))
+    .pipe(dest('../dist/js/'))
     .pipe(browserSync.reload({
       stream: true
     }));
@@ -48,7 +50,7 @@ function scriptsDev() {
 
 function scriptsProd() {
   return src('../src/js/luge.js')
-    .pipe(webpackStream( require('./webpack.prod.js') ))
+    .pipe(webpackStream( require('./webpack.prod.js'), webpack ))
     .pipe(dest('../dist/js/'));
 }
 
@@ -58,7 +60,7 @@ function scriptsProd() {
 function serve(cb) {
   // Browser sync
   browserSync({
-    proxy: webpack.serverAddress
+    proxy: serverAddress
   });
 
   // Watch .scss files
