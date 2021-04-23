@@ -1,5 +1,5 @@
-import LifeCycle from 'Luge/LifeCycle'
-import Luge from 'Luge/Core'
+import LifeCycle from 'Core/LifeCycle'
+import Luge from 'Core/Core'
 
 class PreLoader {
   /**

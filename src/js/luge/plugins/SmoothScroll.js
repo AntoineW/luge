@@ -1,7 +1,7 @@
-import LifeCycle from 'Luge/LifeCycle'
-import Emitter from 'Luge/Emitter'
-import Luge from 'Luge/Core'
-import Ticker from 'Luge/Ticker'
+import LifeCycle from 'Core/LifeCycle'
+import Emitter from 'Core/Emitter'
+import Luge from 'Core/Core'
+import Ticker from 'Core/Ticker'
 
 class SmoothScroll {
   /**

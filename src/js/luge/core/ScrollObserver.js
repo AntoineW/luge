@@ -1,5 +1,5 @@
-import Emitter from 'Luge/Emitter'
-import LifeCycle from 'Luge/LifeCycle'
+import Emitter from 'Core/Emitter'
+import LifeCycle from 'Core/LifeCycle'
 
 class ScrollObserver {
   constructor () {

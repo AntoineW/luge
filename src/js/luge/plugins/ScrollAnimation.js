@@ -1,7 +1,7 @@
-import LifeCycle from 'Luge/LifeCycle'
-import Luge from 'Luge/Core'
-import ScrollObserver from 'Luge/ScrollObserver'
-import Ticker from 'Luge/Ticker'
+import LifeCycle from 'Core/LifeCycle'
+import Luge from 'Core/Core'
+import ScrollObserver from 'Core/ScrollObserver'
+import Ticker from 'Core/Ticker'
 
 class ScrollAnimation {
   /**

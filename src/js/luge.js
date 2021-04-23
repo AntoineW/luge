@@ -1,21 +1,21 @@
 // Imports
-import LifeCycle from 'Luge/LifeCycle'
+import LifeCycle from 'Core/LifeCycle'
 
-import Polyfill from 'Luge/Polyfill'
+import Polyfill from 'Core/Polyfill'
 
-import Luge from 'Luge/Core'
+import Luge from 'Core/Core'
+import Emitter from 'Core/Emitter'
+import ScrollObserver from 'Core/ScrollObserver'
+import Ticker from 'Core/Ticker'
 
-import Emitter from 'Luge/Emitter'
-import LottiePlayer from 'Luge/LottiePlayer'
-import Parallax from 'Luge/Parallax'
-import Preloader from 'Luge/Preloader'
-import Reveal from 'Luge/Reveal'
-import ScrollAnimation from 'Luge/ScrollAnimation'
-import ScrollObserver from 'Luge/ScrollObserver'
-import SmoothScroll from 'Luge/SmoothScroll'
-import Sticky from 'Luge/Sticky'
-import Ticker from 'Luge/Ticker'
-import Transition from 'Luge/Transition'
+import LottiePlayer from 'Plugins/LottiePlayer'
+import Parallax from 'Plugins/Parallax'
+import Preloader from 'Plugins/Preloader'
+import Reveal from 'Plugins/Reveal'
+import ScrollAnimation from 'Plugins/ScrollAnimation'
+import SmoothScroll from 'Plugins/SmoothScroll'
+import Sticky from 'Plugins/Sticky'
+import Transition from 'Plugins/Transition'
 
 // Public methods
 window.luge = {
@@ -51,3 +51,10 @@ window.luge = {
 
 // Site init on DOM ready
 document.addEventListener('DOMContentLoaded', LifeCycle.cycle.bind(LifeCycle, 'load'), { once: true })
+
+// Output version
+const consoleBaseStyle = 'background-color: #00FFE5; color: black; font: 400 1em monospace; padding: 0.5em 0; '
+const consoleBoldStyle = consoleBaseStyle + 'font-weight: bold; '
+const consoleWhiteStyle = 'color: black; font: 400 1em monospace; padding: 0.5em 0; '
+
+console.log('%c powered by %cluge%c / ' + VERSION + ' %c > https://luge.cool ', consoleBaseStyle, consoleBoldStyle, consoleBaseStyle, consoleWhiteStyle)

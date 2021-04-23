@@ -1,6 +1,6 @@
-import LifeCycle from 'Luge/LifeCycle'
-import Emitter from 'Luge/Emitter'
-import ScrollObserver from 'Luge/ScrollObserver'
+import LifeCycle from 'Core/LifeCycle'
+import Emitter from 'Core/Emitter'
+import ScrollObserver from 'Core/ScrollObserver'
 
 class Parallax {
   /**

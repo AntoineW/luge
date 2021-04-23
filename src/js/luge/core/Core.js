@@ -1,6 +1,6 @@
 import Bowser from 'bowser'
-import LifeCycle from 'Luge/LifeCycle'
-import Emitter from 'Luge/Emitter'
+import LifeCycle from 'Core/LifeCycle'
+import Emitter from 'Core/Emitter'
 
 class Luge {
   /**

@@ -1,8 +1,8 @@
-import LifeCycle from 'Luge/LifeCycle'
-import Emitter from 'Luge/Emitter'
-import Helpers from 'Luge/Helpers'
-import Luge from 'Luge/Core'
-import ScrollObserver from 'Luge/ScrollObserver'
+import LifeCycle from 'Core/LifeCycle'
+import Emitter from 'Core/Emitter'
+import Helpers from 'Core/Helpers'
+import Luge from 'Core/Core'
+import ScrollObserver from 'Core/ScrollObserver'
 
 class Reveal {
   /**
