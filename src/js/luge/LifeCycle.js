@@ -128,7 +128,7 @@ class LifeCycle {
       if (next) {
         // Proceed to next event
         this.cycles[cycleName].current++
-        this.proceed(cycleName)
+        requestAnimationFrame(this.proceed.bind(this, cycleName))
       } else {
         // Wait for all events to be done
       }
