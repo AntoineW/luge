@@ -13,6 +13,7 @@ module.exports = {
     'space-before-function-paren': 'off'
   },
   globals: {
-    'lottie': true
+    'lottie': true,
+    'VERSION': true
   }
 }

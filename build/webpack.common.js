@@ -51,7 +51,9 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new ESLintPlugin(),
+    new ESLintPlugin({
+      context: '../'
+    }),
     // gitRevisionPlugin,
     new webpack.DefinePlugin({
       'VERSION': JSON.stringify(gitRevisionPlugin.branch())
