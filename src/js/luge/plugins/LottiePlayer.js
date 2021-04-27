@@ -175,7 +175,7 @@ class LottiePlayer extends Plugin {
       path: attributes.root
     })
 
-    if (attributes.noSubFrame) {
+    if (attributes.nosubframe) {
       element.player.setSubframe(false)
     }
 
