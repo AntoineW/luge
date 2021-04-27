@@ -1,4 +1,5 @@
 import Helpers from 'Core/Helpers'
+import LifeCycle from 'Core/LifeCycle'
 
 export default class Plugin {
   /**
@@ -7,13 +8,30 @@ export default class Plugin {
   constructor () {
     // Plugin properties
     this.pluginSlug = ''
+
+    LifeCycle.add('siteInit', this.initPlugin.bind(this), 5)
+  }
+
+  /**
+   * Init plugin
+   */
+  initPlugin (done) {
+    this.setAttributes()
+
+    done()
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
     this.pluginAttributes = {}
   }
 
   /**
    * Get attributes
    */
-   getAttributes (element) {
+  getAttributes (element) {
     const attributes = this.pluginAttributes
     const data = {}
 
@@ -23,6 +41,7 @@ export default class Plugin {
       if (name !== 'root') {
         attributeKey += '-' + name
       }
+
       attributeKey = Helpers.toCamelCase(attributeKey)
       const attributeValue = element.dataset[attributeKey]
 
@@ -51,8 +70,6 @@ export default class Plugin {
 
       data[name] = value
     }
-
-    // console.log(data)
 
     if (element.luge || (element.luge = {})) {
       element.luge[this.pluginSlug] = data

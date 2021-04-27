@@ -11,12 +11,6 @@ class Parallax extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'parallax'
-    this.pluginAttributes = {
-      root: String,
-      disable: String,
-      amplitude: [String, 1],
-      anchor: String
-    }
 
     // Disable parallax on light browsers
     if (window.browser.light) {
@@ -30,6 +24,18 @@ class Parallax extends Plugin {
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
+    this.pluginAttributes = {
+      root: String,
+      disable: String,
+      amplitude: [String, 1],
+      anchor: String
+    }
   }
 
   /**

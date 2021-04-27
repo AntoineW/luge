@@ -13,7 +13,6 @@ class SmoothScroll extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'smooth'
-    this.pluginAttributes = {}
 
     // Disable smooth scroll on light browsers
     if (window.browser.light) {
@@ -28,6 +27,13 @@ class SmoothScroll extends Plugin {
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
+    this.pluginAttributes = {}
   }
 
   /**

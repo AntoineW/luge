@@ -11,12 +11,6 @@ class PreLoader extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'preloader'
-    this.pluginAttributes = {
-      root: [String, ''],
-      duration: [Number, Luge.settings.preloaderDuration],
-      in: String,
-      reverse: Boolean
-    }
 
     this.intro = false
     this.playerIn = false
@@ -25,6 +19,18 @@ class PreLoader extends Plugin {
 
     LifeCycle.add('siteInit', this.siteInit.bind(this))
     LifeCycle.add('pageLoad', this.pageLoad.bind(this))
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
+    this.pluginAttributes = {
+      root: [String, ''],
+      duration: [Number, Luge.settings.preloaderDuration],
+      in: String,
+      reverse: Boolean
+    }
   }
 
   /**

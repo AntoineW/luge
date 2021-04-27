@@ -13,18 +13,6 @@ class LottiePlayer extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'lottie'
-    this.pluginAttributes = {
-      root: String,
-      autoplay: Boolean,
-      scroll: Boolean,
-      loop: Boolean,
-      loopFrame: [Number, 0],
-      reverse: Boolean,
-      required: Boolean,
-      force: Boolean,
-      renderer: [String, Luge.settings.lottieRenderer],
-      nosubframe: [Boolean, Luge.settings.lottieNoSubFrame]
-    }
 
     this.elements = []
 
@@ -39,7 +27,24 @@ class LottiePlayer extends Plugin {
       LifeCycle.add('pageLoad', this.pageLoad.bind(this))
       LifeCycle.add('pageKill', this.pageKill.bind(this))
       LifeCycle.add('reveal', this.reveal.bind(this))
+    }
+  }
 
+  /**
+   * Set plugin attributes
+   */
+  setAttributes () {
+    this.pluginAttributes = {
+      root: String,
+      autoplay: Boolean,
+      scroll: Boolean,
+      loop: Boolean,
+      loopFrame: [Number, 0],
+      reverse: Boolean,
+      required: Boolean,
+      force: Boolean,
+      renderer: [String, Luge.settings.lottieRenderer],
+      nosubframe: [Boolean, Luge.settings.lottieNoSubFrame]
     }
   }
 

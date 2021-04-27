@@ -11,9 +11,6 @@ class Sticky extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'sticky'
-    this.pluginAttributes = {
-      root: String
-    }
 
     // Disable sticky on light browsers
     if (window.browser.light) {
@@ -26,6 +23,15 @@ class Sticky extends Plugin {
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
+    this.pluginAttributes = {
+      root: String
+    }
   }
 
   /**

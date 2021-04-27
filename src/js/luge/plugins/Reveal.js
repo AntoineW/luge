@@ -14,12 +14,6 @@ class Reveal extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'reveal'
-    this.pluginAttributes = {
-      root: String,
-      stagger: String,
-      multiple: Boolean,
-      delay: Number
-    }
 
     this.elements = []
     this.toRevealIn = []
@@ -39,6 +33,20 @@ class Reveal extends Plugin {
     LifeCycle.add('reveal', this.reveal.bind(this))
 
     this.bindEvents()
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
+    super.setAttributes()
+
+    this.pluginAttributes = {
+      root: String,
+      stagger: String,
+      multiple: Boolean,
+      delay: Number
+    }
   }
 
   /**

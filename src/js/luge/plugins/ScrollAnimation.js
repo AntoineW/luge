@@ -13,12 +13,6 @@ class ScrollAnimation extends Plugin {
 
     // Plugin properties
     this.pluginSlug = 'scroll'
-    this.pluginAttributes = {
-      root: String,
-      yoyo: Boolean,
-      inertia: [String, Luge.settings.scrollInertia],
-      animate: String
-    }
 
     this.elements = []
 
@@ -61,6 +55,18 @@ class ScrollAnimation extends Plugin {
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     Ticker.add(this.tick, this)
+  }
+
+  /**
+   * Set attributes
+   */
+  setAttributes () {
+    this.pluginAttributes = {
+      root: String,
+      yoyo: Boolean,
+      inertia: [String, Luge.settings.scrollInertia],
+      animate: String
+    }
   }
 
   /**
