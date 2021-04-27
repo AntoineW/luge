@@ -34,27 +34,12 @@ class LottiePlayer extends Plugin {
     this.onViewportIntersect = this.onViewportIntersect.bind(this)
     this.onScrollProgress = this.onScrollProgress.bind(this)
 
-    LifeCycle.add('pageLoad', this.pageLoad.bind(this))
-
-    if (document.readyState === 'complete') {
-      this.addHooks()
-    } else {
-      window.addEventListener('load', this.addHooks.bind(this), { once: true })
-    }
-  }
-
-  /**
-   * Add life cycle hooks
-   */
-  addHooks () {
     if (typeof lottie === 'object') {
       LifeCycle.add('pageInit', this.pageInit.bind(this))
+      LifeCycle.add('pageLoad', this.pageLoad.bind(this))
       LifeCycle.add('pageKill', this.pageKill.bind(this))
       LifeCycle.add('reveal', this.reveal.bind(this))
 
-      if (LifeCycle.cycles.load.current > 0) {
-        this.pageInit(() => {})
-      }
     }
   }
 
@@ -67,7 +52,7 @@ class LottiePlayer extends Plugin {
 
     if (this.elements.length > 0) {
       this.elements.forEach(element => {
-        if (!element.player) {
+        if (element.luge.lottie.required) {
           waitLoad = true
         }
       })
