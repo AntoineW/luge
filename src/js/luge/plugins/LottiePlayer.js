@@ -57,7 +57,7 @@ class LottiePlayer extends Plugin {
 
     if (this.elements.length > 0) {
       this.elements.forEach(element => {
-        if (element.luge.lottie.required) {
+        if (element.luge.lottie.required && !element.player.isLoaded) {
           waitLoad = true
         }
       })
@@ -258,6 +258,7 @@ class LottiePlayer extends Plugin {
 
     // Call doneLoad when required animations have been loaded
     if (this.requireds === 0 && typeof this.doneLoad === 'function') {
+      console.log('done')
       this.doneLoad()
       this.doneLoad = null
     }
