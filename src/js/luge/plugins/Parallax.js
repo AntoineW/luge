@@ -66,8 +66,8 @@ class Parallax extends Plugin {
 
       if (disable) {
         if ((disable === 'desktop' && window.browser.is('desktop')) ||
-            (disable === 'mobile' && !window.browser.is('desktop')) ||
-            (disable === 'phone' && window.browser.is('mobile')) ||
+            (disable === 'handheld' && !window.browser.is('desktop')) ||
+            (disable === 'mobile' && window.browser.is('mobile')) ||
             (disable === 'tablet' && window.browser.is('tablet'))) {
           enable = false
         }
