@@ -246,6 +246,10 @@ class Transition {
 
       // Set title
       document.querySelector('head title').innerText = html.querySelector('head title').innerText
+    } else {
+      // Force reload when no page is found
+      window.location = this.url
+      return
     }
 
     // Reset scroll
