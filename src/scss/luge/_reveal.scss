@@ -13,24 +13,24 @@
 }
 
 /* Fade */
-.lg-reveal--fade-top,
-.lg-reveal--fade-right,
-.lg-reveal--fade-bottom,
-.lg-reveal--fade-left,
+.lg-reveal--fade-to-bottom,
+.lg-reveal--fade-to-left,
+.lg-reveal--fade-to-top,
+.lg-reveal--fade-to-right,
 .lg-reveal--fade-x,
 .lg-reveal--fade-y,
 .lg-reveal--fade-rotate,
-.lg-reveal--fade-rotate-top,
-.lg-reveal--fade-rotate-right,
-.lg-reveal--fade-rotate-bottom,
-.lg-reveal--fade-rotate-left,
+.lg-reveal--fade-rotate-to-bottom,
+.lg-reveal--fade-rotate-to-left,
+.lg-reveal--fade-rotate-to-top,
+.lg-reveal--fade-rotate-to-right,
 .lg-reveal--fade-rotate-x,
 .lg-reveal--fade-rotate-y,
 .lg-reveal--fade-scale,
-.lg-reveal--fade-scale-top,
-.lg-reveal--fade-scale-right,
-.lg-reveal--fade-scale-bottom,
-.lg-reveal--fade-scale-left,
+.lg-reveal--fade-scale-to-top,
+.lg-reveal--fade-scale-to-right,
+.lg-reveal--fade-scale-to-bottom,
+.lg-reveal--fade-scale-to-left,
 .lg-reveal--fade-scale-x,
 .lg-reveal--fade-scale-y {
   transition: opacity 0.4s linear 0.2s, transform 0.6s ease(in-cubic) 0s;
@@ -45,19 +45,19 @@
   transition: opacity 0.3s linear;
 }
 
-.lg-reveal--fade-top {
+.lg-reveal--fade-to-bottom {
   transform: translate3d(0, -10%, 0);
 }
 
-.lg-reveal--fade-right {
+.lg-reveal--fade-to-left {
   transform: translate3d(10%, 0, 0);
 }
 
-.lg-reveal--fade-bottom {
+.lg-reveal--fade-to-top {
   transform: translate3d(0, 10%, 0);
 }
 
-.lg-reveal--fade-left {
+.lg-reveal--fade-to-right {
   transform: translate3d(-10%, 0, 0);
 }
 
@@ -81,19 +81,19 @@
   transform: rotate(-20deg);
 }
 
-.lg-reveal--fade-rotate-top {
+.lg-reveal--fade-rotate-to-bottom {
   transform: translate3d(0, -30%, 0) rotate(-20deg);
 }
 
-.lg-reveal--fade-rotate-right {
+.lg-reveal--fade-rotate-to-left {
   transform: translate3d(30%, 0, 0) rotate(20deg);
 }
 
-.lg-reveal--fade-rotate-bottom {
+.lg-reveal--fade-rotate-to-top {
   transform: translate3d(0, 30%, 0) rotate(20deg);
 }
 
-.lg-reveal--fade-rotate-left {
+.lg-reveal--fade-rotate-to-right {
   transform: translate3d(-30%, 0, 0) rotate(-20deg);
 }
 
@@ -113,48 +113,54 @@
   }
 }
 
-.lg-reveal--fade-scale {
+.lg-reveal--fade-scale,
+.lg-reveal--fade-scale-to-bottom,
+.lg-reveal--fade-scale-to-left,
+.lg-reveal--fade-scale-to-top,
+.lg-reveal--fade-scale-to-right,
+.lg-reveal--fade-scale-x,
+.lg-reveal--fade-scale-y {
   transform: scale(0.8);
 }
 
-.lg-reveal--fade-scale-top {
-  transform-origin: 50% 0;
+.lg-reveal--fade-scale-to-bottom {
+  transform: translate3d(0, -30%, 0) scale(0.8);
 }
 
-.lg-reveal--fade-scale-right {
-  transform-origin: 100% 50%;
+.lg-reveal--fade-scale-to-left {
+  transform: translate3d(30%, 0, 0) scale(0.8);
 }
 
-.lg-reveal--fade-scale-bottom {
-  transform-origin: 50% 100%;
+.lg-reveal--fade-scale-to-top {
+  transform: translate3d(0, 30%, 0) scale(0.8);
 }
 
-.lg-reveal--fade-scale-left {
-  transform-origin: 0 50%;
+.lg-reveal--fade-scale-to-right {
+  transform: translate3d(-30%, 0, 0) scale(0.8);
 }
 
 .lg-reveal--fade-scale-x {
-  transform-origin: 0 50%;
+  transform: translate3d(-30%, 0, 0) scale(0.8);
 
   &.is-out-top {
-    transform-origin: 100% 50%;
+    transform: translate3d(30%, 0, 0) scale(0.8);
   }
 }
 
 .lg-reveal--fade-scale-y {
-  transform-origin: 50% 100%;
+  transform: translate3d(0, 30%, 0) scale(0.8);
 
   &.is-out-top {
-    transform-origin: 50% 0;
+    transform: translate3d(0, -30%, 0) scale(0.8);
   }
 }
 
 /* Scale */
 .lg-reveal--scale,
-.lg-reveal--scale-top,
-.lg-reveal--scale-right,
-.lg-reveal--scale-bottom,
-.lg-reveal--scale-left,
+.lg-reveal--scale-to-bottom,
+.lg-reveal--scale-to-left,
+.lg-reveal--scale-to-top,
+.lg-reveal--scale-to-right,
 .lg-reveal--scale-x,
 .lg-reveal--scale-y {
   opacity: 1;
@@ -167,19 +173,19 @@
   }
 }
 
-.lg-reveal--scale-top {
+.lg-reveal--scale-to-bottom {
   transform-origin: 50% 0;
 }
 
-.lg-reveal--scale-right {
+.lg-reveal--scale-to-left {
   transform-origin: 100% 50%;
 }
 
-.lg-reveal--scale-bottom {
+.lg-reveal--scale-to-top {
   transform-origin: 50% 100%;
 }
 
-.lg-reveal--scale-left {
+.lg-reveal--scale-to-right {
   transform-origin: 0 50%;
 }
 
@@ -201,10 +207,10 @@
 
 /* Slide */
 .lg-reveal--slide,
-.lg-reveal--slide-top,
-.lg-reveal--slide-bottom,
-.lg-reveal--slide-right,
-.lg-reveal--slide-left,
+.lg-reveal--slide-to-bottom,
+.lg-reveal--slide-to-top,
+.lg-reveal--slide-to-left,
+.lg-reveal--slide-to-right,
 .lg-reveal--slide-x,
 .lg-reveal--slide-y {
   opacity: 1;
@@ -215,20 +221,20 @@
   }
 }
 
-.lg-reveal--slide-top {
+.lg-reveal--slide-to-bottom {
   transform: translate3d(0, -15%, 0);
 }
 
-.lg-reveal--slide-right {
+.lg-reveal--slide-to-left {
   transform: translate3d(15%, 0, 0);
 }
 
-.lg-reveal--slide-bottom {
+.lg-reveal--slide-to-top {
   transform: translate3d(0, 15%, 0);
 }
 
 .lg-reveal--slide,
-.lg-reveal--slide-left {
+.lg-reveal--slide-to-right {
   transform: translate3d(-15%, 0, 0);
 }
 
@@ -249,10 +255,10 @@
 
 /* Layer */
 .lg-reveal--layer,
-.lg-reveal--layer-top,
-.lg-reveal--layer-right,
-.lg-reveal--layer-bottom,
-.lg-reveal--layer-left {
+.lg-reveal--layer-to-top,
+.lg-reveal--layer-to-right,
+.lg-reveal--layer-to-bottom,
+.lg-reveal--layer-to-left {
   position: relative;
 
   opacity: 1;
@@ -278,8 +284,8 @@
   }
 }
 
-.lg-reveal--layer-top,
-.lg-reveal--layer-bottom {
+.lg-reveal--layer-to-top,
+.lg-reveal--layer-to-bottom {
   &.is-in {
     &:after {
       transform: scaleY(0);
@@ -287,7 +293,7 @@
   }
 }
 
-.lg-reveal--layer-top {
+.lg-reveal--layer-to-top {
   clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
   transform: translate3d(0, 10%, 0);
 
@@ -296,7 +302,7 @@
   }
 }
 
-.lg-reveal--layer-bottom {
+.lg-reveal--layer-to-bottom {
   clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
   transform: translate3d(0, -10%, 0);
 
@@ -305,8 +311,8 @@
   }
 }
 
-.lg-reveal--layer-right,
-.lg-reveal--layer-left {
+.lg-reveal--layer-to-right,
+.lg-reveal--layer-to-left {
   &.is-in {
     &:after {
       transform: scaleX(0);
@@ -314,7 +320,7 @@
   }
 }
 
-.lg-reveal--layer-right {
+.lg-reveal--layer-to-right {
   clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
   transform: translate3d(-10%, 0, 0);
 
@@ -323,7 +329,7 @@
   }
 }
 
-.lg-reveal--layer-left {
+.lg-reveal--layer-to-left {
   clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
   transform: translate3d(10%, 0, 0);
 

@@ -27,10 +27,10 @@
 
 /* Slide */
 .lg-preloader--slide,
-.lg-preloader--slide-top,
-.lg-preloader--slide-right,
-.lg-preloader--slide-bottom,
-.lg-preloader--slide-left {
+.lg-preloader--slide-to-top,
+.lg-preloader--slide-to-right,
+.lg-preloader--slide-to-bottom,
+.lg-preloader--slide-to-left {
   transition: transform 0.5s ease(in-out-cubic);
 
   &.is-hidden {
@@ -38,25 +38,25 @@
   }
 }
 
-.lg-preloader--slide-right {
+.lg-preloader--slide-to-right {
   &.is-hidden {
     transform: translate3d(100%, 0, 0);
   }
 }
 
-.lg-preloader--slide-left {
+.lg-preloader--slide-to-left {
   &.is-hidden {
     transform: translate3d(-100%, 0, 0);
   }
 }
 
-.lg-preloader--slide-top {
+.lg-preloader--slide-to-top {
   &.is-hidden {
     transform: translate3d(0, -100%, 0);
   }
 }
 
-.lg-preloader--slide-bottom {
+.lg-preloader--slide-to-bottom {
   &.is-hidden {
     transform: translate3d(0, 100%, 0);
   }
