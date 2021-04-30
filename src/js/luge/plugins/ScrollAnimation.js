@@ -84,6 +84,8 @@ class ScrollAnimation extends Plugin {
       } else {
         data.inertia = Number(data.inertia)
       }
+
+      data.inertia = Math.max(Math.min(data.inertia, 0.99), 0)
     }
 
     return data
@@ -234,7 +236,7 @@ class ScrollAnimation extends Plugin {
         progress = 1 - Math.abs(1 - progress * 2)
       }
 
-      element.luge.scroll.animation.smoothProgress += (progress - element.luge.scroll.animation.smoothProgress) * element.luge.scroll.inertia
+      element.luge.scroll.animation.smoothProgress += (progress - element.luge.scroll.animation.smoothProgress) * (1 - element.luge.scroll.inertia)
 
       if (element.luge.scroll.animation.properties) {
         const declarations = {}

@@ -13,7 +13,7 @@ class Luge {
       externalTicker: false,
       lottieRenderer: 'svg',
       lottieNoSubFrame: false,
-      scrollInertia: 1,
+      scrollInertia: 0,
       smoothInertia: 0.1,
       preloaderDuration: 0,
       revealStagger: 0.1,
