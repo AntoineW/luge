@@ -53,6 +53,10 @@ class Luge {
     // Platform type class
     document.documentElement.classList.add('is-' + window.browser.getPlatformType())
 
+    if (window.browser.is('mobile') || window.browser.is('tablet')) {
+      document.documentElement.classList.add('is-handheld')
+    }
+
     // Browser class
     if (window.browser.is('Safari')) {
       document.documentElement.classList.add('is-safari')
