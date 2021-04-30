@@ -2,6 +2,7 @@ import 'whatwg-fetch'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
 import Helpers from 'Core/Helpers'
+import Ticker from 'Core/Ticker'
 
 class Transition {
   /**
@@ -138,7 +139,11 @@ class Transition {
     const loader = document.querySelector('[data-lg-loader]')
 
     if (loader) {
+      loader.style.transition = 'none'
       loader.classList.add('lg-loader', 'lg-loader--' + loader.getAttribute('data-lg-loader'))
+      Ticker.nextTick(() => {
+        loader.style.transition = ''
+      })
     }
 
     if (loader && loader.getAttribute('data-lg-loader') === 'lottie' && typeof lottie === 'object') {
