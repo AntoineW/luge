@@ -1,6 +1,7 @@
 import 'whatwg-fetch'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
+import Luge from 'Core/Core'
 import Helpers from 'Core/Helpers'
 import Ticker from 'Core/Ticker'
 
@@ -12,7 +13,7 @@ class Transition {
     this.url = window.location.href
     this.pageFetched = null
     this.currentPage = null
-    this.reload = false
+    this.reload = Luge.settings.transition.reload
 
     this.transitions = {
       in: {},
@@ -111,7 +112,9 @@ class Transition {
    */
   siteInit (done) {
     this.currentPage = document.querySelector('[data-lg-page]')
-    this.reload = (this.currentPage && this.currentPage.hasAttribute('data-lg-reload'))
+    if (this.currentPage) {
+      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
+    }
 
     this.initLoader()
 
@@ -275,7 +278,7 @@ class Transition {
     oldPage.parentNode.removeChild(oldPage)
 
     this.currentPage = document.querySelector('[data-lg-page]')
-    this.reload = this.currentPage.hasAttribute('data-lg-reload')
+    this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
 
     done()
   }

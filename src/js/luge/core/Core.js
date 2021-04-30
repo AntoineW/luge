@@ -23,6 +23,9 @@ class Luge {
       },
       sticky: {
         disabled: ['tablet', 'mobile']
+      },
+      transition: {
+        reload: false
       }
     }
 
