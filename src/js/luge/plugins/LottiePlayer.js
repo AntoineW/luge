@@ -145,12 +145,12 @@ class LottiePlayer extends Plugin {
       if (element.viewportPosition === 'in') {
         if (element.player.isPaused && (element.player.scrollPaused || element.hasAttribute('data-lg-lottie-autoplay'))) {
           element.player.scrollPaused = false
-          element.player.play()
+          element.play()
         }
       } else {
         if (!element.player.isPaused) {
           element.player.scrollPaused = true
-          element.player.pause()
+          element.pause()
         }
       }
     }
@@ -181,7 +181,7 @@ class LottiePlayer extends Plugin {
     }
 
     element.classList.add('lg-lottie')
-    element.setAttribute('data-lg-lottie-state', 'is-paused')
+    this.setPlayerStateClasses(element, false)
 
     if (attributes.autoplay) {
       this.toAutoplay.push(element)
@@ -208,7 +208,7 @@ class LottiePlayer extends Plugin {
                     element.player.setDirection(-1)
                     element.player.goToAndPlay(element.player.totalFrames, true)
 
-                    element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--backward')
+                    self.setPlayerStateClasses(element, 'backward')
                   }, 0)
                 } else if (attributes.loop) {
                   setTimeout(() => {
@@ -225,7 +225,7 @@ class LottiePlayer extends Plugin {
                     element.player.setDirection(1)
                     element.player.goToAndPlay(attributes.loopFrame, true)
 
-                    element.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
+                    self.setPlayerStateClasses(element, 'forward')
                   }, 0)
                 }
               }
@@ -236,8 +236,8 @@ class LottiePlayer extends Plugin {
     }
 
     // Set methods
-    element.play = this.play
-    element.pause = this.pause
+    element.play = this.play.bind(this, element)
+    element.pause = this.pause.bind(this, element)
 
     // Loaded
     element.player.addEventListener('DOMLoaded', () => {
@@ -245,6 +245,27 @@ class LottiePlayer extends Plugin {
 
       self.playerLoaded(attributes.required)
     }, { once: true })
+  }
+
+  /**
+   * Set player state classes
+   * @param {HTMLElement} el Element
+   * @param {Boolean|String} playing If playing, playing direction
+   */
+  setPlayerStateClasses (el, playing) {
+    el.classList.remove('is-playing', 'is-playing-forward', 'is-playing-backward', 'is-paused')
+
+    if (!playing) {
+      el.classList.add('is-paused')
+    } else {
+      el.classList.add('is-playing')
+
+      if (playing === 'backward') {
+        el.classList.add('is-playing-backward')
+      } else {
+        el.classList.add('is-playing-forward')
+      }
+    }
   }
 
   /**
@@ -273,19 +294,19 @@ class LottiePlayer extends Plugin {
   /**
    * Play
    */
-  play () {
-    this.player.goToAndPlay(0, true)
+  play (element) {
+    element.player.play()
 
-    this.setAttribute('data-lg-lottie-state', 'is-playing is-playing--forward')
+    this.setPlayerStateClasses(element, 'forward')
   }
 
   /**
    * Pause
    */
-  pause () {
-    this.player.pause()
+  pause (element) {
+    element.player.pause()
 
-    this.setAttribute('data-lg-lottie-state', 'is-paused')
+    this.setPlayerStateClasses(element, false)
   }
 
   /**
