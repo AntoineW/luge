@@ -9,10 +9,11 @@ class LottiePlayer extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('lottie')
 
-    // Plugin properties
-    this.pluginSlug = 'lottie'
+    if (this.isDisabled) {
+      return
+    }
 
     this.elements = []
 

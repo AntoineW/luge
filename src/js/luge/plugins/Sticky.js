@@ -7,13 +7,9 @@ class Sticky extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('sticky')
 
-    // Plugin properties
-    this.pluginSlug = 'sticky'
-
-    // Disable sticky on light browsers
-    if (window.browser.light) {
+    if (this.isDisabled) {
       return
     }
 

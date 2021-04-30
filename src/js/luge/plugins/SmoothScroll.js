@@ -9,13 +9,9 @@ class SmoothScroll extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('smooth')
 
-    // Plugin properties
-    this.pluginSlug = 'smooth'
-
-    // Disable smooth scroll on light browsers
-    if (window.browser.light) {
+    if (this.isDisabled) {
       return
     }
 

@@ -7,13 +7,9 @@ class Parallax extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('parallax')
 
-    // Plugin properties
-    this.pluginSlug = 'parallax'
-
-    // Disable parallax on light browsers
-    if (window.browser.light) {
+    if (this.isDisabled) {
       return
     }
 

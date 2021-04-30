@@ -10,10 +10,11 @@ class Reveal extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('reveal')
 
-    // Plugin properties
-    this.pluginSlug = 'reveal'
+    if (this.isDisabled) {
+      return
+    }
 
     this.elements = []
     this.toRevealIn = []

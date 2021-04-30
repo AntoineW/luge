@@ -9,10 +9,11 @@ class ScrollAnimation extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('scroll')
 
-    // Plugin properties
-    this.pluginSlug = 'scroll'
+    if (this.isDisabled) {
+      return
+    }
 
     this.elements = []
 

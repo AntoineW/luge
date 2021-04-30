@@ -1,6 +1,7 @@
 import Bowser from 'bowser'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
+import Helpers from 'Core/Helpers'
 
 class Luge {
   /**
@@ -16,7 +17,13 @@ class Luge {
       smoothInertia: 0.1,
       preloaderDuration: 0,
       revealStagger: 0.1,
-      revealThreshold: 0.15
+      revealThreshold: 0.15,
+      smooth: {
+        disabled: ['tablet', 'mobile', { safari: '<=12' }]
+      },
+      sticky: {
+        disabled: ['tablet', 'mobile']
+      }
     }
 
     // Timeouts
@@ -42,33 +49,14 @@ class Luge {
 
     // Browser detect
     window.browser = Bowser.getParser(window.navigator.userAgent)
-    let isLight = false
 
-    if (window.browser.is('mobile') || window.browser.is('tablet')) {
-      isLight = true
+    // Platform type class
+    document.documentElement.classList.add('is-' + window.browser.getPlatformType())
 
-      document.documentElement.classList.add('is-mobile')
-    } else {
-      document.documentElement.classList.add('is-desktop')
-    }
-
-    if (window.browser.is('Internet Explorer')) {
-      isLight = true
-
-      document.documentElement.classList.add('is-ie')
-      document.documentElement.classList.add('is-ie--' + window.browser.getBrowserVersion())
-    } else if (window.browser.is('Safari')) {
-      if (window.browser.getBrowserVersion() < 12) {
-        isLight = true
-      }
-
+    // Browser class
+    if (window.browser.is('Safari')) {
       document.documentElement.classList.add('is-safari')
       document.documentElement.classList.add('is-safari-' + window.browser.getBrowserVersion())
-    }
-
-    if (isLight) {
-      window.browser.light = true
-      document.documentElement.classList.add('is-light')
     }
 
     LifeCycle.add('siteInit', this.siteInit.bind(this), 999)
@@ -80,7 +68,7 @@ class Luge {
    * Set settings
    */
   setSettings (settings) {
-    Object.assign(this.settings, settings)
+    this.settings = Helpers.mergeDeep(this.settings, settings)
   }
 
   /**

@@ -7,10 +7,11 @@ class PreLoader extends Plugin {
    * Constructor
    */
   constructor () {
-    super()
+    super('preloader')
 
-    // Plugin properties
-    this.pluginSlug = 'preloader'
+    if (this.isDisabled) {
+      return
+    }
 
     this.intro = false
     this.playerIn = false
