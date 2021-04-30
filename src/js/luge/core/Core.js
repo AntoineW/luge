@@ -12,7 +12,7 @@ class Luge {
     this.settings = {
       externalTicker: false,
       lottieRenderer: 'svg',
-      lottieNoSubFrame: false,
+      lottieUseSubFrame: true,
       scrollInertia: 0,
       smoothInertia: 0.1,
       preloaderDuration: 0,

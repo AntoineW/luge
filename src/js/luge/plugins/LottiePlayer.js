@@ -45,7 +45,7 @@ class LottiePlayer extends Plugin {
       required: Boolean,
       force: Boolean,
       renderer: [String, Luge.settings.lottieRenderer],
-      nosubframe: [Boolean, Luge.settings.lottieNoSubFrame]
+      usesubframe: [Boolean, Luge.settings.lottieUseSubFrame]
     }
   }
 
@@ -176,8 +176,8 @@ class LottiePlayer extends Plugin {
       path: attributes.root
     })
 
-    if (attributes.nosubframe) {
-      element.player.setSubframe(false)
+    if (typeof attributes.usesubframe !== 'undefined') {
+      element.player.setSubframe(attributes.usesubframe)
     }
 
     element.classList.add('lg-lottie')
