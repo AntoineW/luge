@@ -280,7 +280,6 @@ class LottiePlayer extends Plugin {
 
     // Call doneLoad when required animations have been loaded
     if (this.requireds === 0 && typeof this.doneLoad === 'function') {
-      console.log('done')
       this.doneLoad()
       this.doneLoad = null
     }
