@@ -8,7 +8,7 @@ class Ticker {
     this.callbacks = []
     this.onceCallbacks = []
 
-    if (!Luge.settings.externalTicker) {
+    if (!Luge.settings.ticker.external) {
       this.fps = 60
       this.fpsInterval = 1000 / this.fps
       this.lastTickTime = null
@@ -85,7 +85,7 @@ class Ticker {
       this.lastTickTime = nowTime - (elapsedTime % this.fpsInterval)
     }
 
-    if (!Luge.settings.externalTicker) {
+    if (!Luge.settings.ticker.external) {
       requestAnimationFrame(this.tick.bind(this))
     }
   }

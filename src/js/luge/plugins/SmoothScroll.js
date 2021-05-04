@@ -116,7 +116,7 @@ class SmoothScroll extends Plugin {
    */
   tick () {
     if (window.smoothScrollTop !== window.scrollTop) {
-      window.smoothScrollTop = Math.max(window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smoothInertia), 0)
+      window.smoothScrollTop = Math.max(window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smooth.inertia), 0)
 
       // Round smooth scroll
       const gap = window.smoothScrollTop - window.scrollTop

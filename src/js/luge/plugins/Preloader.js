@@ -28,7 +28,7 @@ class PreLoader extends Plugin {
   setAttributes () {
     this.pluginAttributes = {
       root: [String, ''],
-      duration: [Number, Luge.settings.preloaderDuration],
+      duration: [Number, Luge.settings.preloader.duration],
       in: String,
       reverse: Boolean
     }

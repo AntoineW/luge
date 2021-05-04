@@ -57,7 +57,7 @@ class Reveal extends Plugin {
     const data = super.getAttributes(element)
 
     if (data.stagger !== undefined && data.stagger === '') {
-      data.stagger = Luge.settings.revealStagger
+      data.stagger = Luge.settings.reveal.stagger
     } else if (data.stagger === undefined) {
       data.stagger = false
     }
@@ -173,7 +173,7 @@ class Reveal extends Plugin {
    */
   onScrollProgress (e) {
     const element = e.target
-    const threshold = Luge.settings.revealThreshold
+    const threshold = Luge.settings.reveal.threshold
 
     if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed) {
       if (this.toRevealOut.includes(element)) {
@@ -265,7 +265,7 @@ class Reveal extends Plugin {
         }, delay ? revealInTimeout : 0)
 
         if (delay) {
-          revealInTimeout += Luge.settings.revealStagger * 1000
+          revealInTimeout += Luge.settings.reveal.stagger * 1000
         }
 
         if (!element.luge.reveal.multiple) {

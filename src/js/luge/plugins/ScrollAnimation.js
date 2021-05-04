@@ -65,7 +65,7 @@ class ScrollAnimation extends Plugin {
     this.pluginAttributes = {
       root: String,
       yoyo: Boolean,
-      inertia: [String, Luge.settings.scrollInertia],
+      inertia: [String, Luge.settings.scroll.inertia],
       animate: String
     }
   }

@@ -10,19 +10,29 @@ class Luge {
   constructor () {
     // Options
     this.settings = {
-      externalTicker: false,
-      lottieRenderer: 'svg',
-      lottieUseSubFrame: true,
-      scrollInertia: 0,
-      smoothInertia: 0.1,
-      preloaderDuration: 0,
-      revealStagger: 0.1,
-      revealThreshold: 0.15,
+      lottie: {
+        renderer: 'svg',
+        subFrame: true
+      },
+      preloader: {
+        duration: 0
+      },
+      reveal: {
+        stagger: 0.1,
+        threshold: 0.15
+      },
+      scroll: {
+        inertia: 0.1
+      },
       smooth: {
-        disabled: ['tablet', 'mobile', { safari: '<=12' }]
+        disabled: ['tablet', 'mobile', { safari: '<=12' }],
+        inertia: 0.1
       },
       sticky: {
         disabled: ['tablet', 'mobile']
+      },
+      ticker: {
+        external: false
       },
       transition: {
         reload: false
