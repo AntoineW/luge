@@ -294,18 +294,22 @@ class LottiePlayer extends Plugin {
    * Play
    */
   play (element) {
-    element.player.play()
+    if (element && element.player) {
+      element.player.play()
 
-    this.setPlayerStateClasses(element, 'forward')
+      this.setPlayerStateClasses(element, 'forward')
+    }
   }
 
   /**
    * Pause
    */
   pause (element) {
-    element.player.pause()
+    if (element && element.player) {
+      element.player.pause()
 
-    this.setPlayerStateClasses(element, false)
+      this.setPlayerStateClasses(element, false)
+    }
   }
 
   /**
