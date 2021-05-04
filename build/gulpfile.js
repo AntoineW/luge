@@ -7,9 +7,39 @@ const browserSync = require('browser-sync');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 
+const del = require('del');
+const zip = require('gulp-zip');
+
+// Set constants
+const p = require('../package.json');
+const packageFolder = '../package';
+const zipFilename = 'luge-' + String(p.version) + '.zip'
 const { serverAddress } = require('./config.json')
 
 sass.compiler = require('node-sass');
+
+/**
+ * Clean package folder
+ */
+ function cleanPackage(cb) {
+  del.sync([packageFolder + '/*'], {force: true});
+
+  cb();
+}
+
+/**
+ * Create package
+ */
+function createPackage(cb) {
+	src([
+      'dist/css/luge.css',
+      'dist/js/luge.js',
+    ], {cwd: '../'})
+		.pipe(zip(zipFilename))
+		.pipe(dest(packageFolder))
+
+    cb();
+}
 
 /**
  * Style task
@@ -77,4 +107,5 @@ function serve(cb) {
 }
 
 exports.build = series(styles, scriptsProd);
+exports.package = series(cleanPackage, createPackage);
 exports.default = serve;
