@@ -4,6 +4,7 @@ import Helpers from 'Core/Helpers'
 import Luge from 'Core/Core'
 import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
+import Ticker from 'Core/Ticker'
 
 class Reveal extends Plugin {
   /**
@@ -117,6 +118,11 @@ class Reveal extends Plugin {
         Array.from(element.children).forEach(child => {
           const childRevealName = child.dataset.lgReveal
 
+          child.style.transition = 'none'
+          Ticker.nextTick(() => {
+            child.style.transition = ''
+          })
+
           child.classList.add('lg-reveal', 'is-out')
 
           if (childRevealName || revealName) {
@@ -126,6 +132,11 @@ class Reveal extends Plugin {
           child.dataset.lgRevealChild = ''
         })
       } else {
+        element.style.transition = 'none'
+        Ticker.nextTick(() => {
+          element.style.transition = ''
+        })
+
         element.classList.add('lg-reveal', 'is-out')
 
         if (revealName) {
