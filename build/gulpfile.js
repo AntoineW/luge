@@ -3,6 +3,7 @@ const { dest, series, src, task, watch } = require('gulp');
 const sass = require('gulp-sass');
 const sassGlob = require('gulp-sass-glob');
 const autoprefixer = require('gulp-autoprefixer');
+const header = require('gulp-header');
 const browserSync = require('browser-sync');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
@@ -81,6 +82,7 @@ function scriptsDev() {
 function scriptsProd() {
   return src('../src/js/luge.js')
     .pipe(webpackStream( require('./webpack.prod.js'), webpack ))
+    .pipe(header('/* eslint-disable */'))
     .pipe(dest('../dist/js/'));
 }
 

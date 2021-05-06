@@ -36,6 +36,7 @@
     "git-revision-webpack-plugin": "^3.0.6",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
+    "gulp-header": "^2.0.9",
     "gulp-sass": "^4.1.0",
     "gulp-sass-glob": "^1.1.0",
     "gulp-zip": "^5.1.0",

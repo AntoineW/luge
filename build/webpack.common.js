@@ -3,7 +3,6 @@ const webpack = require('webpack')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
-const WriteFilePlugin = require('write-file-webpack-plugin')
 
 const { publicPath } = require('./config.json')
 
@@ -54,10 +53,8 @@ module.exports = {
     new ESLintPlugin({
       context: '../'
     }),
-    // gitRevisionPlugin,
     new webpack.DefinePlugin({
       'VERSION': JSON.stringify(gitRevisionPlugin.branch())
-    }),
-    // new WriteFilePlugin()
+    })
   ],
 };
