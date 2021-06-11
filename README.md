@@ -14,11 +14,11 @@ luge is made to be fast and easy to use. Most of the things happen under the hoo
 
 luge is also available as a npm package:
 
-```npm install luge.cool```
+```npm install @waaark/luge```
 
 Then:
 
-```import luge from 'luge.cool'```
+```import luge from '@waaark/luge'```
 
 Note that the CSS file is only needed if you plan to use the built-in animations (reveals or transitions).
 
