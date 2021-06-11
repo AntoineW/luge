@@ -18,7 +18,7 @@ import SmoothScroll from 'Plugins/SmoothScroll'
 import Sticky from 'Plugins/Sticky'
 
 // Public methods
-window.luge = {
+const luge = {
   emitter: {
     emit: Emitter.emit.bind(Emitter),
     off: Emitter.off.bind(Emitter),
@@ -48,6 +48,10 @@ window.luge = {
   },
   settings: Luge.setSettings.bind(Luge)
 }
+
+window.luge = luge
+
+export default luge
 
 // Site init on DOM ready
 document.addEventListener('DOMContentLoaded', LifeCycle.cycle.bind(LifeCycle, 'load'), { once: true })

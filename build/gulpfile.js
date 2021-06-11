@@ -1,5 +1,5 @@
 // Load plugins
-const { dest, series, src, task, watch } = require('gulp');
+const { dest, series, src, watch } = require('gulp');
 const sass = require('gulp-sass');
 const sassGlob = require('gulp-sass-glob');
 const autoprefixer = require('gulp-autoprefixer');
@@ -18,17 +18,6 @@ sass.compiler = require('node-sass');
  */
 function styles() {
   return src('../src/scss/*.scss')
-    .pipe(sassGlob())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(autoprefixer('last 2 version'))
-    .pipe(dest('../dist/css/'))
-    .pipe(browserSync.reload({
-      stream: true
-    }));
-}
-
-function stylesDemo() {
-  return src('../demo/src/scss/*.scss')
     .pipe(sassGlob())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer('last 2 version'))
@@ -68,13 +57,9 @@ function serve(cb) {
 
   // Watch .scss files
   watch('../src/**/*.scss', styles);
-  watch('../demo/src/**/*.scss', stylesDemo);
 
   // Watch .js files
   watch('../src/**/*.js', scriptsDev);
-
-  // Watch .html files
-  watch(['../demo/*.php']).on('change', browserSync.reload);
 
   cb();
 }

@@ -21,10 +21,16 @@ module.exports = {
       Plugins: path.resolve(__dirname, '../src/js/luge/plugins/'),
     }
   },
+  experiments: {
+    outputModule: true,
+  },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, '../dist/js'),
-    publicPath: publicPath
+    publicPath: publicPath,
+    library: {
+      type: 'module'
+    }
   },
   module: {
     rules: [

@@ -1,16 +1,24 @@
 {
-  "name": "@waaark/luge",
+  "name": "luge.cool",
   "version": "0.4.1-beta",
   "description": "Front-end animation plugin for uncreative developerst",
   "author": "Waaark <hello@waaark.com> (https://waaark.com)",
-  "test": "exit 0",
-  "private": true,
-  "scripts": {
-    "dev": "NODE_ENV=development gulp --gulpfile build/gulpfile.js",
-    "build": "NODE_ENV=production gulp build --gulpfile build/gulpfile.js",
-    "package": "NODE_ENV=production gulp package --gulpfile build/gulpfile.js",
-    "lock": "javascript-obfuscator dist/js/luge.js --output dist/js/luge.$npm_config_domain.js --config build/obfuscator.json --domain-lock \"$npm_config_domain\""
+  "homepage": "https://luge.cool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Waaark/luge.git"
   },
+  "bug": {
+    "url": "https://github.com/Waaark/luge/issues",
+    "email": "hello@luge.cool"
+  },
+  "license": "GPL-3.0-only",
+  "main": "./dist/js/luge.js",
+  "scripts": {
+    "dev": "gulp --gulpfile build/gulpfile.js",
+    "build": "gulp build --gulpfile build/gulpfile.js"
+  },
+  "test": "exit 0",
   "devDependencies": {
     "@babel/core": "^7.13.16",
     "@babel/eslint-parser": "^7.13.14",
@@ -39,7 +47,6 @@
     "gulp-header": "^2.0.9",
     "gulp-sass": "^4.1.0",
     "gulp-sass-glob": "^1.1.0",
-    "javascript-obfuscator": "^2.12.0",
     "node-sass": "^5.0.0",
     "sass-loader": "^11.0.1",
     "style-loader": "^2.0.0",
