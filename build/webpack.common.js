@@ -5,8 +5,7 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const { publicPath } = require('./config.json')
-
-const gitRevisionPlugin = new GitRevisionPlugin()
+const package = require('../package.json')
 
 module.exports = {
   mode: 'none',
@@ -60,7 +59,7 @@ module.exports = {
       context: '../'
     }),
     new webpack.DefinePlugin({
-      'VERSION': JSON.stringify(gitRevisionPlugin.branch())
+      'VERSION': JSON.stringify(package.version)
     })
   ],
 };
