@@ -1,6 +1,5 @@
 /package-lock.json
 /demo
 /node_modules
-/dist
 *.code-workspace
 /build/config.json
