@@ -59,9 +59,13 @@ class Helpers {
    * @param {String} string The string to convert
    */
   static toCamelCase (string) {
-    return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase()
-    }).replace(/\W+/g, '')
+    if (Helpers.isString(string)) {
+      return string.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase()
+      }).replace(/\W+/g, '')
+    } else {
+      return string
+    }
   }
 
   /**
@@ -69,9 +73,13 @@ class Helpers {
    * @param {String} string The string to convert
    */
   static toUpperCamelCase (string) {
-    string = Helpers.toCamelCase(string)
+    if (Helpers.isString(string)) {
+      string = Helpers.toCamelCase(string)
 
-    return string.charAt(0).toUpperCase() + string.slice(1)
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    } else {
+      return string
+    }
   }
 }
 
