@@ -106,15 +106,12 @@ class Reveal extends Plugin {
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
-      const reveal = {}
       const revealName = attributes.root
 
-      reveal.name = Helpers.toCamelCase(revealName)
-      reveal.multiple = attributes.multiple
-      reveal.stagger = attributes.stagger
-      reveal.delay = attributes.delay * 1000
+      element.luge.reveal.name = Helpers.toCamelCase(revealName)
+      element.luge.reveal.delay = attributes.delay * 1000
 
-      if (reveal.stagger) {
+      if (attributes.stagger) {
         Array.from(element.children).forEach(child => {
           const childRevealName = child.dataset.lgReveal
 
@@ -130,6 +127,11 @@ class Reveal extends Plugin {
           }
 
           child.dataset.lgRevealChild = ''
+          if (child.luge || (child.luge = {})) {
+            child.luge.reveal = {
+              isRevealed: false
+            }
+          }
         })
       } else {
         element.style.transition = 'none'
@@ -143,8 +145,6 @@ class Reveal extends Plugin {
           element.classList.add('lg-reveal--' + revealName)
         }
       }
-
-      element.reveal = reveal
 
       this.elements.push(element)
     }
@@ -252,12 +252,12 @@ class Reveal extends Plugin {
         const delay = true
         const revealName = Helpers.toCamelCase(element.luge.reveal.root)
 
-        revealInTimeout += element.reveal.delay
+        revealInTimeout += element.luge.reveal.delay
 
         setTimeout(function () {
           self.revealCallback(element, revealName, 'in')
 
-          if (element.reveal.stagger) {
+          if (element.luge.reveal.stagger) {
             Array.from(element.children).forEach((child, index) => {
               const childRevealName = Helpers.toCamelCase(child.dataset.lgReveal)
 
@@ -267,7 +267,7 @@ class Reveal extends Plugin {
                 }
 
                 self.setRevealClasses(child, 'is-in')
-              }, index * element.reveal.stagger * 1000)
+              }, index * element.luge.reveal.stagger * 1000)
             })
           } else {
             self.setRevealClasses(element, 'is-in')
@@ -297,7 +297,7 @@ class Reveal extends Plugin {
           state = 'is-out is-out-bottom'
         }
 
-        if (element.reveal.stagger) {
+        if (element.luge.reveal.stagger) {
           Array.from(element.children).forEach((child, index) => {
             const childRevealName = Helpers.toCamelCase(child.dataset.lgReveal)
 
@@ -307,7 +307,7 @@ class Reveal extends Plugin {
               }
 
               self.setRevealClasses(child, state)
-            }, index * element.reveal.stagger * 1000)
+            }, index * element.luge.reveal.stagger * 1000)
           })
         } else {
           self.setRevealClasses(element, state)
