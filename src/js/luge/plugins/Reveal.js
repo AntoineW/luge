@@ -250,28 +250,27 @@ class Reveal extends Plugin {
 
       this.toRevealIn.forEach(element => {
         const delay = true
-        const revealName = element.luge.reveal.root
+        const revealName = Helpers.toCamelCase(element.luge.reveal.root)
 
         revealInTimeout += element.reveal.delay
 
         setTimeout(function () {
-          element.dispatchEvent(new CustomEvent('revealin'))
-          element.luge.reveal.isRevealed = true
-
-          if (typeof self.reveals.in[element.reveal.name] === 'function') {
-            self.reveals.in[element.reveal.name](element)
-          } else if (typeof element.onrevealin === 'function') {
-            element.onrevealin()
-          }
+          self.revealCallback(element, revealName, 'in')
 
           if (element.reveal.stagger) {
             Array.from(element.children).forEach((child, index) => {
+              const childRevealName = Helpers.toCamelCase(child.dataset.lgReveal)
+
               setTimeout(() => {
-                self.setRevealClasses(child, revealName, 'is-in')
+                if (childRevealName || revealName) {
+                  self.revealCallback(child, (childRevealName ?? revealName), 'in')
+                }
+
+                self.setRevealClasses(child, 'is-in')
               }, index * element.reveal.stagger * 1000)
             })
           } else {
-            self.setRevealClasses(element, revealName, 'is-in')
+            self.setRevealClasses(element, 'is-in')
           }
         }, delay ? revealInTimeout : 0)
 
@@ -285,17 +284,10 @@ class Reveal extends Plugin {
       })
 
       this.toRevealOut.forEach(element => {
-        const revealName = element.luge.reveal.root
+        const revealName = Helpers.toCamelCase(element.luge.reveal.root)
 
         if (element.luge.reveal.isRevealed !== undefined) {
-          element.dispatchEvent(new CustomEvent('revealout'))
-          element.luge.reveal.isRevealed = false
-
-          if (typeof self.reveals.out[element.reveal.name] === 'function') {
-            self.reveals.out[element.reveal.name](element)
-          } else if (typeof element.onrevealout === 'function') {
-            element.onrevealout()
-          }
+          self.revealCallback(element, revealName, 'out')
         }
 
         let state = ''
@@ -307,12 +299,18 @@ class Reveal extends Plugin {
 
         if (element.reveal.stagger) {
           Array.from(element.children).forEach((child, index) => {
+            const childRevealName = Helpers.toCamelCase(child.dataset.lgReveal)
+
             setTimeout(() => {
-              self.setRevealClasses(child, revealName, state)
+              if (childRevealName || revealName) {
+                self.revealCallback(child, (childRevealName ?? revealName), 'out')
+              }
+
+              self.setRevealClasses(child, state)
             }, index * element.reveal.stagger * 1000)
           })
         } else {
-          self.setRevealClasses(element, revealName, state)
+          self.setRevealClasses(element, state)
         }
       })
 
@@ -324,18 +322,31 @@ class Reveal extends Plugin {
   /**
    * Set reveal classes
    * @param {HTMLElement} el Element
-   * @param {String} name Reveal name
    * @param {String} states Reveal states
    */
-  setRevealClasses (el, name, states) {
+  setRevealClasses (el, states) {
     states = states.split(' ')
-    name = 'lg-reveal--' + name
 
     el.classList.remove('is-in', 'is-out', 'is-out-top', 'is-out-bottom')
 
     states.forEach(state => {
       el.classList.add(state)
     })
+  }
+
+  /**
+   * Call reveal callback
+   * @param {HTMLElement} el Element
+   */
+  revealCallback (el, name, type) {
+    el.dispatchEvent(new CustomEvent('reveal' + type))
+    el.luge.reveal.isRevealed = (type === 'in')
+
+    if (typeof this.reveals[type][name] === 'function') {
+      this.reveals[type][name](el)
+    } else if (typeof el['onreveal' + type] === 'function') {
+      el['onreveal' + type]()
+    }
   }
 
   /**
