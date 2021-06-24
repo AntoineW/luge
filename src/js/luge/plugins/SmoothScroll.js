@@ -18,6 +18,7 @@ class SmoothScroll extends Plugin {
     this.containers = null
     window.hasSmoothScroll = false
     window.smoothScrollTop = 0
+    window.smoothScrollProgress = 0
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
@@ -132,6 +133,7 @@ class SmoothScroll extends Plugin {
 
       if (window.hasSmoothScroll) {
         window.unifiedScrollTop = window.smoothScrollTop
+        window.smoothScrollProgress = window.smoothScrollTop / window.maxScrollTop
         Emitter.emit('scroll')
       }
     }

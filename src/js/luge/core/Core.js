@@ -46,13 +46,15 @@ class Luge {
     }
 
     // Viewport size
-    this.windowWidth = 0
-    this.windowHeight = 0
-    this.clientWidth = 0
+    this.windowWidth = 1
+    this.windowHeight = 1
+    this.clientWidth = 1
 
     // Scroll
     window.scrollTop = window.pageYOffset
     window.unifiedScrollTop = window.scrollTop
+    window.maxScrollTop = 1
+    window.scrollProgress = 0
     this.previousScrollTop = window.pageYOffset
     this.isScrolling = false
 
@@ -169,6 +171,7 @@ class Luge {
     this.timeouts.scrollEnd = setTimeout(this.scrollEnd.bind(this), 200)
 
     this.previousScrollTop = window.scrollTop
+    window.scrollProgress = window.scrollTop / window.maxScrollTop
 
     if (!window.hasSmoothScroll) {
       window.unifiedScrollTop = window.scrollTop
