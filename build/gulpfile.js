@@ -1,68 +1,102 @@
-// Load plugins
-const { dest, series, src, watch } = require('gulp');
-const sass = require('gulp-sass');
+const path = require('path')
+const gulp = require('gulp');
+
+const rollup = require('rollup');
+const alias = require('@rollup/plugin-alias');
+const { babel } = require('@rollup/plugin-babel');
+const eslint = require('@rollup/plugin-eslint');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const replace = require('@rollup/plugin-replace');
+const { terser } = require('rollup-plugin-terser');
+
+const sass = require('gulp-sass')(require('node-sass'));
 const sassGlob = require('gulp-sass-glob');
 const autoprefixer = require('gulp-autoprefixer');
-const header = require('gulp-header');
-const browserSync = require('browser-sync');
-const webpack = require('webpack');
-const webpackStream = require('webpack-stream');
 
-// Set constants
-const { serverAddress } = require('./config.json')
+const package = require('../package.json')
 
-sass.compiler = require('node-sass');
+// Script
+const rollupConfig = {
+  input: '../src/js/luge.js',
+  plugins: [
+    eslint(),
+    alias({
+      entries: [
+        { find: 'Luge', replacement: path.resolve(__dirname, '../src/js/luge/') },
+        { find: 'Core', replacement: path.resolve(__dirname, '../src/js/luge/core/') },
+        { find: 'Plugins', replacement: path.resolve(__dirname, '../src/js/luge/plugins/') }
+      ]
+    }),
+    babel({
+      babelHelpers: 'bundled',
+      exclude: 'node_modules/**',
+      presets: [
+        ['@babel/preset-env', {
+          targets: '> 1%, not dead',
+          corejs: 3,
+          useBuiltIns: 'usage'
+        }]
+      ]
+    }),
+    nodeResolve(),
+    replace({
+      preventAssignment: true,
+      'VERSION': JSON.stringify(package.version)
+    }),
+    terser()
+  ]
+}
 
-/**
- * Style task
- */
-function styles() {
-  return src('../src/scss/*.scss')
+const writeIife = {
+  file: '../dist/js/luge.js',
+  format: 'iife',
+  name: 'luge'
+}
+
+const writeEsm = {
+  file: '../dist/js/luge.esm.js',
+  format: 'es',
+  name: 'luge'
+}
+
+gulp.task('js', function (done) {
+  return rollup.rollup(rollupConfig)
+  .then(bundle => {
+    bundle.write(writeIife)
+    bundle.write(writeEsm)
+
+    done()
+  })
+});
+
+gulp.task('js-dev', function (done) {
+  return rollup.rollup(rollupConfig)
+  .then(bundle => {
+    bundle.write(writeEsm)
+
+    done()
+  })
+});
+
+// Style
+gulp.task('scss', function () {
+  return gulp.src('../src/scss/*.scss')
     .pipe(sassGlob())
     .pipe(sass().on('error', sass.logError))
-    .pipe(autoprefixer('last 2 version'))
-    .pipe(dest('../dist/css/'))
-    .pipe(browserSync.reload({
-      stream: true
-    }));
-}
+    .pipe(autoprefixer(
+      {
+        env: 'last 2 versions'
+      }
+    ))
+    .pipe(gulp.dest('../dist/css/'));
+});
 
-/**
- * Script task
- */
-function scriptsDev() {
-  return src('../src/js/luge.js')
-    .pipe(webpackStream( require('./webpack.dev.js'), webpack ))
-    .pipe(dest('../dist/js/'))
-    .pipe(browserSync.reload({
-      stream: true
-    }));
-}
+// Watch
+gulp.task('watch', function () {
+  gulp.watch('../src/**/*.js', gulp.task('js-dev'));
+  gulp.watch('../src/**/*.scss', gulp.task('scss'));
+});
 
-function scriptsProd() {
-  return src('../src/js/luge.js')
-    .pipe(webpackStream( require('./webpack.prod.js'), webpack ))
-    .pipe(header('/* eslint-disable */'))
-    .pipe(dest('../dist/js/'));
-}
-
-/**
- * Watch task
- */
-function serve(cb) {
-  // Browser sync
-  browserSync({
-    proxy: serverAddress
-  });
-
-  // Watch .scss files
-  watch('../src/**/*.scss', styles);
-
-  // Watch .js files
-  watch('../src/**/*.js', scriptsDev);
-
-  cb();
-}
-
-exports.build = series(styles, scriptsProd);
-exports.default = serve;
+// Default
+gulp.task('default', gulp.series('js', 'scss'))
+gulp.task('dev', gulp.series('js-dev', 'scss', 'watch'))
