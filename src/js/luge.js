@@ -26,7 +26,8 @@ const luge = {
     once: Emitter.once.bind(Emitter)
   },
   lifecycle: {
-    add: LifeCycle.add.bind(LifeCycle)
+    add: LifeCycle.add.bind(LifeCycle),
+    refresh: LifeCycle.cycle.bind(LifeCycle, 'refresh')
   },
   preloader: {
     add: Preloader.add.bind(Preloader)
@@ -54,7 +55,14 @@ window.luge = luge
 export default luge
 
 // Site init on DOM ready
-document.addEventListener('DOMContentLoaded', LifeCycle.cycle.bind(LifeCycle, 'load'), { once: true })
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', LifeCycle.cycle.bind(LifeCycle, 'load'), { once: true })
+} else {
+  Ticker.nextTick(() => {
+    LifeCycle.cycle('load')
+  },
+  null)
+}
 
 // Output version
 const consoleBaseStyle = 'background-color: #00FFE5; color: black; font: 400 1em monospace; padding: 0.5em 0; '

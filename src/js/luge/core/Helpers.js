@@ -81,6 +81,15 @@ class Helpers {
       return string
     }
   }
+
+  /**
+   * Check if an element is still in the page's body
+   * @param {HTMLElement} node
+   * @returns {Boolean}
+   */
+  static isInPage (node) {
+    return (node === document.body) ? false : document.body.contains(node)
+  }
 }
 
 export default Helpers

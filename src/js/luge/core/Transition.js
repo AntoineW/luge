@@ -28,7 +28,7 @@ class Transition {
     LifeCycle.add('pageOut', this.pageOut.bind(this))
     LifeCycle.add('pageIn', this.pageIn.bind(this), 10, 'transition')
     LifeCycle.add('pageCreate', this.pageCreate.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this), 999)
+    LifeCycle.add('pageKill', this.pageKill.bind(this), 999, 'transition')
   }
 
   /**

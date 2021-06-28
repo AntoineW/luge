@@ -102,9 +102,17 @@ class LottiePlayer extends Plugin {
    */
   pageKill (done) {
     const self = this
+    let elements = []
+
     const oldPage = document.querySelector('[data-lg-page] + [data-lg-page]')
 
-    oldPage.querySelectorAll('[data-lg-lottie]').forEach(element => {
+    if (oldPage) {
+      elements = oldPage.querySelectorAll('[data-lg-lottie]')
+    } else {
+      elements = this.elements
+    }
+
+    elements.forEach(element => {
       element.removeEventListener('revealin', self.play)
       element.removeEventListener('viewportintersect', self.onViewportIntersect)
 
@@ -114,6 +122,7 @@ class LottiePlayer extends Plugin {
 
       if (element.player) {
         element.player.destroy()
+        delete element.player
       }
     })
 

@@ -54,6 +54,15 @@ class LifeCycle {
           'pageIn',
           'reveal'
         ]
+      },
+      refresh: {
+        events: [
+          'pageKill',
+          'pageInit',
+          'pageLoad',
+          'pageIn',
+          'reveal'
+        ]
       }
     }
   }
