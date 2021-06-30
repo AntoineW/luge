@@ -48,9 +48,9 @@ const rollupConfig = {
   ]
 }
 
-const writeIife = {
+const writeUmd = {
   file: '../dist/js/luge.js',
-  format: 'iife',
+  format: 'umd',
   name: 'luge'
 }
 
@@ -63,7 +63,7 @@ const writeEsm = {
 gulp.task('js', function (done) {
   return rollup.rollup(rollupConfig)
   .then(bundle => {
-    bundle.write(writeIife)
+    bundle.write(writeUmd)
     bundle.write(writeEsm)
 
     done()
