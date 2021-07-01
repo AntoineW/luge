@@ -41,6 +41,7 @@ const luge = {
   },
   ticker: {
     add: Ticker.add.bind(Ticker),
+    nextTick: Ticker.nextTick.bind(Ticker),
     remove: Ticker.remove.bind(Ticker),
     tick: Ticker.tick.bind(Ticker)
   },
