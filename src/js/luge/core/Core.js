@@ -14,6 +14,9 @@ class Luge {
         renderer: 'svg',
         subFrame: true
       },
+      mouse: {
+        inertia: 0.1
+      },
       preloader: {
         duration: 0
       },
@@ -114,8 +117,11 @@ class Luge {
    * @param {Event} e Mouse event
    */
   mouseHandler (e) {
-    window.mouseX = e.pageX
-    window.mouseY = e.pageY
+    const mouseX = e.pageX
+    const mouseY = e.pageY - window.unifiedScrollTop
+
+    window.mouseX = mouseX
+    window.mouseY = mouseY
 
     Emitter.emit('mouseMove', e)
   }

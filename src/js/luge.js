@@ -5,11 +5,13 @@ import Polyfill from 'Core/Polyfill'
 
 import Luge from 'Core/Core'
 import Emitter from 'Core/Emitter'
+import MouseObserver from 'Core/MouseObserver'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
 import Transition from 'Core/Transition'
 
 import LottiePlayer from 'Plugins/LottiePlayer'
+import MouseAnimation from 'Plugins/MouseAnimation'
 import Parallax from 'Plugins/Parallax'
 import Preloader from 'Plugins/Preloader'
 import Reveal from 'Plugins/Reveal'
@@ -28,6 +30,10 @@ const luge = {
   lifecycle: {
     add: LifeCycle.add.bind(LifeCycle),
     refresh: LifeCycle.cycle.bind(LifeCycle, 'refresh')
+  },
+  mouseobserver: {
+    add: MouseObserver.add.bind(MouseObserver),
+    remove: MouseObserver.remove.bind(MouseObserver)
   },
   preloader: {
     add: Preloader.add.bind(Preloader)
