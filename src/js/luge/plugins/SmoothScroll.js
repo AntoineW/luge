@@ -68,7 +68,7 @@ class SmoothScroll extends Plugin {
 
       this.containers = null
 
-      Ticker.remove(this.tick)
+      Ticker.remove(this.tick, this)
     }
 
     this.resizeHandler()
