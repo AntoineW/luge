@@ -136,9 +136,9 @@ class ScrollObserver {
       if (position !== 'in') {
         element.dispatchEvent(new CustomEvent('viewportout'))
       }
-    }
 
-    if (progress > 0 && progress < 1) {
+      element.dispatchEvent(new CustomEvent('scrollprogress'))
+    } else if (progress > 0 && progress < 1) {
       element.dispatchEvent(new CustomEvent('scrollprogress'))
     }
   }
