@@ -47,7 +47,7 @@ class Reveal extends Plugin {
       root: String,
       stagger: String,
       multiple: Boolean,
-      delay: Number
+      delay: [Number, 0]
     }
   }
 
