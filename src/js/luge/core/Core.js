@@ -54,11 +54,11 @@ class Luge {
     this.clientWidth = 1
 
     // Scroll
-    window.scrollTop = window.pageYOffset
+    window.scrollTop = window.scrollY
     window.unifiedScrollTop = window.scrollTop
     window.maxScrollTop = 1
     window.scrollProgress = 0
-    this.previousScrollTop = window.pageYOffset
+    this.previousScrollTop = window.scrollY
     this.isScrolling = false
 
     // Mouse
