@@ -263,6 +263,7 @@ class Transition {
     })
     window.scrollTop = 0
     window.smoothScrollTop = 0
+    window.unifiedScrollTop = 0
 
     Emitter.emit('pageTransition', html)
 
