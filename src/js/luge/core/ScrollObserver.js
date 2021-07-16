@@ -75,8 +75,8 @@ class ScrollObserver {
    */
   setMaxScrollTop () {
     window.maxScrollTop = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
+      document.body ? document.body.scrollHeight : 0,
+      document.body ? document.body.offsetHeight : 0,
       document.documentElement.clientHeight,
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
