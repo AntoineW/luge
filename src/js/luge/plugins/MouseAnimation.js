@@ -32,7 +32,7 @@ class MouseAnimation extends Plugin {
 
     Ticker.add(this.tick, this)
 
-    this.getMouseSpeed()
+    this.getMouseMovement()
   }
 
   /**
@@ -125,9 +125,9 @@ class MouseAnimation extends Plugin {
   }
 
   /**
-   * Calculate mouse speed
+   * Get mouse movement
    */
-  getMouseSpeed () {
+  getMouseMovement () {
     const distX = this.mouse.x - window.mouseX
     const distY = this.mouse.y - window.mouseY
     const dist = Math.hypot(distX, distY)
@@ -137,12 +137,28 @@ class MouseAnimation extends Plugin {
       window.mouseSpeed = 0
     }
 
+    if (dist > 1) {
+      const angle = Math.atan2(distY, distX) * (180 / Math.PI) + 180
+
+      window.mouseAngle = angle
+
+      if (angle >= 45 && angle < 135) {
+        window.mouseDirection = 'down'
+      } else if (angle >= 135 && angle < 225) {
+        window.mouseDirection = 'left'
+      } else if (angle >= 225 && angle < 315) {
+        window.mouseDirection = 'up'
+      } else {
+        window.mouseDirection = 'right'
+      }
+    }
+
     this.mouse = {
       x: window.mouseX,
       y: window.mouseY
     }
 
-    setTimeout(this.getMouseSpeed.bind(this), 20)
+    setTimeout(this.getMouseMovement.bind(this), 20)
   }
 
   /**
