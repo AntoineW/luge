@@ -5,6 +5,8 @@ class ScrollObserver {
   constructor () {
     this.elements = []
 
+    this.setMaxScrollTop()
+
     LifeCycle.add('pageKill', this.pageKill.bind(this))
     LifeCycle.add('pageInit', this.init.bind(this), 20)
 
@@ -61,6 +63,17 @@ class ScrollObserver {
   setBounding () {
     const self = this
 
+    this.setMaxScrollTop()
+
+    this.elements.forEach(element => {
+      self.setElementBounding(element)
+    })
+  }
+
+  /**
+   * Set max scroll top
+   */
+  setMaxScrollTop () {
     window.maxScrollTop = Math.max(
       document.body.scrollHeight,
       document.body.offsetHeight,
@@ -68,10 +81,6 @@ class ScrollObserver {
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
     ) - window.innerHeight
-
-    this.elements.forEach(element => {
-      self.setElementBounding(element)
-    })
   }
 
   /**
