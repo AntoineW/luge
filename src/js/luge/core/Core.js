@@ -163,11 +163,7 @@ class Luge {
    * Scroll handler
    */
   scrollHandler () {
-    if (window.browser.is('desktop') && window.pageYOffset) {
-      window.scrollTop = window.pageYOffset
-    } else {
-      window.scrollTop = window.scrollY
-    }
+    window.scrollTop = window.scrollY
 
     if (!this.isScrolling) {
       this.scrollStart()
