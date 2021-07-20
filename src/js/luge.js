@@ -1,7 +1,7 @@
 // Imports
 import LifeCycle from 'Core/LifeCycle'
 
-import Polyfill from 'Core/Polyfill'
+// import Polyfill from 'Core/Polyfill'
 
 import Luge from 'Core/Core'
 import Emitter from 'Core/Emitter'
