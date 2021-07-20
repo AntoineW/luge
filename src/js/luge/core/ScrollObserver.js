@@ -5,6 +5,8 @@ class ScrollObserver {
   constructor () {
     this.elements = []
 
+    this.setMaxScrollTop()
+
     LifeCycle.add('pageKill', this.pageKill.bind(this))
     LifeCycle.add('pageInit', this.init.bind(this), 20)
 
@@ -61,17 +63,24 @@ class ScrollObserver {
   setBounding () {
     const self = this
 
-    window.maxScrollTop = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.clientHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    ) - window.innerHeight
+    this.setMaxScrollTop()
 
     this.elements.forEach(element => {
       self.setElementBounding(element)
     })
+  }
+
+  /**
+   * Set max scroll top
+   */
+  setMaxScrollTop () {
+    window.maxScrollTop = Math.max(
+      document.body ? document.body.scrollHeight : 0,
+      document.body ? document.body.offsetHeight : 0,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    ) - window.innerHeight
   }
 
   /**
@@ -136,9 +145,9 @@ class ScrollObserver {
       if (position !== 'in') {
         element.dispatchEvent(new CustomEvent('viewportout'))
       }
-    }
 
-    if (progress > 0 && progress < 1) {
+      element.dispatchEvent(new CustomEvent('scrollprogress'))
+    } else if (progress > 0 && progress < 1) {
       element.dispatchEvent(new CustomEvent('scrollprogress'))
     }
   }

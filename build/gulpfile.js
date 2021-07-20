@@ -7,6 +7,7 @@ const { babel } = require('@rollup/plugin-babel');
 const eslint = require('@rollup/plugin-eslint');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const replace = require('@rollup/plugin-replace');
+const commonjs = require('@rollup/plugin-commonjs');
 const { terser } = require('rollup-plugin-terser');
 
 const sass = require('gulp-sass')(require('node-sass'));
@@ -29,17 +30,24 @@ const rollupConfig = {
     }),
     babel({
       babelHelpers: 'bundled',
-      exclude: 'node_modules/**',
+      exclude: [
+        /node_modules/,
+        /\/core-js\//
+      ],
       presets: [
         ['@babel/preset-env', {
           targets: '> 1%, not dead',
-          corejs: 3,
+          corejs: {
+            version: '3.15.2',
+            proposals: true
+          },
           useBuiltIns: 'usage'
         }]
       ],
       plugins: ['@babel/plugin-proposal-nullish-coalescing-operator']
     }),
     nodeResolve(),
+    commonjs(),
     replace({
       preventAssignment: true,
       'VERSION': JSON.stringify(package.version)
@@ -73,7 +81,7 @@ gulp.task('js', function (done) {
 gulp.task('js-dev', function (done) {
   return rollup.rollup(rollupConfig)
   .then(bundle => {
-    bundle.write(writeEsm)
+    bundle.write({...writeUmd, sourcemap: true})
 
     done()
   })

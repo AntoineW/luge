@@ -14,6 +14,9 @@ class Luge {
         renderer: 'svg',
         subFrame: true
       },
+      mouse: {
+        inertia: 0.1
+      },
       preloader: {
         duration: 0
       },
@@ -51,11 +54,11 @@ class Luge {
     this.clientWidth = 1
 
     // Scroll
-    window.scrollTop = window.pageYOffset
+    window.scrollTop = window.scrollY
     window.unifiedScrollTop = window.scrollTop
     window.maxScrollTop = 1
     window.scrollProgress = 0
-    this.previousScrollTop = window.pageYOffset
+    this.previousScrollTop = window.scrollY
     this.isScrolling = false
 
     // Mouse
@@ -114,8 +117,11 @@ class Luge {
    * @param {Event} e Mouse event
    */
   mouseHandler (e) {
-    window.mouseX = e.pageX
-    window.mouseY = e.pageY
+    const mouseX = e.pageX
+    const mouseY = e.pageY - window.unifiedScrollTop
+
+    window.mouseX = mouseX
+    window.mouseY = mouseY
 
     Emitter.emit('mouseMove', e)
   }
@@ -157,11 +163,7 @@ class Luge {
    * Scroll handler
    */
   scrollHandler () {
-    if (window.browser.is('desktop') && window.pageYOffset) {
-      window.scrollTop = window.pageYOffset
-    } else {
-      window.scrollTop = window.scrollY
-    }
+    window.scrollTop = window.scrollY
 
     if (!this.isScrolling) {
       this.scrollStart()
