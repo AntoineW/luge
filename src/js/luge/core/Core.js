@@ -118,7 +118,7 @@ class Luge {
    */
   mouseHandler (e) {
     const mouseX = e.pageX
-    const mouseY = e.pageY - window.unifiedScrollTop
+    const mouseY = e.pageY - window.scrollTop
 
     window.mouseX = mouseX
     window.mouseY = mouseY

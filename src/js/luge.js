@@ -10,6 +10,7 @@ import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
 import Transition from 'Core/Transition'
 
+import Cursor from 'Plugins/Cursor'
 import LottiePlayer from 'Plugins/LottiePlayer'
 import MouseAnimation from 'Plugins/MouseAnimation'
 import Parallax from 'Plugins/Parallax'
@@ -21,6 +22,7 @@ import Sticky from 'Plugins/Sticky'
 
 // Public methods
 const luge = {
+  cursor: {},
   emitter: {
     emit: Emitter.emit.bind(Emitter),
     off: Emitter.off.bind(Emitter),

@@ -1,0 +1,13 @@
+/* Cursor */
+.lg-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1em;
+  height: 1em;
+
+  background: black;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
