@@ -1,6 +1,7 @@
 import Emitter from 'Core/Emitter'
 import Helpers from 'Core/Helpers'
 import LifeCycle from 'Core/LifeCycle'
+import Ticker from 'Core/Ticker'
 
 class MouseObserver {
   constructor () {
@@ -8,6 +9,8 @@ class MouseObserver {
 
     LifeCycle.add('pageKill', this.pageKill.bind(this))
     LifeCycle.add('pageInit', this.init.bind(this), 20)
+
+    Ticker.add(this.tick, this)
 
     this.bindEvents()
   }
@@ -56,6 +59,8 @@ class MouseObserver {
     this.elements.forEach(element => {
       self.setElementPosition(element)
     })
+
+    window.mouseLastScrollTop = window.scrollTop
   }
 
   /**
@@ -132,6 +137,20 @@ class MouseObserver {
   remove (element) {
     if (this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
+    }
+  }
+
+  /**
+   * Raf animation
+   */
+  tick () {
+    const self = this
+    const diffScroll = window.scrollTop - window.mouseLastScrollTop
+
+    if (diffScroll !== 0) {
+      this.elements.forEach(element => {
+        self.setElementPosition(element)
+      })
     }
   }
 }

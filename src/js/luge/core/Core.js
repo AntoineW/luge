@@ -64,6 +64,7 @@ class Luge {
     // Mouse
     window.mouseX = 0
     window.mouseY = 0
+    window.mouseLastScrollTop = 0
 
     // Browser detect
     window.browser = Bowser.getParser(window.navigator.userAgent)
