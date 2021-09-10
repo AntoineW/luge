@@ -17,6 +17,9 @@ class Luge {
       mouse: {
         inertia: 0.1
       },
+      parallax: {
+        inertia: 0.1
+      },
       preloader: {
         duration: 0
       },

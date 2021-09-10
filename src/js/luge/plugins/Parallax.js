@@ -1,6 +1,8 @@
 import LifeCycle from 'Core/LifeCycle'
+import Luge from 'Core/Core'
 import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
+import Ticker from 'Core/Ticker'
 
 class Parallax extends Plugin {
   /**
@@ -20,6 +22,8 @@ class Parallax extends Plugin {
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
+
+    Ticker.add(this.tick, this)
   }
 
   /**
@@ -30,7 +34,8 @@ class Parallax extends Plugin {
       root: String,
       disable: String,
       amplitude: [String, 1],
-      anchor: String
+      anchor: String,
+      inertia: [String, Luge.settings.parallax.inertia]
     }
   }
 
@@ -109,6 +114,9 @@ class Parallax extends Plugin {
         element.style.overflow = 'hidden'
       }
 
+      element.luge.parallax.movement = 0
+      element.luge.parallax.smoothMovement = 0
+
       this.elements.push(element)
 
       this.moveElement(element)
@@ -135,6 +143,10 @@ class Parallax extends Plugin {
     this.moveElement(e.target)
   }
 
+  /**
+   * Move element
+   * @param {HTMLElement} element Element to move
+   */
   moveElement (element) {
     let progress = 1 - element.scrollProgress * 2
 
@@ -145,14 +157,25 @@ class Parallax extends Plugin {
     }
 
     if (element.luge.parallax.root === 'media') {
-      const movement = (element.luge.parallax.amplitude * 5) * progress
-
-      element.querySelector('img, svg, video').style.transform = 'translate3d(0, ' + movement + '%, 0) scale(1.' + (String(Math.abs(element.luge.parallax.amplitude)).replace('.', '')) + ')'
+      element.luge.parallax.movement = (element.luge.parallax.amplitude * 5) * progress
     } else {
-      const movement = element.clientHeight * progress * element.luge.parallax.amplitude / 2
-
-      element.style.transform = 'translate3d(0, ' + movement + 'px, 0)'
+      element.luge.parallax.movement = element.clientHeight * progress * element.luge.parallax.amplitude / 2
     }
+  }
+
+  /**
+   * Tick
+   */
+  tick () {
+    this.elements.forEach(element => {
+      element.luge.parallax.smoothMovement += (element.luge.parallax.movement - element.luge.parallax.smoothMovement) * element.luge.parallax.inertia
+
+      if (element.luge.parallax.root === 'media') {
+        element.querySelector('img, svg, video').style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + '%, 0) scale(1.' + (String(Math.abs(element.luge.parallax.amplitude)).replace('.', '')) + ')'
+      } else {
+        element.style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + 'px, 0)'
+      }
+    })
   }
 }
 
