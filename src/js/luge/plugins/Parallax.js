@@ -110,8 +110,9 @@ class Parallax extends Plugin {
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
-      if (element.luge.parallax.root === 'media') {
+      if (element.luge.parallax.root === 'child') {
         element.style.overflow = 'hidden'
+        element.luge.parallax.child = element.firstElementChild
       }
 
       element.luge.parallax.movement = 0
@@ -156,7 +157,7 @@ class Parallax extends Plugin {
       progress -= 1
     }
 
-    if (element.luge.parallax.root === 'media') {
+    if (element.luge.parallax.root === 'child') {
       element.luge.parallax.movement = (element.luge.parallax.amplitude * 5) * progress
     } else {
       element.luge.parallax.movement = element.clientHeight * progress * element.luge.parallax.amplitude / 2
@@ -170,8 +171,8 @@ class Parallax extends Plugin {
     this.elements.forEach(element => {
       element.luge.parallax.smoothMovement += (element.luge.parallax.movement - element.luge.parallax.smoothMovement) * element.luge.parallax.inertia
 
-      if (element.luge.parallax.root === 'media') {
-        element.querySelector('img, svg, video').style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + '%, 0) scale(1.' + (String(Math.abs(element.luge.parallax.amplitude)).replace('.', '')) + ')'
+      if (element.luge.parallax.root === 'child') {
+        element.luge.parallax.child.style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + '%, 0) scale(1.' + (String(Math.abs(element.luge.parallax.amplitude)).replace('.', '')) + ')'
       } else {
         element.style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + 'px, 0)'
       }
