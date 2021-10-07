@@ -3,6 +3,7 @@ import Emitter from 'Core/Emitter'
 import Luge from 'Core/Core'
 import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
+import Ticker from 'Core/Ticker'
 
 class LottiePlayer extends Plugin {
   /**
@@ -202,46 +203,42 @@ class LottiePlayer extends Plugin {
 
     if (attributes.scroll) {
       element.addEventListener('scrollprogress', this.onScrollProgress)
-    } else {
-      if (attributes.loop && attributes.reverse) {
-        element.player.addEventListener('enterFrame', function () {
-          if (element.player.totalFrames > 0) {
-            const currentFrame = Math.round(element.player.currentFrame)
+    } else if (attributes.loop) {
+      element.player.addEventListener('enterFrame', function () {
+        if (element.player.totalFrames > 0) {
+          const currentFrame = Math.round(element.player.currentFrame)
 
-            if (element.player.playDirection === 1) {
-              if (currentFrame === element.player.totalFrames - 1) {
-                element.player.pause()
+          if (element.player.playDirection === 1) {
+            if (currentFrame === element.player.totalFrames - 1) {
+              element.player.pause()
 
-                if (attributes.reverse) {
-                  setTimeout(() => {
-                    element.player.setDirection(-1)
-                    element.player.goToAndPlay(element.player.totalFrames, true)
+              if (attributes.reverse) {
+                Ticker.nextTick(() => {
+                  element.player.setDirection(-1)
+                  element.player.goToAndPlay(element.player.totalFrames, true)
 
-                    self.setPlayerStateClasses(element, 'backward')
-                  }, 0)
-                } else if (attributes.loop) {
-                  setTimeout(() => {
-                    element.player.goToAndPlay(attributes.loopFrame, true)
-                  }, 0)
-                }
-              }
-            } else {
-              if (currentFrame === attributes.loopFrame) {
-                element.player.pause()
-
-                if (attributes.loop) {
-                  setTimeout(() => {
-                    element.player.setDirection(1)
-                    element.player.goToAndPlay(attributes.loopFrame, true)
-
-                    self.setPlayerStateClasses(element, 'forward')
-                  }, 0)
-                }
+                  self.setPlayerStateClasses(element, 'backward')
+                }, this)
+              } else {
+                Ticker.nextTick(() => {
+                  element.player.goToAndPlay(attributes.loopFrame, true)
+                }, this)
               }
             }
+          } else {
+            if (currentFrame === attributes.loopFrame) {
+              element.player.pause()
+
+              Ticker.nextTick(() => {
+                element.player.setDirection(1)
+                element.player.goToAndPlay(attributes.loopFrame, true)
+
+                self.setPlayerStateClasses(element, 'forward')
+              }, this)
+            }
           }
-        })
-      }
+        }
+      })
     }
 
     // Set methods
