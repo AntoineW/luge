@@ -11,7 +11,8 @@ class Luge {
     // Options
     this.settings = {
       cursor: {
-        disabled: ['tablet', 'mobile']
+        disabled: ['tablet', 'mobile'],
+        trailLength: 10
       },
       lottie: {
         renderer: 'svg',

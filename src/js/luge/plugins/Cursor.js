@@ -1,5 +1,5 @@
 import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
+import Luge from 'Core/Core'
 import Plugin from 'Core/Plugin'
 import Ticker from 'Core/Ticker'
 
@@ -16,6 +16,7 @@ class Cursor extends Plugin {
 
     this.cursors = []
     this.pointers = []
+    this.trails = []
 
     this.hoverTags = ['a', 'button']
 
@@ -34,6 +35,7 @@ class Cursor extends Plugin {
     this.pluginAttributes = {
       root: String,
       inertia: [Number, 1],
+      length: [Number, Luge.settings.cursor.trailLength],
       hide: Boolean
     }
   }
@@ -89,6 +91,47 @@ class Cursor extends Plugin {
           self.pointers.push(pointer)
         })
 
+        // Trails
+        const trails = cursor.querySelectorAll('[data-lg-cursor-trail')
+        trails.forEach(trail => {
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+          svg.appendChild(path)
+
+          trail.appendChild(svg)
+
+          trail.luge = {
+            cursor: {
+              position: {
+                x: 0,
+                y: 0
+              },
+              smoothPosition: {
+                x: 0,
+                y: 0
+              },
+              points: [],
+              path: path
+            }
+          }
+
+          if (trail.hasAttribute('data-lg-cursor-inertia')) {
+            trail.luge.cursor.inertia = Number(trail.getAttribute('data-lg-cursor-inertia'))
+          } else {
+            trail.luge.cursor.inertia = attributes.inertia
+          }
+
+          if (trail.hasAttribute('data-lg-cursor-length')) {
+            trail.luge.cursor.length = Number(trail.getAttribute('data-lg-cursor-length'))
+          } else {
+            trail.luge.cursor.length = attributes.length
+          }
+
+          trail.classList.add('lg-cursor-trail')
+
+          self.trails.push(trail)
+        })
+
         cursor.classList.add('lg-cursor')
 
         this.cursors.push(cursor)
@@ -105,6 +148,7 @@ class Cursor extends Plugin {
   pageKill (done) {
     this.cursors = []
     this.pointers = []
+    this.trails = []
 
     done()
   }
@@ -136,8 +180,10 @@ class Cursor extends Plugin {
   /**
    * Raf animation
    */
-  tick () {
+  tick (timestamp) {
+    // Pointers
     this.pointers.forEach(pointer => {
+      // Get position
       const position = pointer.luge.cursor.position
       const smoothPosition = pointer.luge.cursor.smoothPosition
 
@@ -148,6 +194,86 @@ class Cursor extends Plugin {
       smoothPosition.y += (position.y - smoothPosition.y) * pointer.luge.cursor.inertia
 
       pointer.style.transform = 'translate3d(' + smoothPosition.x + 'px, ' + smoothPosition.y + 'px, 0)'
+    })
+
+    // Trails
+    this.trails.forEach(trail => {
+      // Get position
+      const position = trail.luge.cursor.position
+      const smoothPosition = trail.luge.cursor.smoothPosition
+
+      position.x = window.mouseX
+      position.y = window.mouseY
+
+      smoothPosition.x += (position.x - smoothPosition.x) * trail.luge.cursor.inertia
+      smoothPosition.y += (position.y - smoothPosition.y) * trail.luge.cursor.inertia
+
+      // Update points
+      const points = trail.luge.cursor.points
+
+      const point = {
+        x: smoothPosition.x,
+        y: smoothPosition.y
+      }
+      points.push(point)
+
+      if (points.length > trail.luge.cursor.length) {
+        points.shift()
+      }
+
+      // Draw smooth line # https://francoisromain.medium.com/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
+      let d = ''
+      let trailLength = 0
+
+      const svgPath = (points, command) => {
+        const d = points.reduce((acc, point, i, a) => i === 0
+
+          ? `M ${point.x},${point.y}`
+
+          : `${acc} ${command(point, i, a)}`
+        , '')
+        return `${d}`
+      }
+
+      const line = (pointA, pointB) => {
+        const lengthX = pointB.x - pointA.x
+        const lengthY = pointB.y - pointA.y
+        return {
+          length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
+          angle: Math.atan2(lengthY, lengthX)
+        }
+      }
+
+      const controlPoint = (current, previous, next, reverse) => {
+        const p = previous || current
+        const n = next || current
+
+        const smoothing = 0.2
+
+        const o = line(p, n)
+
+        trailLength += o.length
+
+        const angle = o.angle + (reverse ? Math.PI : 0)
+        const length = o.length * smoothing
+
+        const x = current.x + Math.cos(angle) * length
+        const y = current.y + Math.sin(angle) * length
+        return [x, y]
+      }
+
+      const bezierCommand = (point, i, a) => {
+        const [cpsX, cpsY] = controlPoint(a[i - 1], a[i - 2], point)
+
+        const [cpeX, cpeY] = controlPoint(point, a[i - 1], a[i + 1], true)
+        return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x},${point.y}`
+      }
+
+      d = svgPath(points, bezierCommand)
+
+      trail.luge.cursor.path.setAttribute('d', d)
+
+      trail.style.setProperty('--length', trailLength)
     })
   }
 }
