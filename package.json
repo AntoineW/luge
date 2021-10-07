@@ -1,15 +1,15 @@
 {
   "name": "@waaark/luge",
-  "version": "0.5.2-beta",
-  "description": "Front-end animation plugin for uncreative developerst",
-  "author": "Waaark <hello@waaark.com> (https://waaark.com)",
+  "version": "0.6.0-beta",
+  "description": "Front-end animation plugin for uncreative developers",
+  "author": "Antoine Wodniack <hello@wodniack.dev> (https://wodniack.dev)",
   "homepage": "https://luge.cool",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Waaark/luge.git"
+    "url": "https://github.com/AntoineW/luge.git"
   },
   "bug": {
-    "url": "https://github.com/Waaark/luge/issues",
+    "url": "https://github.com/AntoineW/luge/issues",
     "email": "hello@luge.cool"
   },
   "license": "GPL-3.0-only",
