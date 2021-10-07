@@ -14,7 +14,10 @@ class Cursor extends Plugin {
       return
     }
 
-    this.elements = []
+    this.cursors = []
+    this.pointers = []
+
+    this.hoverTags = ['a', 'button']
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
@@ -30,7 +33,8 @@ class Cursor extends Plugin {
   setAttributes () {
     this.pluginAttributes = {
       root: String,
-      inertia: [Number, 1]
+      inertia: [Number, 1],
+      hide: Boolean
     }
   }
 
@@ -38,7 +42,8 @@ class Cursor extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('resize', this.resizeHandler, this)
+    document.documentElement.addEventListener('mouseenter', this.hoverHandler.bind(this), { capture: true, passive: true })
+    document.documentElement.addEventListener('mouseleave', this.hoverHandler.bind(this), { capture: true, passive: true })
   }
 
   /**
@@ -46,26 +51,47 @@ class Cursor extends Plugin {
    * @param {Function} done Done function
    */
   pageInit (done) {
-    const elements = document.querySelectorAll('[data-lg-cursor]')
+    const self = this
+    const cursors = document.querySelectorAll('[data-lg-cursor]')
 
-    if (elements.length > 0) {
-      elements.forEach(element => {
-        const attributes = this.getAttributes(element)
+    if (cursors.length > 0) {
+      cursors.forEach(cursor => {
+        const attributes = this.getAttributes(cursor)
 
-        element.luge.cursor.position = {
-          x: 0,
-          y: 0
-        }
-        element.luge.cursor.smoothPosition = {
-          x: 0,
-          y: 0
+        if (attributes.hide) {
+          document.documentElement.classList.add('lg-cursor-hide')
         }
 
-        element.classList.add('lg-cursor')
+        // Pointers
+        const pointers = cursor.querySelectorAll('[data-lg-cursor-pointer')
+        pointers.forEach(pointer => {
+          pointer.luge = {
+            cursor: {
+              position: {
+                x: 0,
+                y: 0
+              },
+              smoothPosition: {
+                x: 0,
+                y: 0
+              }
+            }
+          }
 
-        this.getElementSize(element)
+          if (pointer.hasAttribute('data-lg-cursor-inertia')) {
+            pointer.luge.cursor.inertia = Number(pointer.getAttribute('data-lg-cursor-inertia'))
+          } else {
+            pointer.luge.cursor.inertia = attributes.inertia
+          }
 
-        this.elements.push(element)
+          pointer.classList.add('lg-cursor-pointer')
+
+          self.pointers.push(pointer)
+        })
+
+        cursor.classList.add('lg-cursor')
+
+        this.cursors.push(cursor)
       })
     }
 
@@ -77,50 +103,51 @@ class Cursor extends Plugin {
    * @param {Function} done Done function
    */
   pageKill (done) {
-    this.elements = []
+    this.cursors = []
+    this.pointers = []
 
     done()
   }
 
   /**
-   * Resize handler
+   * Hover handler
    */
-  resizeHandler () {
-    const self = this
+  hoverHandler (e) {
+    const element = e.target
+    const tag = element.tagName.toLowerCase()
+    const style = element.getAttribute('data-lg-hover')
+    let hover = null
 
-    if (this.elements) {
-      this.elements.forEach(function (element) {
-        self.getElementSize(element)
+    if (this.hoverTags.includes(tag) || style !== null) {
+      hover = (e.type === 'mouseenter')
+    }
+
+    if (hover !== null) {
+      this.cursors.forEach(cursor => {
+        cursor.classList.toggle('lg-cursor--hover', hover)
+
+        if (style !== null && style !== '') {
+          cursor.classList.toggle('lg-cursor--hover--' + style, hover)
+        }
       })
     }
-  }
-
-  /**
-   * Get element size
-   */
-  getElementSize (element) {
-    element.luge.cursor.width = element.offsetWidth
-    element.luge.cursor.height = element.offsetHeight
-
-    element.luge.cursor.halfWidth = element.luge.cursor.width / 2
-    element.luge.cursor.halfHeight = element.luge.cursor.height / 2
   }
 
   /**
    * Raf animation
    */
   tick () {
-    this.elements.forEach(element => {
-      const position = element.luge.cursor.position
-      const smoothPosition = element.luge.cursor.smoothPosition
+    this.pointers.forEach(pointer => {
+      const position = pointer.luge.cursor.position
+      const smoothPosition = pointer.luge.cursor.smoothPosition
 
-      position.x = window.mouseX - element.luge.cursor.halfWidth
-      position.y = window.mouseY - element.luge.cursor.halfHeight
+      position.x = window.mouseX
+      position.y = window.mouseY
 
-      smoothPosition.x += (position.x - smoothPosition.x) * element.luge.cursor.inertia
-      smoothPosition.y += (position.y - smoothPosition.y) * element.luge.cursor.inertia
+      smoothPosition.x += (position.x - smoothPosition.x) * pointer.luge.cursor.inertia
+      smoothPosition.y += (position.y - smoothPosition.y) * pointer.luge.cursor.inertia
 
-      element.style.transform = 'translate3d(' + smoothPosition.x + 'px, ' + smoothPosition.y + 'px, 0)'
+      pointer.style.transform = 'translate3d(' + smoothPosition.x + 'px, ' + smoothPosition.y + 'px, 0)'
     })
   }
 }

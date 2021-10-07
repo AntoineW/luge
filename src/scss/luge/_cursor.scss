@@ -3,11 +3,61 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 1em;
-  height: 1em;
 
-  background: black;
-  border-radius: 50%;
   pointer-events: none;
+  z-index: 100;
+
+  &--hover {
+    .lg-cursor-pointer:before {
+      transform: scale(2);
+    }
+
+    &--color {
+      .lg-cursor-pointer:nth-child(2):before {
+        background-color: cyan;
+      }
+    }
+  }
+}
+
+.lg-cursor-pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+
   will-change: transform;
+  z-index: 1;
+
+  &:before {
+    display: block;
+    margin: -6px 0 0 -6px;
+    width: 12px;
+    height: 12px;
+
+    background-color: black;
+    border-radius: 50%;
+    content: '';
+    opacity: 0.5;
+    transition: transform 0.2s ease(in-out-cubic), opacity 0.2s linear, background 0.2s linear;
+  }
+
+  &:nth-child(1) {
+    z-index: 2;
+
+    &:before {
+      margin: -3px 0 0 -3px;
+      width: 6px;
+      height: 6px;
+
+      background-color: white;
+      opacity: 1;
+    }
+  }
+}
+
+html.lg-cursor-hide {
+  &,
+  * {
+    cursor: none !important;
+  }
 }

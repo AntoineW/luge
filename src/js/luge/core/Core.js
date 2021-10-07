@@ -10,6 +10,9 @@ class Luge {
   constructor () {
     // Options
     this.settings = {
+      cursor: {
+        disabled: ['tablet', 'mobile']
+      },
       lottie: {
         renderer: 'svg',
         subFrame: true
