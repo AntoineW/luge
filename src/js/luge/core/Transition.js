@@ -261,7 +261,7 @@ class Transition {
     window.scroll({
       top: 0,
       left: 0,
-      behavior: 'auto'
+      behavior: 'instant'
     })
     window.scrollTop = 0
     window.smoothScrollTop = 0
