@@ -65,6 +65,8 @@ class LifeCycle {
         ]
       }
     }
+
+    this.debug = false
   }
 
   /**
@@ -74,6 +76,10 @@ class LifeCycle {
   cycle (cycleName) {
     if (this.cycles[cycleName]) {
       this.cycles[cycleName].current = 0
+
+      if (this.debug) {
+        console.log('Start cycle: ' + cycleName)
+      }
 
       this.proceed(cycleName)
     }
@@ -100,6 +106,9 @@ class LifeCycle {
       }
     } else {
       // Cycle ended
+      if (this.debug) {
+        console.log(cycleName + ' cycle ended')
+      }
     }
   }
 
@@ -171,6 +180,10 @@ class LifeCycle {
 
     // Call hooked callbacks
     if (this.events[eventName].callbacks.length > 0) {
+      if (this.debug) {
+        console.log('Do event: ' + eventName + ' (' + cycleName + ' cycle)')
+      }
+
       const callbacks = this.events[eventName].callbacks.sort((a, b) => {
         return a.position - b.position
       })
@@ -194,10 +207,22 @@ class LifeCycle {
   done (cycleName, eventName) {
     this.events[eventName].done++
 
+    if (this.debug) {
+      console.log('Done event: ' + eventName + ' ' + this.events[eventName].done + '/' + this.events[eventName].callbacks.length + ' (' + cycleName + ' cycle)')
+    }
+
     // All callback are done, call next action
     if (this.events[eventName].done >= this.events[eventName].callbacks.length) {
       this.next(cycleName, eventName)
     }
+  }
+
+  /**
+   * Enable debug
+   * @param {Boolean} value Enable debug
+   */
+  enableDebug (value = true) {
+    this.debug = value
   }
 }
 
