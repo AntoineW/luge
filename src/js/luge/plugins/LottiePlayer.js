@@ -244,6 +244,7 @@ class LottiePlayer extends Plugin {
     // Set methods
     element.play = this.play.bind(this, element)
     element.pause = this.pause.bind(this, element)
+    element.stop = this.stop.bind(this, element)
 
     // Loaded
     element.player.addEventListener('DOMLoaded', () => {
@@ -313,6 +314,17 @@ class LottiePlayer extends Plugin {
   pause (element) {
     if (element && element.player) {
       element.player.pause()
+
+      this.setPlayerStateClasses(element, false)
+    }
+  }
+
+  /**
+   * Stop
+   */
+  stop (element) {
+    if (element && element.player) {
+      element.player.stop()
 
       this.setPlayerStateClasses(element, false)
     }

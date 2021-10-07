@@ -1,7 +1,7 @@
 // Imports
 import LifeCycle from 'Core/LifeCycle'
 
-import Polyfill from 'Core/Polyfill'
+// import Polyfill from 'Core/Polyfill'
 
 import Luge from 'Core/Core'
 import Emitter from 'Core/Emitter'
@@ -10,6 +10,7 @@ import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
 import Transition from 'Core/Transition'
 
+import Cursor from 'Plugins/Cursor'
 import LottiePlayer from 'Plugins/LottiePlayer'
 import MouseAnimation from 'Plugins/MouseAnimation'
 import Parallax from 'Plugins/Parallax'
@@ -21,6 +22,7 @@ import Sticky from 'Plugins/Sticky'
 
 // Public methods
 const luge = {
+  cursor: {},
   emitter: {
     emit: Emitter.emit.bind(Emitter),
     off: Emitter.off.bind(Emitter),
@@ -29,7 +31,8 @@ const luge = {
   },
   lifecycle: {
     add: LifeCycle.add.bind(LifeCycle),
-    refresh: LifeCycle.cycle.bind(LifeCycle, 'refresh')
+    refresh: LifeCycle.cycle.bind(LifeCycle, 'refresh'),
+    debug: LifeCycle.enableDebug.bind(LifeCycle)
   },
   mouseobserver: {
     add: MouseObserver.add.bind(MouseObserver),
@@ -56,6 +59,8 @@ const luge = {
   },
   settings: Luge.setSettings.bind(Luge)
 }
+
+// luge.lifecycle.debug()
 
 window.luge = luge
 

@@ -59,6 +59,8 @@ class Transition {
 
     if (href &&
       href.indexOf('#') !== 0 &&
+      href.indexOf('tel') !== 0 &&
+      href.indexOf('mailto') !== 0 &&
       !element.closest('#wpadminbar') &&
       element.getAttribute('data-lg-transition') !== 'disabled' &&
       element.getAttribute('target') !== '_blank') {
@@ -259,7 +261,7 @@ class Transition {
     window.scroll({
       top: 0,
       left: 0,
-      behavior: 'auto'
+      behavior: 'instant'
     })
     window.scrollTop = 0
     window.smoothScrollTop = 0

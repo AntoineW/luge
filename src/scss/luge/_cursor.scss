@@ -1,0 +1,94 @@
+/* Cursor */
+.lg-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+  z-index: 100;
+
+  &--hover {
+    .lg-cursor-pointer:before {
+      transform: scale(2);
+    }
+
+    &--color {
+      .lg-cursor-pointer:nth-child(2):before {
+        background-color: cyan;
+      }
+    }
+  }
+}
+
+.lg-cursor-pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  will-change: transform;
+  z-index: 2;
+
+  &:before {
+    display: block;
+    margin: -12px 0 0 -12px;
+    width: 24px;
+    height: 24px;
+
+    background-color: black;
+    border-radius: 50%;
+    content: '';
+    opacity: 0.25;
+    transition: transform 0.2s ease(in-out-cubic), opacity 0.2s linear, background 0.2s linear;
+  }
+
+  &:nth-child(1) {
+    z-index: 3;
+
+    &:before {
+      margin: -4px 0 0 -4px;
+      width: 8px;
+      height: 8px;
+
+      background-color: white;
+      opacity: 1;
+    }
+  }
+}
+
+.lg-cursor-trail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0.99;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  z-index: 1;
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  path {
+    fill: none;
+    stroke: rgba(cyan, 0.25);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 5px;
+  }
+}
+
+html.lg-cursor-hide {
+  &,
+  * {
+    cursor: none !important;
+  }
+}

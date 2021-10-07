@@ -178,6 +178,14 @@ class MouseAnimation extends Plugin {
         element.style.setProperty('--mouse-y', mouse.smoothY)
         element.style.setProperty('--mouse-progress-x', mouse.smoothProgressX)
         element.style.setProperty('--mouse-progress-y', mouse.smoothProgressY)
+
+        const diffX = Math.round((mouse.x - mouse.smoothX) * 1000) / 1000
+        const diffY = Math.round((mouse.y - mouse.smoothY) * 1000) / 1000
+
+        element.style.setProperty('--abs-diff-x', Math.abs(diffX))
+        element.style.setProperty('--diff-x', diffX)
+        element.style.setProperty('--abs-diff-y', Math.abs(diffY))
+        element.style.setProperty('--diff-y', diffY)
       } else {
         element.style.setProperty('--mouse-x', mouse.x)
         element.style.setProperty('--mouse-y', mouse.y)

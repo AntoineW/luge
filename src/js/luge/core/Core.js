@@ -10,11 +10,18 @@ class Luge {
   constructor () {
     // Options
     this.settings = {
+      cursor: {
+        disabled: ['tablet', 'mobile'],
+        trailLength: 10
+      },
       lottie: {
         renderer: 'svg',
         subFrame: true
       },
       mouse: {
+        inertia: 0.1
+      },
+      parallax: {
         inertia: 0.1
       },
       preloader: {
@@ -64,6 +71,7 @@ class Luge {
     // Mouse
     window.mouseX = 0
     window.mouseY = 0
+    window.mouseLastScrollTop = 0
 
     // Browser detect
     window.browser = Bowser.getParser(window.navigator.userAgent)
@@ -118,7 +126,7 @@ class Luge {
    */
   mouseHandler (e) {
     const mouseX = e.pageX
-    const mouseY = e.pageY - window.unifiedScrollTop
+    const mouseY = e.pageY - window.scrollTop
 
     window.mouseX = mouseX
     window.mouseY = mouseY
