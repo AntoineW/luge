@@ -12,6 +12,7 @@ class Luge {
     this.settings = {
       cursor: {
         disabled: ['tablet', 'mobile'],
+        inertia: 1,
         trailLength: 10
       },
       lottie: {

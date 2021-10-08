@@ -34,7 +34,7 @@ class Cursor extends Plugin {
   setAttributes () {
     this.pluginAttributes = {
       root: String,
-      inertia: [Number, 1],
+      inertia: [Number, Luge.settings.cursor.inertia],
       length: [Number, Luge.settings.cursor.trailLength],
       hide: Boolean
     }
