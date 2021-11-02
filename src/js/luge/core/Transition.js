@@ -11,9 +11,13 @@ class Transition {
    */
   constructor () {
     this.url = window.location.href
+    this.pathname = window.location.pathname
     this.pageFetched = null
     this.currentPage = null
     this.reload = Luge.settings.transition.reload
+
+    this.prevScrollTop = 0
+    this.newScrollTop = 0
 
     this.transitions = {
       in: {},
@@ -259,13 +263,16 @@ class Transition {
 
     // Reset scroll
     window.scroll({
-      top: 0,
+      top: this.newScrollTop,
       left: 0,
       behavior: 'instant'
     })
     window.scrollTop = 0
     window.smoothScrollTop = 0
     window.unifiedScrollTop = 0
+
+    this.prevScrollTop = 0
+    this.newScrollTop = 0
 
     Emitter.emit('pageTransition', html)
 
@@ -411,7 +418,21 @@ class Transition {
    * History change
    */
   historyStateChanged () {
-    if (window.location.hash === '') {
+    const url = new URL(this.url)
+
+    if (url.pathname !== window.location.pathname) {
+      this.prevScrollTop = window.scrollY
+
+      Ticker.nextTick(() => {
+        this.newScrollTop = window.scrollY
+
+        window.scroll({
+          top: this.prevScrollTop,
+          left: 0,
+          behavior: 'instant'
+        })
+      })
+
       this.navigateTo(window.location.href)
     }
   }
