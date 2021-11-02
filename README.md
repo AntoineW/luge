@@ -3,8 +3,8 @@ Front-end animation plugin for uncreative developers.
 
 - Preview: https://luge.cool
 - Documentation: https://luge.cool/docs/
-- Support: https://github.com/Waaark/luge/issues
-- Discussions: https://github.com/Waaark/luge/discussions
+- Support: https://github.com/AntoineW/luge/issues
+- Discussions: https://github.com/AntoineW/luge/discussions
 
 ## Usage
 luge is made to be fast and easy to use. Most of the things happen under the hood so you just have to include the files to start using it:
