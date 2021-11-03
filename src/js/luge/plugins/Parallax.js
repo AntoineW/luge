@@ -171,7 +171,7 @@ class Parallax extends Plugin {
     this.elements.forEach(element => {
       element.luge.parallax.smoothMovement += (element.luge.parallax.movement - element.luge.parallax.smoothMovement) * element.luge.parallax.inertia
 
-      if (element.luge.parallax.root === 'child') {
+      if (element.luge.parallax.root === 'child' && element.luge.parallax.child) {
         element.luge.parallax.child.style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + '%, 0) scale(1.' + (String(Math.abs(element.luge.parallax.amplitude)).replace('.', '')) + ')'
       } else {
         element.style.transform = 'translate3d(0, ' + element.luge.parallax.smoothMovement + 'px, 0)'
