@@ -1,5 +1,6 @@
 import Emitter from 'Core/Emitter'
 import LifeCycle from 'Core/LifeCycle'
+import Ticker from 'Core/Ticker'
 
 class ScrollObserver {
   constructor () {
@@ -19,6 +20,7 @@ class ScrollObserver {
   bindEvents () {
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('scroll', this.scrollHandler, this)
+    Emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -55,6 +57,16 @@ class ScrollObserver {
    */
   scrollHandler () {
     this.checkElements()
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    Ticker.nextTick(() => {
+      this.setBounding()
+      this.checkElements()
+    }, this)
   }
 
   /**

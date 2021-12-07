@@ -1,5 +1,6 @@
 import LifeCycle from 'Core/LifeCycle'
 import Luge from 'Core/Core'
+import Emitter from 'Core/Emitter'
 import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
@@ -24,6 +25,8 @@ class Parallax extends Plugin {
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     Ticker.add(this.tick, this)
+
+    this.bindEvents()
   }
 
   /**
@@ -59,10 +62,47 @@ class Parallax extends Plugin {
   }
 
   /**
+   * Bind events
+   */
+  bindEvents () {
+    Emitter.on('update', this.updateHandler, this)
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.addElements()
+  }
+
+  /**
    * Initialization
    * @param {Function} done Done function
    */
   pageInit (done) {
+    this.addElements()
+
+    done()
+  }
+
+  /**
+   * Kill
+   * @param {Function} done Done function
+   */
+  pageKill (done) {
+    const self = this
+
+    this.elements.forEach(element => {
+      self.removeElement(element)
+    })
+
+    done()
+  }
+
+  /**
+   * Add elements
+   */
+  addElements () {
     document.querySelectorAll('[data-lg-parallax]').forEach(element => {
       const attributes = this.getAttributes(element)
 
@@ -82,22 +122,6 @@ class Parallax extends Plugin {
         this.addElement(element)
       }
     })
-
-    done()
-  }
-
-  /**
-   * Kill
-   * @param {Function} done Done function
-   */
-  pageKill (done) {
-    const self = this
-
-    this.elements.forEach(element => {
-      self.removeElement(element)
-    })
-
-    done()
   }
 
   /**

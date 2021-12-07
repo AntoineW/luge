@@ -72,6 +72,7 @@ class Reveal extends Plugin {
   bindEvents () {
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('scroll', this.scrollHandler, this)
+    Emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -79,14 +80,21 @@ class Reveal extends Plugin {
    * @param {Function} done Done function
    */
   pageInit (done) {
+    this.addElements()
+
+    done()
+  }
+
+  /**
+   * Add elements
+   */
+  addElements () {
     const elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
     const self = this
 
     elements.forEach(element => {
       self.addElement(element)
     })
-
-    done()
   }
 
   /**
@@ -236,6 +244,14 @@ class Reveal extends Plugin {
    * Sroll handler
    */
   scrollHandler () {
+    this.revealElements()
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.addElements()
     this.revealElements()
   }
 

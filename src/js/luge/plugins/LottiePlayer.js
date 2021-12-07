@@ -30,6 +30,8 @@ class LottiePlayer extends Plugin {
       LifeCycle.add('pageKill', this.pageKill.bind(this))
       LifeCycle.add('reveal', this.reveal.bind(this))
     }
+
+    this.bindEvents()
   }
 
   /**
@@ -48,6 +50,21 @@ class LottiePlayer extends Plugin {
       renderer: [String, Luge.settings.lottie.renderer],
       subframe: [Boolean, Luge.settings.lottie.subFrame]
     }
+  }
+
+  /**
+   * Bind events
+   */
+  bindEvents () {
+    Emitter.on('update', this.updateHandler, this)
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.addElements()
+    this.reveal(() => {})
   }
 
   /**
@@ -77,6 +94,15 @@ class LottiePlayer extends Plugin {
    * @param {Function} done Done function
    */
   pageInit (done) {
+    this.addElements()
+
+    done()
+  }
+
+  /**
+   * Add elements
+   */
+  addElements () {
     const self = this
     this.elements = document.querySelectorAll('[data-lg-lottie]')
     this.toAutoplay = []
@@ -93,8 +119,6 @@ class LottiePlayer extends Plugin {
         element.addEventListener('viewportintersect', self.onViewportIntersect)
       }
     })
-
-    done()
   }
 
   /**

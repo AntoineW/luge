@@ -1,5 +1,6 @@
 import LifeCycle from 'Core/LifeCycle'
 import Luge from 'Core/Core'
+import Emitter from 'Core/Emitter'
 import Plugin from 'Core/Plugin'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
@@ -56,6 +57,8 @@ class ScrollAnimation extends Plugin {
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     Ticker.add(this.tick, this)
+
+    this.bindEvents()
   }
 
   /**
@@ -92,18 +95,39 @@ class ScrollAnimation extends Plugin {
   }
 
   /**
+   * Bind events
+   */
+  bindEvents () {
+    Emitter.on('update', this.updateHandler, this)
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.addElements()
+  }
+
+  /**
    * Initialization
    * @param {Function} done Done function
    */
   pageInit (done) {
+    this.addElements()
+
+    done()
+  }
+
+  /**
+   * Add elements
+   */
+  addElements () {
     const elements = document.querySelectorAll('[data-lg-scroll]')
     const self = this
 
     elements.forEach(element => {
       self.addElement(element)
     })
-
-    done()
   }
 
   /**

@@ -19,8 +19,9 @@ class MouseObserver {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('mouseMove', this.mouseHandler, this)
+    Emitter.on('resize', this.resizeHandler, this)
+    Emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -48,6 +49,15 @@ class MouseObserver {
    */
   resizeHandler () {
     this.setBounding()
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    Ticker.nextTick(() => {
+      this.setBounding()
+    }, this)
   }
 
   /**

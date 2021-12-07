@@ -38,6 +38,7 @@ class SmoothScroll extends Plugin {
    */
   bindEvents () {
     Emitter.on('resize', this.resizeHandler, this)
+    Emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -90,6 +91,20 @@ class SmoothScroll extends Plugin {
    * Resize handler
    */
   resizeHandler () {
+    this.setBounding()
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.setBounding()
+  }
+
+  /**
+   * Set elements bouding
+   */
+  setBounding () {
     if (this.containers) {
       // Reset style
       this.containers.forEach(function (container) { container.el.removeAttribute('style') })

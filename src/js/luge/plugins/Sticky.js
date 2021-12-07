@@ -36,6 +36,7 @@ class Sticky extends Plugin {
   bindEvents () {
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('scroll', this.scrollHandler, this)
+    Emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -43,6 +44,16 @@ class Sticky extends Plugin {
    * @param {Function} done Done function
    */
   pageInit (done) {
+    this.addElements()
+    this.resizeHandler()
+
+    done()
+  }
+
+  /**
+   * Add elements
+   */
+  addElements () {
     const elements = document.querySelectorAll('[data-lg-sticky]')
 
     if (elements.length > 0) {
@@ -55,10 +66,6 @@ class Sticky extends Plugin {
         })
       })
     }
-
-    this.resizeHandler()
-
-    done()
   }
 
   /**
@@ -77,6 +84,21 @@ class Sticky extends Plugin {
   resizeHandler () {
     this.setBounding()
     this.checkElements()
+  }
+
+  /**
+   * Sroll handler
+   */
+  scrollHandler () {
+    this.checkElements()
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.addElements()
+    this.resizeHandler()
   }
 
   /**
@@ -109,13 +131,6 @@ class Sticky extends Plugin {
         }
       })
     }
-  }
-
-  /**
-   * Sroll handler
-   */
-  scrollHandler () {
-    this.checkElements()
   }
 
   /**
