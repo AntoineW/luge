@@ -18,7 +18,7 @@ class Cursor extends Plugin {
     this.pointers = []
     this.trails = []
 
-    this.hoverTags = ['a', 'button']
+    this.hoverTags = ['a', 'button', 'input']
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
