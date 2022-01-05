@@ -1,15 +1,18 @@
 import 'whatwg-fetch'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
+import Feature from 'Core/Feature'
 import Luge from 'Core/Core'
 import Helpers from 'Core/Helpers'
 import Ticker from 'Core/Ticker'
 
-class Transition {
+class Transition extends Feature {
   /**
    * Constructor
    */
   constructor () {
+    super('transition')
+
     this.url = window.location.href
     this.pathname = window.location.pathname
     this.pageFetched = null
@@ -25,8 +28,23 @@ class Transition {
     }
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
+  }
 
-    LifeCycle.add('siteInit', this.siteInit.bind(this))
+  /**
+   * Init
+   */
+  init () {
+    this.currentPage = document.querySelector('[data-lg-page]')
+    if (this.currentPage) {
+      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
+    }
+
+    this.initLoader()
+
+    if (!this.reload) {
+      window.addEventListener('popstate', this.historyStateChanged.bind(this))
+    }
+
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageFetch', this.pageFetch.bind(this))
     LifeCycle.add('pageOut', this.pageOut.bind(this))
@@ -109,25 +127,6 @@ class Transition {
       LifeCycle.cycle('reload')
     } else {
       LifeCycle.cycle('transition')
-    }
-  }
-
-  /**
-   * Site init
-   * @param {Function} done Done function
-   */
-  siteInit (done) {
-    this.currentPage = document.querySelector('[data-lg-page]')
-    if (this.currentPage) {
-      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
-    }
-
-    this.initLoader()
-
-    done()
-
-    if (!this.reload) {
-      window.addEventListener('popstate', this.historyStateChanged.bind(this))
     }
   }
 
