@@ -21,7 +21,6 @@ class Cursor extends Plugin {
     this.hoverTags = ['a', 'button', 'input']
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     Ticker.add(this.tick, this)
 
@@ -54,7 +53,7 @@ class Cursor extends Plugin {
    */
   pageInit (done) {
     const self = this
-    const cursors = document.querySelectorAll('[data-lg-cursor]')
+    const cursors = document.querySelectorAll('[data-lg-cursor]:not(.lg-cursor)')
 
     if (cursors.length > 0) {
       cursors.forEach(cursor => {
@@ -137,18 +136,6 @@ class Cursor extends Plugin {
         this.cursors.push(cursor)
       })
     }
-
-    done()
-  }
-
-  /**
-   * Kill
-   * @param {Function} done Done function
-   */
-  pageKill (done) {
-    this.cursors = []
-    this.pointers = []
-    this.trails = []
 
     done()
   }
