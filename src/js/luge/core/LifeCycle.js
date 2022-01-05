@@ -81,6 +81,10 @@ class LifeCycle {
         console.log('Start cycle: ' + cycleName)
       }
 
+      for (const eventName in this.events) {
+        this.events[eventName].done = 0
+      }
+
       this.proceed(cycleName)
     }
   }
