@@ -1,18 +1,23 @@
 import 'whatwg-fetch'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
-import Feature from 'Core/Feature'
 import Luge from 'Core/Core'
 import Helpers from 'Core/Helpers'
+import Plugin from 'Core/Plugin'
 import Ticker from 'Core/Ticker'
 
-class Transition extends Feature {
+class Transition extends Plugin {
   /**
    * Constructor
    */
   constructor () {
     super('transition')
+  }
 
+  /**
+   * Init
+   */
+  init () {
     this.url = window.location.href
     this.pathname = window.location.pathname
     this.pageFetched = null
@@ -28,12 +33,7 @@ class Transition extends Feature {
     }
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
-  }
 
-  /**
-   * Init
-   */
-  init () {
     this.currentPage = document.querySelector('[data-lg-page]')
     if (this.currentPage) {
       this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
