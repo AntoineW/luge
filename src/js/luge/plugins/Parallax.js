@@ -11,10 +11,13 @@ class Parallax extends Plugin {
    */
   constructor () {
     super('parallax')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.elements = []
 

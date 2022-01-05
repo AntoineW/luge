@@ -10,10 +10,13 @@ class SmoothScroll extends Plugin {
    */
   constructor () {
     super('smooth')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.containers = null
     window.hasSmoothScroll = false

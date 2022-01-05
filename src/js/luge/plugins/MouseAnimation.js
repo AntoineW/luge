@@ -11,10 +11,13 @@ class MouseAnimation extends Plugin {
    */
   constructor () {
     super('mouse')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.elements = []
 

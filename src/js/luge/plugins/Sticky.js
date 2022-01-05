@@ -8,10 +8,13 @@ class Sticky extends Plugin {
    */
   constructor () {
     super('sticky')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.elements = []
 

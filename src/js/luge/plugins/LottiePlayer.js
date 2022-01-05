@@ -11,10 +11,13 @@ class LottiePlayer extends Plugin {
    */
   constructor () {
     super('lottie')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.elements = []
 

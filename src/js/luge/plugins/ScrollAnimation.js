@@ -11,10 +11,13 @@ class ScrollAnimation extends Plugin {
    */
   constructor () {
     super('scroll')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.elements = []
 

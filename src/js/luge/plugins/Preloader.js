@@ -8,17 +8,31 @@ class PreLoader extends Plugin {
    */
   constructor () {
     super('preloader')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.intro = false
     this.playerIn = false
     this.startTime = Date.now()
     this.doneLoad = null
 
-    LifeCycle.add('siteInit', this.siteInit.bind(this))
+    this.el = document.querySelector('[data-lg-preloader]')
+
+    if (this.el) {
+      this.attributes = this.getAttributes(this.el)
+
+      this.el.classList.add('lg-preloader', 'lg-preloader--' + this.attributes.root)
+
+      this.initLottie()
+
+      LifeCycle.add('siteIn', this.siteIn.bind(this))
+    }
+
     LifeCycle.add('pageLoad', this.pageLoad.bind(this))
   }
 
@@ -32,26 +46,6 @@ class PreLoader extends Plugin {
       in: String,
       reverse: Boolean
     }
-  }
-
-  /**
-   * Initialization
-   * @param {Function} done Done function
-   */
-  siteInit (done) {
-    this.el = document.querySelector('[data-lg-preloader]')
-
-    if (this.el) {
-      this.attributes = this.getAttributes(this.el)
-
-      this.el.classList.add('lg-preloader', 'lg-preloader--' + this.attributes.root)
-
-      this.initLottie()
-
-      LifeCycle.add('siteIn', this.siteIn.bind(this))
-    }
-
-    done()
   }
 
   /**

@@ -12,10 +12,13 @@ class Reveal extends Plugin {
    */
   constructor () {
     super('reveal')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.elements = []
     this.toRevealIn = []

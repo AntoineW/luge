@@ -9,10 +9,13 @@ class Cursor extends Plugin {
    */
   constructor () {
     super('cursor')
+  }
 
-    if (this.isDisabled) {
-      return
-    }
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     this.cursors = []
     this.pointers = []
