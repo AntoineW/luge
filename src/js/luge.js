@@ -32,6 +32,7 @@ const luge = {
   lifecycle: {
     add: LifeCycle.add.bind(LifeCycle),
     refresh: LifeCycle.cycle.bind(LifeCycle, 'refresh'),
+    remove: LifeCycle.remove.bind(LifeCycle),
     debug: LifeCycle.enableDebug.bind(LifeCycle)
   },
   mouseobserver: {

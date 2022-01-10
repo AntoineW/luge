@@ -178,6 +178,24 @@ class LifeCycle {
   }
 
   /**
+   * Detach callback from event
+   * @param {String} name Event name
+   * @param {Function} callback Handler function
+   * @param {String} cycleName Cycle name
+   */
+  remove (eventName, callback, cycleName = null) {
+    const self = this
+
+    if (this.events[eventName]) {
+      this.events[eventName].callbacks.forEach((event, index) => {
+        if (event.callback === callback && event.cycle === cycleName) {
+          delete self.events[eventName].callbacks[index]
+        }
+      })
+    }
+  }
+
+  /**
    * Call hooked callbacks
    * @param {String} cycleName Cycle name
    * @param {String} eventName Event name
