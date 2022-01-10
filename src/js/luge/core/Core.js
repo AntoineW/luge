@@ -70,8 +70,8 @@ class Luge {
     this.isScrolling = false
 
     // Mouse
-    window.mouseX = 0
-    window.mouseY = 0
+    window.mouseX = -1
+    window.mouseY = -1
     window.mouseLastScrollTop = 0
 
     // Browser detect

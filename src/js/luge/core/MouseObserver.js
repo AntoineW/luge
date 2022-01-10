@@ -7,6 +7,8 @@ class MouseObserver {
   constructor () {
     this.elements = []
 
+    this.elementsToBound = []
+
     LifeCycle.add('pageKill', this.pageKill.bind(this))
     LifeCycle.add('pageInit', this.init.bind(this), 20)
 
@@ -30,6 +32,7 @@ class MouseObserver {
    */
   pageKill (done) {
     this.elements = []
+    this.elementsToBound = []
 
     done()
   }
@@ -39,7 +42,7 @@ class MouseObserver {
    * @param {Function} done Done function
    */
   init (done) {
-    this.setBounding()
+    this.getBoundingThrottle()
 
     done()
   }
@@ -48,7 +51,7 @@ class MouseObserver {
    * Resize handler
    */
   resizeHandler () {
-    this.setBounding()
+    this.getBoundingThrottle()
   }
 
   /**
@@ -56,7 +59,7 @@ class MouseObserver {
    */
   updateHandler () {
     Ticker.nextTick(() => {
-      this.setBounding()
+      this.getBoundingThrottle()
     }, this)
   }
 
@@ -74,15 +77,27 @@ class MouseObserver {
   }
 
   /**
-   * Set elements bouding
+   * Get elements bouding throttle
    */
-  setBounding () {
-    const self = this
-
+  getBoundingThrottle () {
     this.elements.forEach(element => {
-      self.setElementBounding(element)
-      self.setElementPosition(element)
+      if (!this.elementsToBound.includes(element)) {
+        this.elementsToBound.push(element)
+      }
     })
+
+    Ticker.nextTick(this.getBounding.bind(this))
+  }
+
+  /**
+   * Get elements bouding
+   */
+  getBounding () {
+    this.elementsToBound.forEach(element => {
+      this.setElementBounding(element)
+      this.setElementPosition(element)
+    })
+    this.elementsToBound = []
   }
 
   /**
@@ -133,8 +148,9 @@ class MouseObserver {
    */
   add (element) {
     if (!this.elements.includes(element)) {
-      this.setElementBounding(element)
-      this.setElementPosition(element)
+      if (!this.elementsToBound.includes(element)) {
+        this.elementsToBound.push(element)
+      }
 
       this.elements.push(element)
     }
@@ -147,6 +163,10 @@ class MouseObserver {
   remove (element) {
     if (this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
+    }
+
+    if (this.elementsToBound.includes(element)) {
+      this.elementsToBound.splice(this.elementsToBound.indexOf(element), 1)
     }
   }
 

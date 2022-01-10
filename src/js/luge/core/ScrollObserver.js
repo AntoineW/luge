@@ -6,6 +6,9 @@ class ScrollObserver {
   constructor () {
     this.elements = []
 
+    this.elementsToBound = []
+    this.elementsToCheck = []
+
     this.setMaxScrollTop()
 
     LifeCycle.add('pageKill', this.pageKill.bind(this))
@@ -29,6 +32,8 @@ class ScrollObserver {
    */
   pageKill (done) {
     this.elements = []
+    this.elementsToBound = []
+    this.elementsToCheck = []
 
     done()
   }
@@ -38,8 +43,8 @@ class ScrollObserver {
    * @param {Function} done Done function
    */
   init (done) {
-    this.setBounding()
-    this.checkElements()
+    this.getBoundingThrottle()
+    this.checkElementsThrottle()
 
     done()
   }
@@ -48,15 +53,15 @@ class ScrollObserver {
    * Resize handler
    */
   resizeHandler () {
-    this.setBounding()
-    this.checkElements()
+    this.getBoundingThrottle()
+    this.checkElementsThrottle()
   }
 
   /**
    * Scroll handler
    */
   scrollHandler () {
-    this.checkElements()
+    this.checkElementsThrottle()
   }
 
   /**
@@ -64,22 +69,9 @@ class ScrollObserver {
    */
   updateHandler () {
     Ticker.nextTick(() => {
-      this.setBounding()
-      this.checkElements()
+      this.getBoundingThrottle()
+      this.checkElementsThrottle()
     }, this)
-  }
-
-  /**
-   * Set elements bouding
-   */
-  setBounding () {
-    const self = this
-
-    this.setMaxScrollTop()
-
-    this.elements.forEach(element => {
-      self.setElementBounding(element)
-    })
   }
 
   /**
@@ -93,6 +85,33 @@ class ScrollObserver {
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
     ) - window.innerHeight
+  }
+
+  /**
+   * Get elements bouding throttle
+   */
+  getBoundingThrottle () {
+    this.setMaxScrollTop()
+
+    this.elements.forEach(element => {
+      if (!this.elementsToBound.includes(element)) {
+        element.scrollProgress = 0
+
+        this.elementsToBound.push(element)
+      }
+    })
+
+    Ticker.nextTick(this.getBounding.bind(this))
+  }
+
+  /**
+   * Get elements bounding
+   */
+  getBounding () {
+    this.elementsToBound.forEach(element => {
+      this.setElementBounding(element)
+    })
+    this.elementsToBound = []
   }
 
   /**
@@ -116,12 +135,26 @@ class ScrollObserver {
   }
 
   /**
-   * Check all elements positions
+   * Check elements throttle
+   */
+  checkElementsThrottle () {
+    this.elements.forEach(element => {
+      if (!this.elementsToCheck.includes(element)) {
+        this.elementsToCheck.push(element)
+      }
+    })
+
+    Ticker.nextTick(this.checkElements.bind(this))
+  }
+
+  /**
+   * Check elements position
    */
   checkElements () {
-    this.elements.forEach(element => {
+    this.elementsToCheck.forEach(element => {
       this.checkElement(element)
     })
+    this.elementsToCheck = []
   }
 
   /**
@@ -170,8 +203,12 @@ class ScrollObserver {
    */
   add (element) {
     if (!this.elements.includes(element)) {
-      this.setElementBounding(element)
-      this.checkElement(element)
+      element.scrollProgress = 0
+
+      if (!this.elementsToBound.includes(element)) {
+        this.elementsToBound.push(element)
+        this.elementsToCheck.push(element)
+      }
 
       this.elements.push(element)
     }
@@ -184,6 +221,14 @@ class ScrollObserver {
   remove (element) {
     if (this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
+    }
+
+    if (this.elementsToBound.includes(element)) {
+      this.elementsToBound.splice(this.elementsToBound.indexOf(element), 1)
+    }
+
+    if (this.elementsToCheck.includes(element)) {
+      this.elementsToCheck.splice(this.elementsToCheck.indexOf(element), 1)
     }
   }
 }

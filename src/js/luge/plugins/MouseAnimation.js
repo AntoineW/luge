@@ -118,10 +118,10 @@ class MouseAnimation extends Plugin {
 
       MouseObserver.add(element)
 
-      element.luge.mouse.smoothX = element.luge.mouse.x
-      element.luge.mouse.smoothY = element.luge.mouse.y
-      element.luge.mouse.smoothProgressX = element.luge.mouse.progressX
-      element.luge.mouse.smoothProgressY = element.luge.mouse.progressY
+      element.luge.mouse.smoothX = 0
+      element.luge.mouse.smoothY = 0
+      element.luge.mouse.smoothProgressX = 0
+      element.luge.mouse.smoothProgressY = 0
 
       this.elements.push(element)
     }
@@ -195,29 +195,31 @@ class MouseAnimation extends Plugin {
     this.elements.forEach(element => {
       const mouse = element.luge.mouse
 
-      if (mouse.inertia) {
-        mouse.smoothX += (mouse.x - mouse.smoothX) * mouse.inertia
-        mouse.smoothY += (mouse.y - mouse.smoothY) * mouse.inertia
-        mouse.smoothProgressX += (mouse.progressX - mouse.smoothProgressX) * mouse.inertia
-        mouse.smoothProgressY += (mouse.progressY - mouse.smoothProgressY) * mouse.inertia
+      if (mouse.x) {
+        if (mouse.inertia) {
+          mouse.smoothX += (mouse.x - mouse.smoothX) * mouse.inertia
+          mouse.smoothY += (mouse.y - mouse.smoothY) * mouse.inertia
+          mouse.smoothProgressX += (mouse.progressX - mouse.smoothProgressX) * mouse.inertia
+          mouse.smoothProgressY += (mouse.progressY - mouse.smoothProgressY) * mouse.inertia
 
-        element.style.setProperty('--mouse-x', mouse.smoothX)
-        element.style.setProperty('--mouse-y', mouse.smoothY)
-        element.style.setProperty('--mouse-progress-x', mouse.smoothProgressX)
-        element.style.setProperty('--mouse-progress-y', mouse.smoothProgressY)
+          element.style.setProperty('--mouse-x', mouse.smoothX)
+          element.style.setProperty('--mouse-y', mouse.smoothY)
+          element.style.setProperty('--mouse-progress-x', mouse.smoothProgressX)
+          element.style.setProperty('--mouse-progress-y', mouse.smoothProgressY)
 
-        const diffX = Math.round((mouse.x - mouse.smoothX) * 1000) / 1000
-        const diffY = Math.round((mouse.y - mouse.smoothY) * 1000) / 1000
+          const diffX = Math.round((mouse.x - mouse.smoothX) * 1000) / 1000
+          const diffY = Math.round((mouse.y - mouse.smoothY) * 1000) / 1000
 
-        element.style.setProperty('--abs-diff-x', Math.abs(diffX))
-        element.style.setProperty('--diff-x', diffX)
-        element.style.setProperty('--abs-diff-y', Math.abs(diffY))
-        element.style.setProperty('--diff-y', diffY)
-      } else {
-        element.style.setProperty('--mouse-x', mouse.x)
-        element.style.setProperty('--mouse-y', mouse.y)
-        element.style.setProperty('--mouse-progress-x', mouse.progressX)
-        element.style.setProperty('--mouse-progress-y', mouse.progressY)
+          element.style.setProperty('--abs-diff-x', Math.abs(diffX))
+          element.style.setProperty('--diff-x', diffX)
+          element.style.setProperty('--abs-diff-y', Math.abs(diffY))
+          element.style.setProperty('--diff-y', diffY)
+        } else {
+          element.style.setProperty('--mouse-x', mouse.x)
+          element.style.setProperty('--mouse-y', mouse.y)
+          element.style.setProperty('--mouse-progress-x', mouse.progressX)
+          element.style.setProperty('--mouse-progress-y', mouse.progressY)
+        }
       }
     })
   }

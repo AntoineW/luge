@@ -195,75 +195,77 @@ class Cursor extends Plugin {
       position.x = window.mouseX
       position.y = window.mouseY
 
-      smoothPosition.x += (position.x - smoothPosition.x) * trail.luge.cursor.inertia
-      smoothPosition.y += (position.y - smoothPosition.y) * trail.luge.cursor.inertia
+      if (window.mouseX !== -1) {
+        smoothPosition.x += (position.x - smoothPosition.x) * trail.luge.cursor.inertia
+        smoothPosition.y += (position.y - smoothPosition.y) * trail.luge.cursor.inertia
 
-      // Update points
-      const points = trail.luge.cursor.points
+        // Update points
+        const points = trail.luge.cursor.points
 
-      const point = {
-        x: smoothPosition.x,
-        y: smoothPosition.y
-      }
-      points.push(point)
-
-      if (points.length > trail.luge.cursor.length) {
-        points.shift()
-      }
-
-      // Draw smooth line # https://francoisromain.medium.com/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
-      let d = ''
-      let trailLength = 0
-
-      const svgPath = (points, command) => {
-        const d = points.reduce((acc, point, i, a) => i === 0
-
-          ? `M ${point.x},${point.y}`
-
-          : `${acc} ${command(point, i, a)}`
-        , '')
-        return `${d}`
-      }
-
-      const line = (pointA, pointB) => {
-        const lengthX = pointB.x - pointA.x
-        const lengthY = pointB.y - pointA.y
-        return {
-          length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
-          angle: Math.atan2(lengthY, lengthX)
+        const point = {
+          x: smoothPosition.x,
+          y: smoothPosition.y
         }
+        points.push(point)
+
+        if (points.length > trail.luge.cursor.length) {
+          points.shift()
+        }
+
+        // Draw smooth line # https://francoisromain.medium.com/smooth-a-svg-path-with-cubic-bezier-curves-e37b49d46c74
+        let d = ''
+        let trailLength = 0
+
+        const svgPath = (points, command) => {
+          const d = points.reduce((acc, point, i, a) => i === 0
+
+            ? `M ${point.x},${point.y}`
+
+            : `${acc} ${command(point, i, a)}`
+          , '')
+          return `${d}`
+        }
+
+        const line = (pointA, pointB) => {
+          const lengthX = pointB.x - pointA.x
+          const lengthY = pointB.y - pointA.y
+          return {
+            length: Math.sqrt(Math.pow(lengthX, 2) + Math.pow(lengthY, 2)),
+            angle: Math.atan2(lengthY, lengthX)
+          }
+        }
+
+        const controlPoint = (current, previous, next, reverse) => {
+          const p = previous || current
+          const n = next || current
+
+          const smoothing = 0.2
+
+          const o = line(p, n)
+
+          trailLength += o.length
+
+          const angle = o.angle + (reverse ? Math.PI : 0)
+          const length = o.length * smoothing
+
+          const x = current.x + Math.cos(angle) * length
+          const y = current.y + Math.sin(angle) * length
+          return [x, y]
+        }
+
+        const bezierCommand = (point, i, a) => {
+          const [cpsX, cpsY] = controlPoint(a[i - 1], a[i - 2], point)
+
+          const [cpeX, cpeY] = controlPoint(point, a[i - 1], a[i + 1], true)
+          return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x},${point.y}`
+        }
+
+        d = svgPath(points, bezierCommand)
+
+        trail.luge.cursor.path.setAttribute('d', d)
+
+        trail.style.setProperty('--length', trailLength)
       }
-
-      const controlPoint = (current, previous, next, reverse) => {
-        const p = previous || current
-        const n = next || current
-
-        const smoothing = 0.2
-
-        const o = line(p, n)
-
-        trailLength += o.length
-
-        const angle = o.angle + (reverse ? Math.PI : 0)
-        const length = o.length * smoothing
-
-        const x = current.x + Math.cos(angle) * length
-        const y = current.y + Math.sin(angle) * length
-        return [x, y]
-      }
-
-      const bezierCommand = (point, i, a) => {
-        const [cpsX, cpsY] = controlPoint(a[i - 1], a[i - 2], point)
-
-        const [cpeX, cpeY] = controlPoint(point, a[i - 1], a[i + 1], true)
-        return `C ${cpsX},${cpsY} ${cpeX},${cpeY} ${point.x},${point.y}`
-      }
-
-      d = svgPath(points, bezierCommand)
-
-      trail.luge.cursor.path.setAttribute('d', d)
-
-      trail.style.setProperty('--length', trailLength)
     })
   }
 }
