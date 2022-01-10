@@ -1,3 +1,6 @@
+import Emitter from 'Core/Emitter'
+import Helpers from 'Core/Helpers'
+
 class LifeCycle {
   /**
    * Constructor
@@ -188,6 +191,8 @@ class LifeCycle {
         console.log('Do event: ' + eventName + ' (' + cycleName + ' cycle)')
       }
 
+      Emitter.emit(Helpers.toCamelCase('before-' + eventName))
+
       const callbacks = this.events[eventName].callbacks.sort((a, b) => {
         return a.position - b.position
       })
@@ -214,6 +219,8 @@ class LifeCycle {
     if (this.debug) {
       console.log('Done event: ' + eventName + ' ' + this.events[eventName].done + '/' + this.events[eventName].callbacks.length + ' (' + cycleName + ' cycle)')
     }
+
+    Emitter.emit(Helpers.toCamelCase('after-' + eventName))
 
     // All callback are done, call next action
     if (this.events[eventName].done >= this.events[eventName].callbacks.length) {
