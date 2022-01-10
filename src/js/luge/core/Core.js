@@ -107,6 +107,8 @@ class Luge {
    * @param {Function} done Done function
    */
   siteInit (done) {
+    this.setCSSProperties()
+
     this.scrollHandler()
 
     done()
@@ -140,32 +142,43 @@ class Luge {
    */
   resizeThrottle () {
     clearTimeout(this.timeouts.resizeThrottle)
-    this.timeouts.resizeThrottle = setTimeout(this.resizeHandler, 200)
+    this.timeouts.resizeThrottle = setTimeout(this.resizeHandler.bind(this), 200)
   }
 
   /**
    * Resize handler
    */
   resizeHandler () {
-    // Pass window widths to CSS
-    if (this.windowWidth !== window.innerWidth) {
-      this.windowWidth = window.innerWidth
-      this.clientWidth = document.body.clientWidth
+    this.setCSSProperties()
 
-      document.documentElement.style.setProperty('--vw', (this.windowWidth * 0.01) + 'px')
-      document.documentElement.style.setProperty('--cw', (this.clientWidth * 0.01) + 'px')
+    Emitter.emit('resize')
+  }
+
+  /**
+   * Set CSS propertiers
+   */
+  setCSSProperties () {
+    // Pass window widths to CSS
+    const newWidth = window.innerWidth
+    if (this.windowWidth !== newWidth) {
+      this.windowWidth = newWidth
+      this.clientWidth = document.body.clientWidth
     }
 
     // Pass window height to CSS
-    if (this.windowHeight !== window.innerHeight) {
-      this.windowHeight = window.innerHeight
+    const newHeight = window.innerHeight
+    if (this.windowHeight !== newHeight) {
+      this.windowHeight = newHeight
       this.clientHeight = document.body.clientHeight
+    }
+
+    requestAnimationFrame(() => {
+      document.documentElement.style.setProperty('--vw', (this.windowWidth * 0.01) + 'px')
+      document.documentElement.style.setProperty('--cw', (this.clientWidth * 0.01) + 'px')
 
       document.documentElement.style.setProperty('--vh', (this.windowHeight * 0.01) + 'px')
       document.documentElement.style.setProperty('--ch', (this.clientHeight * 0.01) + 'px')
-    }
-
-    Emitter.emit('resize')
+    })
   }
 
   /**
