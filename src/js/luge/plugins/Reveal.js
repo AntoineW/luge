@@ -12,13 +12,6 @@ class Reveal extends Plugin {
    */
   constructor () {
     super('reveal')
-  }
-
-  /**
-   * Init
-   */
-  init () {
-    super.init()
 
     this.elements = []
     this.toRevealIn = []
@@ -32,6 +25,13 @@ class Reveal extends Plugin {
 
     // Listeners
     this.onScrollProgress = this.onScrollProgress.bind(this)
+  }
+
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     LifeCycle.add('pageInit', this.pageInit.bind(this), 11)
     LifeCycle.add('pageKill', this.pageKill.bind(this))
