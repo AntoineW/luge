@@ -12,12 +12,7 @@ class Transition extends Plugin {
    */
   constructor () {
     super('transition')
-  }
 
-  /**
-   * Init
-   */
-  init () {
     this.url = window.location.href
     this.pathname = window.location.pathname
     this.pageFetched = null
@@ -33,7 +28,12 @@ class Transition extends Plugin {
     }
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
+  }
 
+  /**
+   * Init
+   */
+  init () {
     this.currentPage = document.querySelector('[data-lg-page]')
     if (this.currentPage) {
       this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload

@@ -10,6 +10,12 @@ class SmoothScroll extends Plugin {
    */
   constructor () {
     super('smooth')
+
+    this.containers = null
+
+    window.hasSmoothScroll = false
+    window.smoothScrollTop = 0
+    window.smoothScrollProgress = 0
   }
 
   /**
@@ -18,22 +24,10 @@ class SmoothScroll extends Plugin {
   init () {
     super.init()
 
-    this.containers = null
-    window.hasSmoothScroll = false
-    window.smoothScrollTop = 0
-    window.smoothScrollProgress = 0
-
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
-  }
-
-  /**
-   * Set attributes
-   */
-  setAttributes () {
-    this.pluginAttributes = {}
   }
 
   /**

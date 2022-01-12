@@ -8,6 +8,8 @@ class Sticky extends Plugin {
    */
   constructor () {
     super('sticky')
+
+    this.elements = []
   }
 
   /**
@@ -15,8 +17,6 @@ class Sticky extends Plugin {
    */
   init () {
     super.init()
-
-    this.elements = []
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))

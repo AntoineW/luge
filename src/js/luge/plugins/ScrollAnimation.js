@@ -11,13 +11,6 @@ class ScrollAnimation extends Plugin {
    */
   constructor () {
     super('scroll')
-  }
-
-  /**
-   * Init
-   */
-  init () {
-    super.init()
 
     this.elements = []
 
@@ -55,6 +48,13 @@ class ScrollAnimation extends Plugin {
 
     // Listeners
     this.onScrollProgress = this.onScrollProgress.bind(this)
+  }
+
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))

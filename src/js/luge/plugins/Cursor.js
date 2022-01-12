@@ -9,6 +9,12 @@ class Cursor extends Plugin {
    */
   constructor () {
     super('cursor')
+
+    this.cursors = []
+    this.pointers = []
+    this.trails = []
+
+    this.hoverTags = ['a', 'button', 'input']
   }
 
   /**
@@ -16,12 +22,6 @@ class Cursor extends Plugin {
    */
   init () {
     super.init()
-
-    this.cursors = []
-    this.pointers = []
-    this.trails = []
-
-    this.hoverTags = ['a', 'button', 'input']
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
 

@@ -11,13 +11,6 @@ class LottiePlayer extends Plugin {
    */
   constructor () {
     super('lottie')
-  }
-
-  /**
-   * Init
-   */
-  init () {
-    super.init()
 
     this.elements = []
 
@@ -26,6 +19,13 @@ class LottiePlayer extends Plugin {
     // Listeners
     this.onViewportIntersect = this.onViewportIntersect.bind(this)
     this.onScrollProgress = this.onScrollProgress.bind(this)
+  }
+
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     if (typeof lottie === 'object') {
       LifeCycle.add('pageInit', this.pageInit.bind(this))
@@ -320,7 +320,9 @@ class LottiePlayer extends Plugin {
 
     // Emit resize event when all animations are loaded
     if (this.toLoad === 0) {
-      Emitter.emit('resize')
+      Ticker.nextTick(() => {
+        Emitter.emit('resize')
+      })
     }
   }
 

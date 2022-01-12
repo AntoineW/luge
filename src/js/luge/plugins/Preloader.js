@@ -8,6 +8,11 @@ class PreLoader extends Plugin {
    */
   constructor () {
     super('preloader')
+
+    this.intro = false
+    this.playerIn = false
+    this.startTime = Date.now()
+    this.doneLoad = null
   }
 
   /**
@@ -15,11 +20,6 @@ class PreLoader extends Plugin {
    */
   init () {
     super.init()
-
-    this.intro = false
-    this.playerIn = false
-    this.startTime = Date.now()
-    this.doneLoad = null
 
     this.el = document.querySelector('[data-lg-preloader]')
 

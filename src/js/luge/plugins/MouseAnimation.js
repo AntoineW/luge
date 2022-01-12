@@ -11,13 +11,6 @@ class MouseAnimation extends Plugin {
    */
   constructor () {
     super('mouse')
-  }
-
-  /**
-   * Init
-   */
-  init () {
-    super.init()
 
     this.elements = []
 
@@ -30,6 +23,13 @@ class MouseAnimation extends Plugin {
 
     // Listeners
     // ...
+  }
+
+  /**
+   * Init
+   */
+  init () {
+    super.init()
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))

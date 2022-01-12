@@ -11,6 +11,11 @@ class Parallax extends Plugin {
    */
   constructor () {
     super('parallax')
+
+    this.elements = []
+
+    // Listeners
+    this.onScrollProgress = this.onScrollProgress.bind(this)
   }
 
   /**
@@ -18,11 +23,6 @@ class Parallax extends Plugin {
    */
   init () {
     super.init()
-
-    this.elements = []
-
-    // Listeners
-    this.onScrollProgress = this.onScrollProgress.bind(this)
 
     LifeCycle.add('pageInit', this.pageInit.bind(this))
     LifeCycle.add('pageKill', this.pageKill.bind(this))

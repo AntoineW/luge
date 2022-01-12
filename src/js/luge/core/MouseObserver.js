@@ -131,15 +131,17 @@ class MouseObserver {
    * @param {HTMLElement} element Element
    */
   setElementPosition (element) {
-    const mouse = {
-      x: window.mouseX - element.luge.anchor.x,
-      y: window.mouseY - element.luge.anchor.y + window.unifiedScrollTop
+    if (element.luge && element.luge.anchor) {
+      const mouse = {
+        x: window.mouseX - element.luge.anchor.x,
+        y: window.mouseY - element.luge.anchor.y + window.unifiedScrollTop
+      }
+
+      mouse.progressX = Math.clamp(mouse.x / element.luge.width, 0, 1)
+      mouse.progressY = Math.clamp(mouse.y / element.luge.height, 0, 1)
+
+      element.luge.mouse = Helpers.mergeDeep(element.luge.mouse, mouse)
     }
-
-    mouse.progressX = Math.clamp(mouse.x / element.luge.width, 0, 1)
-    mouse.progressY = Math.clamp(mouse.y / element.luge.height, 0, 1)
-
-    element.luge.mouse = Helpers.mergeDeep(element.luge.mouse, mouse)
   }
 
   /**
