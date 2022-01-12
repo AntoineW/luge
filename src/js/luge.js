@@ -5,11 +5,13 @@ import LifeCycle from 'Core/LifeCycle'
 
 import Luge from 'Core/Core'
 import Emitter from 'Core/Emitter'
+import ViewportObserver from 'Core/ViewportObserver'
 import MouseObserver from 'Core/MouseObserver'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
 
 import Cursor from 'Plugins/Cursor'
+import Intersection from 'Plugins/Intersection'
 import LottiePlayer from 'Plugins/LottiePlayer'
 import MouseAnimation from 'Plugins/MouseAnimation'
 import Parallax from 'Plugins/Parallax'
@@ -28,6 +30,10 @@ const luge = {
     off: Emitter.off.bind(Emitter),
     on: Emitter.on.bind(Emitter),
     once: Emitter.once.bind(Emitter)
+  },
+  viewportobserver: {
+    add: ViewportObserver.add.bind(ViewportObserver),
+    remove: ViewportObserver.remove.bind(ViewportObserver)
   },
   lifecycle: {
     add: LifeCycle.add.bind(LifeCycle),
