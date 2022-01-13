@@ -1,11 +1,21 @@
 import Helpers from 'Core/Helpers'
+import LifeCycle from 'Core/LifeCycle'
 import Luge from 'Core/Core'
 
 class ViewportObserver {
   constructor () {
     this.elements = []
 
+    LifeCycle.add('siteInit', this.init.bind(this), 20)
+  }
+
+  /**
+   * Init
+   */
+  init (done) {
     this.createObserver()
+
+    done()
   }
 
   /**

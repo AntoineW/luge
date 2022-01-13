@@ -16,7 +16,7 @@ class Luge {
         trailLength: 10
       },
       intersection: {
-        threshold: 0.5
+        threshold: 0.3
       },
       lottie: {
         renderer: 'svg',
