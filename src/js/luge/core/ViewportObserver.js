@@ -51,12 +51,12 @@ class ViewportObserver {
         element.luge.viewport.position = position
 
         element.dispatchEvent(new CustomEvent('viewportintersect'))
-        element.dispatchEvent(new CustomEvent('viewport' + position))
 
         if (position === 'in') {
           element.dispatchEvent(new CustomEvent('viewportin'))
         } else {
           element.dispatchEvent(new CustomEvent('viewportout'))
+          element.dispatchEvent(new CustomEvent('viewport' + position))
         }
       }
     })
