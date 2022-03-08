@@ -422,7 +422,12 @@ class Transition extends Plugin {
    * History change
    */
   historyStateChanged () {
-    const url = new URL(this.url)
+    let url = ''
+    if (this.url.indexOf(window.location.origin) === 0) {
+      url = new URL(this.url)
+    } else {
+      url = new URL(window.location.origin + this.url)
+    }
 
     if (url.pathname !== window.location.pathname) {
       this.prevScrollTop = window.scrollY

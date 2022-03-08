@@ -16,6 +16,8 @@ class SmoothScroll extends Plugin {
     window.hasSmoothScroll = false
     window.smoothScrollTop = 0
     window.smoothScrollProgress = 0
+
+    this.listeners = { hashChange: this.hashChange.bind(this) }
   }
 
   /**
@@ -34,6 +36,8 @@ class SmoothScroll extends Plugin {
    * Bind events
    */
   bindEvents () {
+    window.addEventListener('hashchange', this.hashChange)
+
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('update', this.updateHandler, this)
   }
@@ -96,6 +100,27 @@ class SmoothScroll extends Plugin {
    */
   updateHandler () {
     this.setBounding()
+  }
+
+  /**
+   * Hash change
+   */
+  hashChange () {
+    const hash = window.location.hash
+
+    if (hash) {
+      const target = document.querySelector(hash)
+
+      if (target) {
+        const targetY = target.getBoundingClientRect().top + window.unifiedScrollTop
+
+        window.scroll({
+          top: targetY,
+          left: 0,
+          behavior: 'instant'
+        })
+      }
+    }
   }
 
   /**
