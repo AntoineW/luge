@@ -1,5 +1,6 @@
 import Emitter from 'Core/Emitter'
 import LifeCycle from 'Core/LifeCycle'
+import Luge from 'Core/Core'
 import Ticker from 'Core/Ticker'
 
 class ScrollObserver {
@@ -165,7 +166,13 @@ class ScrollObserver {
     const scrollTop = window.unifiedScrollTop
 
     let position = ''
-    let progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
+    let progress = 0
+
+    if (element.scrollStart < 0) {
+      progress = Math.min(Math.max(scrollTop / element.scrollEnd, 0), 1)
+    } else {
+      progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
+    }
 
     if (isNaN(progress)) {
       progress = 0

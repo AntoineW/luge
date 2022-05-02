@@ -176,7 +176,13 @@ class Parallax extends Plugin {
    * @param {HTMLElement} element Element to move
    */
   moveElement (element) {
-    let progress = 1 - element.scrollProgress * 2
+    let progress = 0
+
+    if (element.scrollStart < 0) {
+      progress = element.scrollProgress
+    } else {
+      progress = 1 - element.scrollProgress * 2
+    }
 
     if (element.luge.parallax.anchor === 'bottom') {
       progress += 1
