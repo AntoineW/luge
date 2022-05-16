@@ -50,6 +50,9 @@ class Luge {
       },
       transition: {
         reload: false
+      },
+      credits: {
+        show: true
       }
     }
 
@@ -110,6 +113,8 @@ class Luge {
    * @param {Function} done Done function
    */
   siteInit (done) {
+    this.showCredits()
+
     this.setCSSProperties()
 
     this.scrollHandler()
@@ -226,6 +231,20 @@ class Luge {
     document.documentElement.classList.remove('is-scrolling')
 
     Emitter.emit('scrollEnd')
+  }
+
+  /**
+   * Show credits
+   */
+  showCredits () {
+    if (this.settings.credits.show) {
+      // Output version
+      const consoleBaseStyle = 'background-color: #00FFE5; color: black; font: 400 1em monospace; padding: 0.5em 0; '
+      const consoleBoldStyle = consoleBaseStyle + 'font-weight: bold; '
+      const consoleWhiteStyle = 'color: black; font: 400 1em monospace; padding: 0.5em 0; '
+
+      console.log('%c powered by %cluge%c / ' + VERSION + ' %c > https://luge.cool ', consoleBaseStyle, consoleBoldStyle, consoleBaseStyle, consoleWhiteStyle)
+    }
   }
 }
 

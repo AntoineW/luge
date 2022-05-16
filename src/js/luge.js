@@ -82,10 +82,3 @@ if (document.readyState === 'loading') {
   },
   null)
 }
-
-// Output version
-const consoleBaseStyle = 'background-color: #00FFE5; color: black; font: 400 1em monospace; padding: 0.5em 0; '
-const consoleBoldStyle = consoleBaseStyle + 'font-weight: bold; '
-const consoleWhiteStyle = 'color: black; font: 400 1em monospace; padding: 0.5em 0; '
-
-console.log('%c powered by %cluge%c / ' + VERSION + ' %c > https://luge.cool ', consoleBaseStyle, consoleBoldStyle, consoleBaseStyle, consoleWhiteStyle)
