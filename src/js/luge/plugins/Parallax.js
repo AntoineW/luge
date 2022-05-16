@@ -24,7 +24,7 @@ class Parallax extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
+    LifeCycle.add('pageInit', this.pageInit.bind(this), 30)
     LifeCycle.add('pageKill', this.pageKill.bind(this))
 
     Ticker.add(this.tick, this)
@@ -135,8 +135,6 @@ class Parallax extends Plugin {
     if (!this.elements.includes(element)) {
       ScrollObserver.add(element)
 
-      element.addEventListener('scrollprogress', this.onScrollProgress)
-
       if (element.luge.parallax.root === 'child') {
         element.style.overflow = 'hidden'
         element.luge.parallax.child = element.firstElementChild
@@ -147,7 +145,10 @@ class Parallax extends Plugin {
 
       this.elements.push(element)
 
-      this.moveElement(element)
+      Ticker.nextTick(() => {
+        element.addEventListener('scrollprogress', this.onScrollProgress)
+        this.moveElement(element)
+      })
     }
   }
 
