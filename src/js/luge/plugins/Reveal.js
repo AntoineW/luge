@@ -49,6 +49,7 @@ class Reveal extends Plugin {
     this.pluginAttributes = {
       root: String,
       stagger: String,
+      manual: [Boolean, false],
       multiple: Boolean,
       delay: [Number, 0]
     }
@@ -92,7 +93,7 @@ class Reveal extends Plugin {
    * Add elements
    */
   addElements () {
-    const elements = document.querySelectorAll('[data-lg-reveal]:not([data-lg-reveal-manual])')
+    const elements = document.querySelectorAll('[data-lg-reveal]')
     const self = this
 
     elements.forEach(element => {
@@ -113,13 +114,25 @@ class Reveal extends Plugin {
         return
       }
 
-      ScrollObserver.add(element)
-
-      element.addEventListener('scrollprogress', this.onScrollProgress)
-
       const revealName = attributes.root
-
       element.luge.reveal.name = Helpers.toCamelCase(revealName)
+
+      if (!attributes.manual) {
+        ScrollObserver.add(element)
+
+        element.addEventListener('scrollprogress', this.onScrollProgress)
+      } else {
+        element.luge.reveal.in = () => {
+          this.revealCallback(element, element.luge.reveal.name, 'in')
+          this.setRevealClasses(element, 'is-in')
+        }
+
+        element.luge.reveal.out = () => {
+          this.revealCallback(element, element.luge.reveal.name, 'out')
+          this.setRevealClasses(element, 'is-out')
+        }
+      }
+
       element.luge.reveal.delay = attributes.delay * 1000
 
       if (attributes.stagger) {
