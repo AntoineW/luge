@@ -1,0 +1,43 @@
+/**
+ * Text elements accross the site.
+ * Global scope, applied anywhere.
+ */
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+
+  font-weight: normal;
+}
+
+p {
+  margin: 0;
+}
+
+.t-title-xxl {
+  @include title-xxl
+}
+
+.t-title-xl {
+  @include title-xl
+}
+
+.t-title-lg {
+  @include title-lg
+}
+
+.t-title-md {
+  @include title-md
+}
+
+.list-bullet {
+  @include list-bullet;
+}
+
+.list-number {
+  @include list-number;
+}

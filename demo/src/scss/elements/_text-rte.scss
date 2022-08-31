@@ -1,0 +1,42 @@
+/**
+ * Text elements generated from rich text editor.
+ * Applied to elements inside a .rte container.
+ */
+
+h2, h3, h4, h5, p, ul, ol {
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+h2 {
+  @include title-xl;
+}
+
+h3 {
+  @include title-lg;
+}
+
+h4, h5 {
+  @include title-md;
+}
+
+p {
+  margin: 1.5em 0;
+}
+
+ul {
+  @include list-bullet;
+}
+
+ol {
+  @include list-number;
+}
+
+b, strong {
+  font-weight: 700;
+}

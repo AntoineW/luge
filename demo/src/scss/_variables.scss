@@ -1,0 +1,25 @@
+/**
+ * Sass variables.
+ */
+
+/* Colors */
+$brand-color: #8a97ff;
+$primary-color: $brand-color;
+$secondary-color: #ffedec;
+$third-color: #ffd364;
+$fourth-color: #fc7a5b;
+$gray-color: #f6f6f6;
+$gray-dark-color: #b1b1b1;
+$text-color: #ffffff;
+$text-dark-color: #3D433D;
+$title-color: $text-color;
+$border-color: $gray-color;
+$border-dark-color: $gray-dark-color;
+
+/* Fonts */
+$muli: 'Muli', sans-serif;
+
+/* Imports */
+@import './helpers/breakpoints';
+@import './helpers/easing';
+@import './helpers/mixins';
