@@ -47,11 +47,6 @@
   "dependencies": {
     "@studio-freight/lenis": "^0.1.18",
     "bowser": "^2.11.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.1",
-    "tiny-emitter": "^2.1.0",
-    "virtual-scroll": "^2.2.1",
     "whatwg-fetch": "^3.6.2"
   }
 }
