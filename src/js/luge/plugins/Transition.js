@@ -272,8 +272,6 @@ class Transition extends Plugin {
       behavior: 'instant'
     })
     window.scrollTop = 0
-    window.smoothScrollTop = 0
-    window.unifiedScrollTop = 0
 
     this.prevScrollTop = 0
     this.newScrollTop = 0

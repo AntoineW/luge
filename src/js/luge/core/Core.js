@@ -69,7 +69,6 @@ class Luge {
 
     // Scroll
     window.scrollTop = window.scrollY
-    window.unifiedScrollTop = window.scrollTop
     window.maxScrollTop = 1
     window.scrollProgress = 0
     this.previousScrollTop = window.scrollY
@@ -193,7 +192,12 @@ class Luge {
    * Scroll handler
    */
   scrollHandler () {
-    window.scrollTop = window.scrollY
+    if (!window.hasSmoothScroll) {
+      window.scrollTop = window.scrollY
+
+      // Backward compatibility
+      window.unifiedScrollTop = window.scrollTop
+    }
 
     if (!this.isScrolling) {
       this.scrollStart()
@@ -206,7 +210,6 @@ class Luge {
     window.scrollProgress = window.scrollTop / window.maxScrollTop
 
     if (!window.hasSmoothScroll) {
-      window.unifiedScrollTop = window.scrollTop
       Emitter.emit('scroll')
     }
   }

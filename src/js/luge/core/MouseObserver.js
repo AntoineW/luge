@@ -113,7 +113,7 @@ class MouseObserver {
     const properties = {
       anchor: {
         x: bounding.left,
-        y: bounding.top + window.unifiedScrollTop
+        y: bounding.top + window.scrollTop
       },
       width: element.offsetWidth,
       height: element.offsetHeight
@@ -134,7 +134,7 @@ class MouseObserver {
     if (element.luge && element.luge.anchor) {
       const mouse = {
         x: window.mouseX - element.luge.anchor.x,
-        y: window.mouseY - element.luge.anchor.y + window.unifiedScrollTop
+        y: window.mouseY - element.luge.anchor.y + window.scrollTop
       }
 
       mouse.progressX = Math.clamp(mouse.x / element.luge.width, 0, 1)

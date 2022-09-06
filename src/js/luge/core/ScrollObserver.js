@@ -125,7 +125,7 @@ class ScrollObserver {
 
     const bounding = element.getBoundingClientRect()
 
-    element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
+    element.scrollStart = bounding.top + window.scrollTop - window.innerHeight
 
     element.scrollEnd = element.scrollStart + element.clientHeight + window.innerHeight
     element.scrollEnd = Math.min(element.scrollEnd, window.maxScrollTop)
@@ -163,7 +163,7 @@ class ScrollObserver {
    * @param {HTMLElement} element Element to check
    */
   checkElement (element) {
-    const scrollTop = window.unifiedScrollTop
+    const scrollTop = window.scrollTop
 
     let position = ''
     let progress = 0

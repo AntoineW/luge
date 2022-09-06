@@ -109,7 +109,7 @@ class Sticky extends Plugin {
    */
   setBounding () {
     if (this.elements) {
-      const scrollTop = window.unifiedScrollTop
+      const scrollTop = window.scrollTop
 
       this.elements.forEach(function (element) {
         element.el.style.top = ''
@@ -141,7 +141,7 @@ class Sticky extends Plugin {
    */
   checkElements () {
     if (this.elements) {
-      const scrollTop = window.unifiedScrollTop
+      const scrollTop = window.scrollTop
 
       this.elements.forEach(function (element) {
         if (scrollTop >= element.start) {

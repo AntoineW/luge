@@ -1,5 +1,5 @@
 /package-lock.json
-/docs/node_modules
+/demo
 /node_modules
 *.code-workspace
 /build/config.json

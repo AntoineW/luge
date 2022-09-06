@@ -3,6 +3,7 @@ import Emitter from 'Core/Emitter'
 import Luge from 'Core/Core'
 import Plugin from 'Core/Plugin'
 import Ticker from 'Core/Ticker'
+
 import Lenis from '@studio-freight/lenis'
 
 class SmoothScroll extends Plugin {
@@ -12,13 +13,9 @@ class SmoothScroll extends Plugin {
   constructor() {
     super('smooth')
 
-    // this.containers = null
-
     window.hasSmoothScroll = false
-    window.smoothScrollTop = 0
-    window.smoothScrollProgress = 0
 
-    this.listeners = { hashChange: this.hashChange.bind(this) }
+    this.lenis = null
   }
 
   /**
@@ -27,200 +24,38 @@ class SmoothScroll extends Plugin {
   init() {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    const hasSmooth = !!document.querySelector('html[data-lg-smooth]')
 
-    this.bindEvents()
-  }
+    if (hasSmooth) {
+      window.hasSmoothScroll = true
 
-  /**
-   * Bind events
-   */
-  bindEvents() {
-    window.addEventListener('hashchange', this.hashChange)
+      document.documentElement.classList.add('has-smooth-scroll')
 
-    Emitter.on('resize', this.resizeHandler, this)
-    Emitter.on('update', this.updateHandler, this)
-  }
+      this.lenis = new Lenis({
+        lerp: Luge.settings.smooth.inertia,
+        smooth: hasSmooth,
+        direction: 'vertical',
+        wrapper: window,
+        content: document.body
+      })
 
-  /**
-   * Initialization
-   * @param {Function} done Done function
-   */
-  pageInit(done) {
-    // const containers = document.querySelectorAll('[data-lg-smooth]')
+      this.onScroll = this.onScroll.bind(this)
+      this.lenis.on('scroll', this.onScroll)
 
-    // if (containers.length > 0) {
-    //   window.smoothScrollTop = window.scrollTop
-    //   window.unifiedScrollTop = window.smoothScrollTop
-    //   window.hasSmoothScroll = true
-    //   document.documentElement.classList.add('has-smooth-scroll')
-
-    //   this.containers = Array.from(containers).map((element) => ({
-    //     el: element,
-    //     bounding: element.getBoundingClientRect(),
-    //   }))
-
-    //   Ticker.add(this.tick, this)
-    // } else {
-    //   window.smoothScrollTop = 0
-    //   window.unifiedScrollTop = window.scrollTop
-    //   window.hasSmoothScroll = false
-    //   document.documentElement.classList.remove('has-smooth-scroll')
-
-    //   this.containers = null
-
-    //   Ticker.remove(this.tick, this)
-    // }
-    this.onScroll = this.onScroll.bind(this)
-
-    if (this.lenis) {
-      this.lenis.off('scroll', this.onScroll)
-      this.lenis.destroy()
-      Ticker.remove(this.tick, this)
+      Ticker.add(this.lenis.raf, this.lenis)
     }
-
-    const smooth = !!document.querySelector('html[data-lg-smooth]')
-    document.documentElement.classList.toggle('has-smooth-scroll', smooth)
-
-    this.lenis = new Lenis({
-      lerp: Luge.settings.smooth.inertia,
-      smooth: smooth,
-      direction: 'vertical',
-      wrapper: window,
-      content: document.body,
-    })
-
-    window.hasSmoothScroll = this.lenis.smooth
-
-    this.lenis.on('scroll', this.onScroll)
-
-    Ticker.add(this.tick, this)
-
-    this.resizeHandler()
-
-    done()
   }
 
-  onScroll(e) {
-    window.smoothScrollTop =
-      window.unifiedScrollTop =
-      window.scrollTop =
-        window.scrollY
-    window.maxScrollTop = this.lenis.limit
-    window.scrollProgress = window.smoothScrollProgress =
-      window.unifiedScrollTop / window.maxScrollTop
+  /**
+   * Scroll handler
+   */
+  onScroll() {
+    window.scrollTop = window.scrollY
 
-    console.log('onscroll', window.unifiedScrollTop)
+    // Backward compatibility
+    window.unifiedScrollTop = window.scrollTop
 
     Emitter.emit('scroll')
-  }
-
-  /**
-   * Kill
-   * @param {Function} done Done function
-   */
-  pageKill(done) {
-    // this.containers = null
-
-    done()
-  }
-
-  /**
-   * Resize handler
-   */
-  resizeHandler() {
-    this.setBounding()
-  }
-
-  /**
-   * Update handler
-   */
-  updateHandler() {
-    this.setBounding()
-  }
-
-  /**
-   * Hash change
-   */
-  hashChange() {
-    const hash = window.location.hash
-
-    if (hash) {
-      const target = document.querySelector(hash)
-
-      if (target) {
-        const targetY =
-          target.getBoundingClientRect().top + window.unifiedScrollTop
-
-        window.scroll({
-          top: targetY,
-          left: 0,
-          behavior: 'instant',
-        })
-      }
-    }
-  }
-
-  /**
-   * Set elements bouding
-   */
-  setBounding() {
-    // if (this.containers) {
-    //   // Reset style
-    //   this.containers.forEach(function (container) {
-    //     container.el.removeAttribute('style')
-    //   })
-    //   this.containers.forEach(function (container) {
-    //     const parent = container.el.parentNode
-    //     // Get bounding
-    //     container.bounding = container.el.getBoundingClientRect()
-    //     parent.style.height =
-    //       container.bounding.bottom + window.scrollTop + 'px'
-    //     // Set container
-    //     container.el.style.position = 'fixed'
-    //     container.el.style.transform =
-    //       'translate3d(0, -' + window.smoothScrollTop + 'px, 0)'
-    //     container.el.style.left = 0
-    //     container.el.style.width = '100%'
-    //     container.el.style.willChange = 'transform'
-    //   })
-    // }
-  }
-
-  /**
-   * Raf animation
-   */
-  tick() {
-    // if (window.smoothScrollTop !== window.scrollTop) {
-    //   window.smoothScrollTop = Math.max(
-    //     window.smoothScrollTop +
-    //       (window.scrollTop - window.smoothScrollTop) *
-    //         Luge.settings.smooth.inertia,
-    //     0
-    //   )
-    //   // Round smooth scroll
-    //   const gap = window.smoothScrollTop - window.scrollTop
-    //   if (gap > -0.1 && gap < 0.1) {
-    //     window.smoothScrollTop = window.scrollTop
-    //   }
-    //   if (this.containers) {
-    //     this.containers.forEach(function (container) {
-    //       container.el.style.transform =
-    //         'translate3d(0, -' + window.smoothScrollTop + 'px, 0)'
-    //     })
-    //   }
-    //   if (window.hasSmoothScroll) {
-    //     window.unifiedScrollTop = window.smoothScrollTop
-    //     window.smoothScrollProgress =
-    //       window.smoothScrollTop / window.maxScrollTop
-    //     Emitter.emit('scroll')
-    //   }
-    // }
-
-    if (this.lenis) {
-      this.lenis.raf()
-    }
   }
 }
 
