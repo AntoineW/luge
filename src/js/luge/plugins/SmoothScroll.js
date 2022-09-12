@@ -32,7 +32,6 @@ class SmoothScroll extends Plugin {
       document.documentElement.classList.add('has-smooth-scroll')
 
       this.lenis = new Lenis({
-        lerp: Luge.settings.smooth.inertia,
         smooth: hasSmooth,
         direction: 'vertical',
         wrapper: window,
