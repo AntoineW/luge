@@ -1,4 +1,3 @@
-import 'whatwg-fetch'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
 import Luge from 'Core/Core'

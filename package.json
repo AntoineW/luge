@@ -45,7 +45,6 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
-    "bowser": "^2.11.0",
-    "whatwg-fetch": "^3.6.2"
+    "bowser": "^2.11.0"
   }
 }
