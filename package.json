@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "bowser": "^2.11.0",
+    "virtual-scroll": "^2.2.1",
     "whatwg-fetch": "^3.6.2"
   }
 }
