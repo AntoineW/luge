@@ -42,9 +42,6 @@ class Luge {
         disabled: ['tablet', 'mobile', { safari: '<=12' }],
         inertia: 0.1
       },
-      sticky: {
-        disabled: ['tablet', 'mobile']
-      },
       ticker: {
         external: false
       },
