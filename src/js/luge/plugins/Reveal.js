@@ -218,7 +218,7 @@ class Reveal extends Plugin {
       if (!this.toRevealIn.includes(element)) {
         this.toRevealIn.push(element)
       }
-    } else if ((element.scrollProgress < threshold || element.scrollProgress > (1 - threshold)) && element.luge.reveal.isRevealed) {
+    } else if ((element.scrollProgress < threshold || (element.scrollProgress > (1 - threshold) && element.scrollEnd < Math.round(window.unifiedScrollTop))) && element.luge.reveal.isRevealed) {
       if (this.toRevealIn.includes(element)) {
         this.toRevealIn.splice(this.toRevealIn.indexOf(element), 1)
       }
