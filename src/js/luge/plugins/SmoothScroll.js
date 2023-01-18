@@ -44,7 +44,7 @@ class SmoothScroll extends Plugin {
         mouseMultiplier: platform.indexOf('Win') > -1 ? 1 : 0.4,
         useKeyboard: false,
         useTouch: false,
-        passive: false
+        passive: true
       })
 
       this.virtualScroll.on(this.onVirtualScroll.bind(this))
@@ -77,7 +77,10 @@ class SmoothScroll extends Plugin {
    * Virtual scroll handler
    */
   onVirtualScroll({ deltaY, originalEvent: e }) {
-    if (e.ctrlKey) {
+    const objects = e.composedPath()
+    const isPrevented = !!objects.find((el) => el?.hasAttribute?.('data-lg-smooth-prevent'))
+
+    if (e.ctrlKey || isPrevented) {
       return
     }
 
