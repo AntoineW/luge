@@ -32,6 +32,7 @@ class SmoothScroll extends Plugin {
 
       this.smoothScroll = window.scrollTop
       this.targetScroll = window.scrollTop
+      this.targetSmoothScroll = window.scrollTop
 
       document.documentElement.classList.add('has-smooth-scroll')
 
@@ -67,6 +68,7 @@ class SmoothScroll extends Plugin {
   onScroll () {
     if (!window.isSmoothScrolling) {
       this.targetScroll = window.scrollTop
+      this.targetSmoothScroll = window.scrollTop
       this.smoothScroll = window.scrollTop
     }
   }
@@ -91,9 +93,10 @@ class SmoothScroll extends Plugin {
    * Tick
    */
   tick () {
-    this.smoothScroll += (this.targetScroll - this.smoothScroll) * 0.1
+    this.targetSmoothScroll += (this.targetScroll - this.targetSmoothScroll) * Luge.settings.smooth.inertia
+    this.smoothScroll += (this.targetSmoothScroll - this.smoothScroll) * Luge.settings.smooth.inertia
 
-    const diff = Math.abs(this.targetScroll - this.smoothScroll)
+    const diff = Math.abs(this.targetSmoothScroll - this.smoothScroll)
 
     if (window.isSmoothScrolling && diff > 0.5) {
       window.scrollTo(
@@ -103,7 +106,7 @@ class SmoothScroll extends Plugin {
         }
       )
     } else if (window.isSmoothScrolling) {
-      this.smoothScroll = this.targetScroll
+      this.smoothScroll = this.targetSmoothScroll
       window.isSmoothScrolling = false
     }
   }
