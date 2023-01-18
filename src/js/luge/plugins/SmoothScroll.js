@@ -84,8 +84,6 @@ class SmoothScroll extends Plugin {
       return
     }
 
-    e.preventDefault()
-
     this.targetScroll -= deltaY
     this.targetScroll = Math.clamp(0, this.targetScroll, window.maxScrollTop)
 
