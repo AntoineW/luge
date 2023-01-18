@@ -19,7 +19,6 @@ import Preloader from 'Plugins/Preloader'
 import Reveal from 'Plugins/Reveal'
 import ScrollAnimation from 'Plugins/ScrollAnimation'
 import SmoothScroll from 'Plugins/SmoothScroll'
-import Sticky from 'Plugins/Sticky'
 import Transition from 'Plugins/Transition'
 
 // Public methods

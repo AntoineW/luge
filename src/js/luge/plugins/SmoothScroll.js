@@ -4,175 +4,107 @@ import Luge from 'Core/Core'
 import Plugin from 'Core/Plugin'
 import Ticker from 'Core/Ticker'
 
+import VirtualScroll from 'virtual-scroll'
+
 class SmoothScroll extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor() {
     super('smooth')
 
-    this.containers = null
-
     window.hasSmoothScroll = false
-    window.smoothScrollTop = 0
-    window.smoothScrollProgress = 0
-
-    this.listeners = { hashChange: this.hashChange.bind(this) }
+    window.isSmoothScrolling = false
   }
 
   /**
    * Init
    */
-  init () {
+  init() {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    this.element = document.documentElement
 
-    this.bindEvents()
+    this.hasSmooth = this.element.hasAttribute('data-lg-smooth')
+
+    if (this.hasSmooth) {
+      window.hasSmoothScroll = true
+
+      this.smoothScroll = window.scrollTop
+      this.targetScroll = window.scrollTop
+
+      document.documentElement.classList.add('has-smooth-scroll')
+
+      const platform = navigator?.userAgentData?.platform || navigator?.platform || 'unknown'
+
+      this.virtualScroll = new VirtualScroll({
+        el: this.element,
+        firefoxMultiplier: 50,
+        mouseMultiplier: platform.indexOf('Win') > -1 ? 1 : 0.4,
+        useKeyboard: false,
+        useTouch: false,
+        passive: false
+      })
+
+      this.virtualScroll.on(this.onVirtualScroll.bind(this))
+
+      Ticker.add(this.tick, this)
+
+      this.bindEvents()
+    }
   }
 
   /**
    * Bind events
    */
   bindEvents () {
-    window.addEventListener('hashchange', this.hashChange)
-
-    Emitter.on('resize', this.resizeHandler, this)
-    Emitter.on('update', this.updateHandler, this)
+    Emitter.on('scroll', this.onScroll, this)
   }
 
   /**
-   * Initialization
-   * @param {Function} done Done function
+   * Scroll handler
    */
-  pageInit (done) {
-    const containers = document.querySelectorAll('[data-lg-smooth]')
-
-    if (containers.length > 0) {
-      window.smoothScrollTop = window.scrollTop
-      window.unifiedScrollTop = window.smoothScrollTop
-      window.hasSmoothScroll = true
-      document.documentElement.classList.add('has-smooth-scroll')
-
-      this.containers = Array.from(containers).map(element => (
-        {
-          el: element,
-          bounding: element.getBoundingClientRect()
-        }))
-
-      Ticker.add(this.tick, this)
-    } else {
-      window.smoothScrollTop = 0
-      window.unifiedScrollTop = window.scrollTop
-      window.hasSmoothScroll = false
-      document.documentElement.classList.remove('has-smooth-scroll')
-
-      this.containers = null
-
-      Ticker.remove(this.tick, this)
-    }
-
-    this.resizeHandler()
-
-    done()
-  }
-
-  /**
-   * Kill
-   * @param {Function} done Done function
-   */
-  pageKill (done) {
-    this.containers = null
-
-    done()
-  }
-
-  /**
-   * Resize handler
-   */
-  resizeHandler () {
-    this.setBounding()
-  }
-
-  /**
-   * Update handler
-   */
-  updateHandler () {
-    this.setBounding()
-  }
-
-  /**
-   * Hash change
-   */
-  hashChange () {
-    const hash = window.location.hash
-
-    if (hash) {
-      const target = document.querySelector(hash)
-
-      if (target) {
-        const targetY = target.getBoundingClientRect().top + window.unifiedScrollTop
-
-        window.scroll({
-          top: targetY,
-          left: 0,
-          behavior: 'instant'
-        })
-      }
+  onScroll () {
+    if (!window.isSmoothScrolling) {
+      this.targetScroll = window.scrollTop
+      this.smoothScroll = window.scrollTop
     }
   }
 
   /**
-   * Set elements bouding
+   * Virtual scroll handler
    */
-  setBounding () {
-    if (this.containers) {
-      // Reset style
-      this.containers.forEach(function (container) { container.el.removeAttribute('style') })
-
-      this.containers.forEach(function (container) {
-        const parent = container.el.parentNode
-
-        // Get bounding
-        container.bounding = container.el.getBoundingClientRect()
-
-        parent.style.height = (container.bounding.bottom + window.scrollTop) + 'px'
-
-        // Set container
-        container.el.style.position = 'fixed'
-        container.el.style.transform = 'translate3d(0, -' + window.smoothScrollTop + 'px, 0)'
-        container.el.style.left = 0
-        container.el.style.width = '100%'
-        container.el.style.willChange = 'transform'
-      })
+  onVirtualScroll({ deltaY, originalEvent: e }) {
+    if (e.ctrlKey) {
+      return
     }
+
+    e.preventDefault()
+
+    this.targetScroll -= deltaY
+    this.targetScroll = Math.clamp(0, this.targetScroll, window.maxScrollTop)
+
+    window.isSmoothScrolling = true
   }
 
   /**
-   * Raf animation
+   * Tick
    */
   tick () {
-    if (window.smoothScrollTop !== window.scrollTop) {
-      window.smoothScrollTop = Math.max(window.smoothScrollTop + ((window.scrollTop - window.smoothScrollTop) * Luge.settings.smooth.inertia), 0)
+    this.smoothScroll += (this.targetScroll - this.smoothScroll) * 0.1
 
-      // Round smooth scroll
-      const gap = window.smoothScrollTop - window.scrollTop
-      if (gap > -0.1 && gap < 0.1) {
-        window.smoothScrollTop = window.scrollTop
-      }
+    const diff = Math.abs(this.targetScroll - this.smoothScroll)
 
-      if (this.containers) {
-        this.containers.forEach(function (container) {
-          container.el.style.transform = 'translate3d(0, -' + window.smoothScrollTop + 'px, 0)'
-        })
-      }
-
-      if (window.hasSmoothScroll) {
-        window.unifiedScrollTop = window.smoothScrollTop
-        window.smoothScrollProgress = window.smoothScrollTop / window.maxScrollTop
-        Emitter.emit('scroll')
-      }
+    if (window.isSmoothScrolling && diff > 0.5) {
+      window.scrollTo(
+        {
+          top: this.smoothScroll,
+          behavior: 'auto'
+        }
+      )
+    } else if (window.isSmoothScrolling) {
+      this.smoothScroll = this.targetScroll
+      window.isSmoothScrolling = false
     }
   }
 }

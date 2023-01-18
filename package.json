@@ -1,6 +1,6 @@
 {
   "name": "@waaark/luge",
-  "version": "0.6.11-beta",
+  "version": "0.6.10-beta",
   "description": "Front-end animation plugin for uncreative developers",
   "author": "Antoine Wodniack <hello@wodniack.dev> (https://wodniack.dev)",
   "homepage": "https://luge.cool",
@@ -45,6 +45,8 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
-    "bowser": "^2.11.0"
+    "bowser": "^2.11.0",
+    "virtual-scroll": "^2.2.1",
+    "whatwg-fetch": "^3.6.2"
   }
 }
