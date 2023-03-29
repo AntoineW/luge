@@ -9,6 +9,7 @@ import ViewportObserver from 'Core/ViewportObserver'
 import MouseObserver from 'Core/MouseObserver'
 import ScrollObserver from 'Core/ScrollObserver'
 import Ticker from 'Core/Ticker'
+import Browser from 'Core/Browser'
 
 import Cursor from 'Plugins/Cursor'
 import Intersection from 'Plugins/Intersection'
@@ -21,8 +22,20 @@ import ScrollAnimation from 'Plugins/ScrollAnimation'
 import SmoothScroll from 'Plugins/SmoothScroll'
 import Transition from 'Plugins/Transition'
 
+const browser = Browser.bowser
+
+Luge.setSettings({
+  cursor: {
+    disabled: browser.some(['tablet', 'mobile'])
+  },
+  smooth: {
+    disabled: browser.some(['tablet', 'mobile']) || browser.satisfies({ safari: '<=12' })
+  }
+})
+
 // Public methods
 const luge = {
+  browser,
   cursor: {},
   emitter: {
     emit: Emitter.emit.bind(Emitter),

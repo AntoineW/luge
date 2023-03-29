@@ -38,28 +38,7 @@ export default class Plugin {
    * Check if feature is disabled
    */
   disabled () {
-    let disabled = false
-    if (typeof Luge.settings[this.pluginSlug] !== 'undefined' && typeof Luge.settings[this.pluginSlug].disabled !== 'undefined') {
-      disabled = Luge.settings[this.pluginSlug].disabled
-    }
-
-    if (Helpers.isString(disabled)) {
-      disabled = window.browser.is(disabled, true)
-    } else if (Helpers.isArray(disabled)) {
-      disabled = disabled.some(element => {
-        if (Helpers.isString(element)) {
-          return window.browser.is(element, true)
-        } else if (Helpers.isObject(element)) {
-          return window.browser.satisfies(element)
-        }
-
-        return false
-      })
-    } else if (Helpers.isObject(disabled)) {
-      disabled = window.browser.satisfies(disabled)
-    }
-
-    return disabled
+    return !!(Luge.settings[this.pluginSlug] || {}).disabled
   }
 
   /**

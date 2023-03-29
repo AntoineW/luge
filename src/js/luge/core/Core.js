@@ -1,4 +1,3 @@
-import Bowser from 'bowser'
 import LifeCycle from 'Core/LifeCycle'
 import Emitter from 'Core/Emitter'
 import Helpers from 'Core/Helpers'
@@ -11,7 +10,6 @@ class Luge {
     // Options
     this.settings = {
       cursor: {
-        disabled: ['tablet', 'mobile'],
         inertia: 1,
         trailLength: 10
       },
@@ -39,7 +37,6 @@ class Luge {
         inertia: 0.1
       },
       smooth: {
-        disabled: ['tablet', 'mobile', { safari: '<=12' }],
         inertia: 0.1
       },
       ticker: {
@@ -76,22 +73,6 @@ class Luge {
     window.mouseX = -1
     window.mouseY = -1
     window.mouseLastScrollTop = 0
-
-    // Browser detect
-    window.browser = Bowser.getParser(window.navigator.userAgent)
-
-    // Platform type class
-    document.documentElement.classList.add('is-' + window.browser.getPlatformType())
-
-    if (window.browser.is('mobile') || window.browser.is('tablet')) {
-      document.documentElement.classList.add('is-handheld')
-    }
-
-    // Browser class
-    if (window.browser.is('Safari')) {
-      document.documentElement.classList.add('is-safari')
-      document.documentElement.classList.add('is-safari-' + window.browser.getBrowserVersion())
-    }
 
     LifeCycle.add('siteInit', this.siteInit.bind(this), 999)
 
