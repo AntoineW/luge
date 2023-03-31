@@ -112,11 +112,13 @@ class Parallax extends Plugin {
       const disable = attributes.disable
       let enable = true
 
-      if (disable) {
-        if ((disable === 'desktop' && window.browser.is('desktop')) ||
-            (disable === 'handheld' && !window.browser.is('desktop')) ||
-            (disable === 'mobile' && window.browser.is('mobile')) ||
-            (disable === 'tablet' && window.browser.is('tablet'))) {
+      const is = (window.luge.browser || {}).is
+
+      if (disable && is) {
+        if ((disable === 'desktop' && is('desktop')) ||
+            (disable === 'handheld' && !is('desktop')) ||
+            (disable === 'mobile' && is('mobile')) ||
+            (disable === 'tablet' && is('tablet'))) {
           enable = false
         }
       }
