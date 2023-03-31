@@ -13,7 +13,7 @@ class Ticker {
       this.fpsInterval = 1000 / this.fps
       this.lastTickTime = null
 
-      requestAnimationFrame(this.tick.bind(this))
+      requestAnimationFrame(this._tick.bind(this))
     }
   }
 
@@ -66,29 +66,36 @@ class Ticker {
   }
 
   /**
-   * Call tick functions
+   * Call tick function
    */
-  tick (nowTime) {
-    const self = this
+  _tick (nowTime) {
     const elapsedTime = nowTime - this.lastTickTime
 
     if (elapsedTime > this.fpsInterval) {
-      this.callbacks.forEach(object => {
-        object.cb.apply(object.context, [nowTime])
-      })
-
-      this.onceCallbacks.forEach((object, index) => {
-        object.cb.apply(object.context, [nowTime])
-
-        delete self.onceCallbacks[index]
-      })
-
+      this.tick(nowTime)
       this.lastTickTime = nowTime - (elapsedTime % this.fpsInterval)
     }
 
     if (!Luge.settings.ticker.external) {
-      requestAnimationFrame(this.tick.bind(this))
+      requestAnimationFrame(this._tick.bind(this))
     }
+  }
+
+  /**
+   * Call tick functions
+   */
+  tick (nowTime) {
+    const self = this
+
+    this.callbacks.forEach(object => {
+      object.cb.apply(object.context, [nowTime])
+    })
+
+    this.onceCallbacks.forEach((object, index) => {
+      object.cb.apply(object.context, [nowTime])
+
+      delete self.onceCallbacks[index]
+    })
   }
 }
 
