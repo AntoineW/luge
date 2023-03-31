@@ -1,20 +1,20 @@
 const path = require('path')
-const gulp = require('gulp');
+const gulp = require('gulp')
 
-const rollup = require('rollup');
-const alias = require('@rollup/plugin-alias');
-const { babel } = require('@rollup/plugin-babel');
-const eslint = require('@rollup/plugin-eslint');
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const replace = require('@rollup/plugin-replace');
-const commonjs = require('@rollup/plugin-commonjs');
-const { terser } = require('rollup-plugin-terser');
+const rollup = require('rollup')
+const alias = require('@rollup/plugin-alias')
+const { babel } = require('@rollup/plugin-babel')
+const eslint = require('@rollup/plugin-eslint')
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const replace = require('@rollup/plugin-replace')
+const commonjs = require('@rollup/plugin-commonjs')
+const { terser } = require('rollup-plugin-terser')
 
-const sass = require('gulp-sass')(require('node-sass'));
-const sassGlob = require('gulp-sass-glob');
-const autoprefixer = require('gulp-autoprefixer');
+const sass = require('gulp-sass')(require('node-sass'))
+const sassGlob = require('gulp-sass-glob')
+const autoprefixer = require('gulp-autoprefixer')
 
-const package = require('../package.json')
+const _package = require('../package.json')
 
 // Script
 const rollupConfig = {
@@ -50,7 +50,7 @@ const rollupConfig = {
     commonjs(),
     replace({
       preventAssignment: true,
-      'VERSION': JSON.stringify(package.version)
+      VERSION: JSON.stringify(_package.version)
     }),
     terser()
   ]
@@ -70,22 +70,22 @@ const writeEsm = {
 
 gulp.task('js', function (done) {
   return rollup.rollup(rollupConfig)
-  .then(bundle => {
-    bundle.write(writeUmd)
-    bundle.write(writeEsm)
+    .then(bundle => {
+      bundle.write(writeUmd)
+      bundle.write(writeEsm)
 
-    done()
-  })
-});
+      done()
+    })
+})
 
 gulp.task('js-dev', function (done) {
   return rollup.rollup(rollupConfig)
-  .then(bundle => {
-    bundle.write({...writeUmd, sourcemap: true})
+    .then(bundle => {
+      bundle.write({ ...writeUmd, sourcemap: true })
 
-    done()
-  })
-});
+      done()
+    })
+})
 
 // Style
 gulp.task('scss', function () {
@@ -97,14 +97,14 @@ gulp.task('scss', function () {
         env: 'last 2 versions'
       }
     ))
-    .pipe(gulp.dest('../dist/css/'));
-});
+    .pipe(gulp.dest('../dist/css/'))
+})
 
 // Watch
 gulp.task('watch', function () {
-  gulp.watch('../src/**/*.js', gulp.task('js-dev'));
-  gulp.watch('../src/**/*.scss', gulp.task('scss'));
-});
+  gulp.watch('../src/**/*.js', gulp.task('js-dev'))
+  gulp.watch('../src/**/*.scss', gulp.task('scss'))
+})
 
 // Default
 gulp.task('default', gulp.series('js', 'scss'))
