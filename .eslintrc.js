@@ -1,11 +1,11 @@
 module.exports = {
-  parser: "@babel/eslint-parser",
+  parser: '@babel/eslint-parser',
   root: true,
   parserOptions: {
-    requireConfigFile: false,
+    requireConfigFile: false
   },
   env: {
-    browser: true,
+    browser: true
   },
   extends: [
     'standard'
@@ -17,7 +17,7 @@ module.exports = {
     'space-before-function-paren': 'off'
   },
   globals: {
-    'lottie': true,
-    'VERSION': true
+    lottie: true,
+    VERSION: true
   }
 }
