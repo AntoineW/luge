@@ -1,17 +1,14 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
-import Luge from 'Core/Core'
-import Plugin from 'Core/Plugin'
-import ScrollObserver from 'Core/ScrollObserver'
-import Ticker from 'Core/Ticker'
+import Helpers from '../core/Helpers'
+import Plugin from '../core/Plugin'
 
-class Reveal extends Plugin {
+export default class Reveal extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('reveal')
+
+    this.luge = luge
 
     this.elements = []
     this.toRevealIn = []
@@ -25,6 +22,10 @@ class Reveal extends Plugin {
 
     // Listeners
     this.onScrollProgress = this.onScrollProgress.bind(this)
+
+    luge.reveal = {
+      add: this.add.bind(this)
+    }
   }
 
   /**
@@ -33,9 +34,9 @@ class Reveal extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this), 11)
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
-    LifeCycle.add('reveal', this.reveal.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this), 11)
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
+    this.luge.lifecycle.add('reveal', this.reveal.bind(this))
 
     this.bindEvents()
   }
@@ -62,7 +63,7 @@ class Reveal extends Plugin {
     const data = super.getAttributes(element)
 
     if (data.stagger !== undefined && data.stagger === '') {
-      data.stagger = Luge.settings.reveal.stagger
+      data.stagger = this.luge._settings.reveal.stagger
     } else if (data.stagger === undefined) {
       data.stagger = false
     }
@@ -74,9 +75,9 @@ class Reveal extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('resize', this.resizeHandler, this)
-    Emitter.on('scroll', this.scrollHandler, this)
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('resize', this.resizeHandler, this)
+    this.luge.emitter.on('scroll', this.scrollHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -118,7 +119,7 @@ class Reveal extends Plugin {
       element.luge.reveal.name = Helpers.toCamelCase(revealName)
 
       if (!attributes.manual) {
-        ScrollObserver.add(element)
+        this.luge.scrollobserver.add(element)
 
         element.addEventListener('scrollprogress', this.onScrollProgress)
       } else {
@@ -140,7 +141,7 @@ class Reveal extends Plugin {
           const childRevealName = child.dataset.lgReveal
 
           child.style.transition = 'none'
-          Ticker.nextTick(() => {
+          this.luge.ticker.nextTick(() => {
             child.style.transition = ''
           })
 
@@ -159,7 +160,7 @@ class Reveal extends Plugin {
         })
       } else {
         element.style.transition = 'none'
-        Ticker.nextTick(() => {
+        this.luge.ticker.nextTick(() => {
           element.style.transition = ''
         })
 
@@ -208,7 +209,7 @@ class Reveal extends Plugin {
    */
   onScrollProgress (e) {
     const element = e.target
-    const threshold = Luge.settings.reveal.threshold
+    const threshold = this.luge._settings.reveal.threshold
 
     if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed) {
       if (this.toRevealOut.includes(element)) {
@@ -307,7 +308,7 @@ class Reveal extends Plugin {
         }, delay ? revealInTimeout : 0)
 
         if (delay) {
-          revealInTimeout += Luge.settings.reveal.stagger * 1000
+          revealInTimeout += this.luge._settings.reveal.stagger * 1000
         }
 
         if (!element.luge.reveal.multiple) {
@@ -399,5 +400,3 @@ class Reveal extends Plugin {
     }
   }
 }
-
-export default new Reveal()

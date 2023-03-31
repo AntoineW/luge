@@ -1,6 +1,6 @@
-import Helpers from 'Core/Helpers'
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
+import Helpers from './Helpers'
+import LifeCycle from './LifeCycle'
+import Luge from './Core'
 
 export default class Plugin {
   /**

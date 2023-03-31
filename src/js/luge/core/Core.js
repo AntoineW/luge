@@ -1,6 +1,6 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
+import LifeCycle from './LifeCycle'
+import Emitter from './Emitter'
+import Helpers from './Helpers'
 
 class Luge {
   /**
@@ -8,7 +8,7 @@ class Luge {
    */
   constructor () {
     // Options
-    this.settings = {
+    this.settings = Helpers.deepFreeze({
       cursor: {
         inertia: 1,
         trailLength: 10
@@ -48,7 +48,7 @@ class Luge {
       credits: {
         show: true
       }
-    }
+    })
 
     // Timeouts
     this.timeouts = {
@@ -83,7 +83,7 @@ class Luge {
    * Set settings
    */
   setSettings (settings) {
-    this.settings = Helpers.mergeDeep(this.settings, settings)
+    this.settings = Helpers.deepFreeze(Helpers.mergeDeep(this.settings, settings))
   }
 
   /**

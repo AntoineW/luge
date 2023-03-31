@@ -1,16 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
-import Emitter from 'Core/Emitter'
-import Plugin from 'Core/Plugin'
-import ScrollObserver from 'Core/ScrollObserver'
-import Ticker from 'Core/Ticker'
+import Plugin from '../core/Plugin'
 
-class Parallax extends Plugin {
+export default class Parallax extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('parallax')
+
+    this.luge = luge
 
     this.elements = []
 
@@ -24,10 +21,10 @@ class Parallax extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this), 30)
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this), 30)
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
 
-    Ticker.add(this.tick, this)
+    this.luge.ticker.add(this.tick, this)
 
     this.bindEvents()
   }
@@ -41,7 +38,7 @@ class Parallax extends Plugin {
       disable: String,
       amplitude: [String, 1],
       anchor: String,
-      inertia: [String, Luge.settings.parallax.inertia]
+      inertia: [String, this.luge._settings.parallax.inertia]
     }
   }
 
@@ -68,7 +65,7 @@ class Parallax extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -135,7 +132,7 @@ class Parallax extends Plugin {
    */
   addElement (element) {
     if (!this.elements.includes(element)) {
-      ScrollObserver.add(element)
+      this.luge.scrollobserver.add(element)
 
       if (element.luge.parallax.root === 'child') {
         element.style.overflow = 'hidden'
@@ -147,7 +144,7 @@ class Parallax extends Plugin {
 
       this.elements.push(element)
 
-      Ticker.nextTick(() => {
+      this.luge.ticker.nextTick(() => {
         element.addEventListener('scrollprogress', this.onScrollProgress)
         this.moveElement(element)
       })
@@ -215,5 +212,3 @@ class Parallax extends Plugin {
     })
   }
 }
-
-export default new Parallax()

@@ -16,40 +16,44 @@
   "files": [
     "/dist/*"
   ],
-  "main": "./dist/js/luge.esm.js",
-  "scripts": {
-    "dev": "gulp dev --gulpfile build/gulpfile.js",
-    "build": "gulp --gulpfile build/gulpfile.js"
+  "sideEffects": false,
+  "type": "module",
+  "source": "src/js/luge.js",
+  "exports": {
+    "require": "./dist/js/luge.cjs",
+    "default": "./dist/js/luge.modern.js"
   },
-  "test": "exit 0",
+  "main": "./dist/js/luge.cjs",
+  "module": "./dist/js/luge.module.js",
+  "unpkg": "./dist/js/luge.umd.js",
+  "scripts": {
+    "build": "run-p build:*",
+    "build:pkg": "microbundle --format modern,esm,cjs --define VERSION=$npm_package_version",
+    "build:umd": "microbundle -i src/js/luge.umd.js --o ./dist/luge.umd.js --format umd --define VERSION=$npm_package_version",
+    "build:scss": "run-s scss:build scss:postcss",
+    "dev": "run-p dev:*",
+    "dev:js": "microbundle watch --define VERSION=$npm_package_version",
+    "dev:scss": "run-s scss:build scss:watch",
+    "scss:build": "node-sass --recursive --output dist/css/ src/scss/luge.scss",
+    "scss:watch": "node-sass --watch --recursive --output dist/css/ src/scss/luge.scss",
+    "scss:postcss": "postcss -d dist/css/ dist/css/"
+  },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/eslint-parser": "^7.14.7",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
-    "@babel/preset-env": "^7.14.7",
-    "@rollup/plugin-alias": "^3.1.2",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-eslint": "^8.0.1",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "@rollup/plugin-replace": "^2.4.2",
-    "core-js": "^3.15.2",
+    "@babel/eslint-parser": "^7.21.3",
+    "autoprefixer": "^10.4.14",
     "eslint": "^7.29.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^8.0.0",
-    "gulp-sass": "^5.0.0",
-    "gulp-sass-glob": "^1.1.0",
+    "microbundle": "^0.15.1",
     "node-sass": "^7.0.1",
-    "rollup": "^2.52.3",
-    "rollup-plugin-terser": "^7.0.2"
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^10.1.0"
   },
   "dependencies": {
     "bowser": "^2.11.0",
-    "virtual-scroll": "^2.2.1",
-    "whatwg-fetch": "^3.6.2"
+    "virtual-scroll": "^2.2.1"
   }
 }

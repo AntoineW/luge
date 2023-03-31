@@ -1,4 +1,4 @@
-import Luge from 'Core/Core'
+import Luge from './Core'
 
 class Ticker {
   /**

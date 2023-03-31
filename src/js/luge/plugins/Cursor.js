@@ -1,14 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
-import Plugin from 'Core/Plugin'
-import Ticker from 'Core/Ticker'
+import Plugin from '../core/Plugin'
 
-class Cursor extends Plugin {
+export default class Cursor extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('cursor')
+
+    this.luge = luge
 
     this.cursors = []
     this.pointers = []
@@ -23,9 +22,9 @@ class Cursor extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
 
-    Ticker.add(this.tick, this)
+    this.luge.ticker.add(this.tick, this)
 
     this.bindEvents()
   }
@@ -36,8 +35,8 @@ class Cursor extends Plugin {
   setAttributes () {
     this.pluginAttributes = {
       root: String,
-      inertia: [Number, Luge.settings.cursor.inertia],
-      length: [Number, Luge.settings.cursor.trailLength],
+      inertia: [Number, this.luge._settings.cursor.inertia],
+      length: [Number, this.luge._settings.cursor.trailLength],
       hide: Boolean
     }
   }
@@ -269,5 +268,3 @@ class Cursor extends Plugin {
     })
   }
 }
-
-export default new Cursor()

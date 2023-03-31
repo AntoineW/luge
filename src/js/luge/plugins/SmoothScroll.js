@@ -1,12 +1,9 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Luge from 'Core/Core'
-import Plugin from 'Core/Plugin'
-import Ticker from 'Core/Ticker'
+import Helpers from '../core/Helpers'
+import Plugin from '../core/Plugin'
 
 import VirtualScroll from 'virtual-scroll'
 
-class SmoothScroll extends Plugin {
+export default class SmoothScroll extends Plugin {
   /**
    * Constructor
    */
@@ -49,7 +46,7 @@ class SmoothScroll extends Plugin {
 
       this.virtualScroll.on(this.onVirtualScroll.bind(this))
 
-      Ticker.add(this.tick, this)
+      this.luge.ticker.add(this.tick, this)
 
       this.bindEvents()
     }
@@ -59,7 +56,7 @@ class SmoothScroll extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('scroll', this.onScroll, this)
+    this.luge.emitter.on('scroll', this.onScroll, this)
   }
 
   /**
@@ -85,7 +82,7 @@ class SmoothScroll extends Plugin {
     }
 
     this.targetScroll -= deltaY
-    this.targetScroll = Math.clamp(0, this.targetScroll, window.maxScrollTop)
+    this.targetScroll = Helpers.clamp(0, this.targetScroll, window.maxScrollTop)
 
     window.isSmoothScrolling = true
   }
@@ -94,8 +91,10 @@ class SmoothScroll extends Plugin {
    * Tick
    */
   tick () {
-    this.targetSmoothScroll += (this.targetScroll - this.targetSmoothScroll) * Luge.settings.smooth.inertia
-    this.smoothScroll += (this.targetSmoothScroll - this.smoothScroll) * Luge.settings.smooth.inertia
+    const settings = this.luge._settings.smooth
+
+    this.targetSmoothScroll += (this.targetScroll - this.targetSmoothScroll) * settings.inertia
+    this.smoothScroll += (this.targetSmoothScroll - this.smoothScroll) * settings.inertia
 
     const diff = Math.abs(this.targetSmoothScroll - this.smoothScroll)
 
@@ -112,5 +111,3 @@ class SmoothScroll extends Plugin {
     }
   }
 }
-
-export default new SmoothScroll()

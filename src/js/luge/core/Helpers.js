@@ -90,6 +90,29 @@ class Helpers {
   static isInPage (node) {
     return (node === document.body) ? false : document.body.contains(node)
   }
+
+  /**
+   * Deep freeze an object
+   * @param {Object} obj
+   * @returns {Object} freezed object
+   */
+  static deepFreeze(obj) {
+    Object.keys(obj).forEach(prop => {
+      if (typeof obj[prop] === 'object') Helpers.deepFreeze(obj[prop])
+    })
+    return Object.freeze(obj)
+  }
+
+  /**
+   * Clamp x between lower and upper
+   * @param {Number} x
+   * @param {Number} lower
+   * @param {Number} upper
+   * @returns {Number} clamped Number
+   */
+  static clamp(x, lower, upper) {
+    return Math.min(upper, Math.max(lower, x));
+  }
 }
 
 export default Helpers

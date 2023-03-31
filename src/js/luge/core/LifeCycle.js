@@ -1,5 +1,5 @@
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
+import Emitter from './Emitter'
+import Helpers from './Helpers'
 
 class LifeCycle {
   /**

@@ -1,22 +1,20 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Luge from 'Core/Core'
-import Helpers from 'Core/Helpers'
-import Plugin from 'Core/Plugin'
-import Ticker from 'Core/Ticker'
+import Helpers from '../core/Helpers'
+import Plugin from '../core/Plugin'
 
-class Transition extends Plugin {
+export default class Transition extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('transition')
+
+    this.luge = luge
 
     this.url = window.location.href
     this.pathname = window.location.pathname
     this.pageFetched = null
     this.currentPage = null
-    this.reload = Luge.settings.transition.reload
+    this.reload = this.luge._settings.transition.reload
 
     this.prevScrollTop = 0
     this.newScrollTop = 0
@@ -27,6 +25,10 @@ class Transition extends Plugin {
     }
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
+
+    luge.transition = {
+      add: this.add.bind(this)
+    }
   }
 
   /**
@@ -35,7 +37,7 @@ class Transition extends Plugin {
   init () {
     this.currentPage = document.querySelector('[data-lg-page]')
     if (this.currentPage) {
-      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
+      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : this.luge._settings.transition.reload
     }
 
     this.initLoader()
@@ -44,12 +46,12 @@ class Transition extends Plugin {
       window.addEventListener('popstate', this.historyStateChanged.bind(this))
     }
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageFetch', this.pageFetch.bind(this))
-    LifeCycle.add('pageOut', this.pageOut.bind(this))
-    LifeCycle.add('pageIn', this.pageIn.bind(this), 10, 'transition')
-    LifeCycle.add('pageCreate', this.pageCreate.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this), 999, 'transition')
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+    this.luge.lifecycle.add('pageFetch', this.pageFetch.bind(this))
+    this.luge.lifecycle.add('pageOut', this.pageOut.bind(this))
+    this.luge.lifecycle.add('pageIn', this.pageIn.bind(this), 10, 'transition')
+    this.luge.lifecycle.add('pageCreate', this.pageCreate.bind(this))
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this), 999, 'transition')
   }
 
   /**
@@ -118,14 +120,14 @@ class Transition extends Plugin {
       document.head.appendChild(prefetchLink)
 
       // Change URL after pageOut
-      LifeCycle.add('siteReload', (done) => {
+      this.luge.lifecycle.add('siteReload', (done) => {
         window.location = url
       })
 
       // Call cycle
-      LifeCycle.cycle('reload')
+      this.luge.lifecycle._cycle('reload')
     } else {
-      LifeCycle.cycle('transition')
+      this.luge.lifecycle._cycle('transition')
     }
   }
 
@@ -148,7 +150,7 @@ class Transition extends Plugin {
     if (loader) {
       loader.style.transition = 'none'
       loader.classList.add('lg-loader', 'lg-loader--' + loader.getAttribute('data-lg-loader'))
-      Ticker.nextTick(() => {
+      this.luge.ticker.nextTick(() => {
         loader.style.transition = ''
       })
     }
@@ -277,7 +279,7 @@ class Transition extends Plugin {
     this.prevScrollTop = 0
     this.newScrollTop = 0
 
-    Emitter.emit('pageTransition', html)
+    this.luge.emitter.emit('pageTransition', html)
 
     done()
   }
@@ -291,7 +293,7 @@ class Transition extends Plugin {
     oldPage.parentNode.removeChild(oldPage)
 
     this.currentPage = document.querySelector('[data-lg-page]')
-    this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
+    this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : this.luge._settings.transition.reload
 
     done()
   }
@@ -431,7 +433,7 @@ class Transition extends Plugin {
     if (url.pathname !== window.location.pathname) {
       this.prevScrollTop = window.scrollY
 
-      Ticker.nextTick(() => {
+      this.luge.ticker.nextTick(() => {
         this.newScrollTop = window.scrollY
 
         window.scroll({
@@ -463,5 +465,3 @@ class Transition extends Plugin {
     }
   }
 }
-
-export default new Transition()

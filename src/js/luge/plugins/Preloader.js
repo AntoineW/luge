@@ -1,18 +1,22 @@
-import LifeCycle from 'Core/LifeCycle'
-import Plugin from 'Core/Plugin'
-import Luge from 'Core/Core'
+import Plugin from '../core/Plugin'
 
-class PreLoader extends Plugin {
+export default class PreLoader extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('preloader')
+
+    this.luge = luge
 
     this.intro = false
     this.playerIn = false
     this.startTime = Date.now()
     this.doneLoad = null
+
+    luge.preloader = {
+      add: this.add.bind(this)
+    }
   }
 
   /**
@@ -30,10 +34,10 @@ class PreLoader extends Plugin {
 
       this.initLottie()
 
-      LifeCycle.add('siteIn', this.siteIn.bind(this))
+      this.luge.lifecycle.add('siteIn', this.siteIn.bind(this))
     }
 
-    LifeCycle.add('pageLoad', this.pageLoad.bind(this))
+    this.luge.lifecycle.add('pageLoad', this.pageLoad.bind(this))
   }
 
   /**
@@ -42,7 +46,7 @@ class PreLoader extends Plugin {
   setAttributes () {
     this.pluginAttributes = {
       root: [String, ''],
-      duration: [Number, Luge.settings.preloader.duration],
+      duration: [Number, this.luge._settings.preloader.duration],
       in: String,
       reverse: Boolean
     }
@@ -168,5 +172,3 @@ class PreLoader extends Plugin {
     }
   }
 }
-
-export default new PreLoader()

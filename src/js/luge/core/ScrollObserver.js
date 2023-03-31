@@ -1,7 +1,6 @@
-import Emitter from 'Core/Emitter'
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
-import Ticker from 'Core/Ticker'
+import Emitter from './Emitter'
+import LifeCycle from './LifeCycle'
+import Ticker from './Ticker'
 
 class ScrollObserver {
   constructor () {

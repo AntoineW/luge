@@ -1,16 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Luge from 'Core/Core'
-import Plugin from 'Core/Plugin'
-import ScrollObserver from 'Core/ScrollObserver'
-import Ticker from 'Core/Ticker'
+import Plugin from '../core/Plugin'
 
-class LottiePlayer extends Plugin {
+export default class LottiePlayer extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('lottie')
+
+    this.luge = luge
 
     this.elements = []
 
@@ -19,6 +16,10 @@ class LottiePlayer extends Plugin {
     // Listeners
     this.onViewportIntersect = this.onViewportIntersect.bind(this)
     this.onScrollProgress = this.onScrollProgress.bind(this)
+
+    luge.lottie = {
+      deferInit: this.deferInit.bind(this)
+    }
   }
 
   /**
@@ -28,10 +29,10 @@ class LottiePlayer extends Plugin {
     super.init()
 
     if (typeof lottie === 'object') {
-      LifeCycle.add('pageInit', this.pageInit.bind(this))
-      LifeCycle.add('pageLoad', this.pageLoad.bind(this))
-      LifeCycle.add('pageKill', this.pageKill.bind(this))
-      LifeCycle.add('reveal', this.reveal.bind(this))
+      this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+      this.luge.lifecycle.add('pageLoad', this.pageLoad.bind(this))
+      this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
+      this.luge.lifecycle.add('reveal', this.reveal.bind(this))
     }
 
     this.bindEvents()
@@ -73,7 +74,7 @@ class LottiePlayer extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -130,7 +131,7 @@ class LottiePlayer extends Plugin {
       if (!element.player) {
         const attributes = this.getAttributes(element)
 
-        ScrollObserver.add(element)
+        this.luge.scrollobserver.add(element)
 
         if (attributes.lazy) {
           element.addEventListener('viewportintersect', self.onViewportIntersect)
@@ -278,14 +279,14 @@ class LottiePlayer extends Plugin {
               element.player.pause()
 
               if (attributes.reverse) {
-                Ticker.nextTick(() => {
+                this.luge.ticker.nextTick(() => {
                   element.player.setDirection(-1)
                   element.player.goToAndPlay(element.player.totalFrames, true)
 
                   self.setPlayerStateClasses(element, 'backward')
                 }, this)
               } else {
-                Ticker.nextTick(() => {
+                this.luge.ticker.nextTick(() => {
                   element.player.goToAndPlay(attributes.loopFrame, true)
                 }, this)
               }
@@ -294,7 +295,7 @@ class LottiePlayer extends Plugin {
             if (currentFrame === attributes.loopFrame) {
               element.player.pause()
 
-              Ticker.nextTick(() => {
+              this.luge.ticker.nextTick(() => {
                 element.player.setDirection(1)
                 element.player.goToAndPlay(attributes.loopFrame, true)
 
@@ -358,8 +359,8 @@ class LottiePlayer extends Plugin {
 
     // Emit resize event when all animations are loaded
     if (this.toLoad === 0) {
-      Ticker.nextTick(() => {
-        Emitter.emit('resize')
+      this.luge.ticker.nextTick(() => {
+        this.luge.emitter.emit('resize')
       })
     }
   }
@@ -407,5 +408,3 @@ class LottiePlayer extends Plugin {
     element.player.goToAndStop(element.player.totalFrames * element.scrollProgress, true)
   }
 }
-
-export default new LottiePlayer()

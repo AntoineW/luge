@@ -1,16 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
-import Emitter from 'Core/Emitter'
-import Plugin from 'Core/Plugin'
-import MouseObserver from 'Core/MouseObserver'
-import Ticker from 'Core/Ticker'
+import Plugin from '../core/Plugin'
 
-class MouseAnimation extends Plugin {
+export default class MouseAnimation extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('mouse')
+
+    this.luge = luge
 
     this.elements = []
 
@@ -31,10 +28,10 @@ class MouseAnimation extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
 
-    Ticker.add(this.tick, this)
+    this.luge.ticker.add(this.tick, this)
 
     this.getMouseMovement()
 
@@ -47,7 +44,7 @@ class MouseAnimation extends Plugin {
   setAttributes () {
     this.pluginAttributes = {
       root: String,
-      inertia: [String, Luge.settings.mouse.inertia]
+      inertia: [String, this.luge._settings.mouse.inertia]
     }
   }
 
@@ -76,7 +73,7 @@ class MouseAnimation extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -116,7 +113,7 @@ class MouseAnimation extends Plugin {
     if (!this.elements.includes(element)) {
       this.getAttributes(element)
 
-      MouseObserver.add(element)
+      this.luge.mouseobserver.add(element)
 
       element.luge.mouse.smoothX = 0
       element.luge.mouse.smoothY = 0
@@ -224,5 +221,3 @@ class MouseAnimation extends Plugin {
     })
   }
 }
-
-export default new MouseAnimation()

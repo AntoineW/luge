@@ -1,14 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Plugin from 'Core/Plugin'
-import ViewportObserver from 'Core/ViewportObserver'
+import Plugin from '../core/Plugin'
 
-class Intersection extends Plugin {
+export default class Intersection extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('intersection')
+
+    this.luge = luge
 
     // Listeners
     this.listeners = {
@@ -24,8 +23,8 @@ class Intersection extends Plugin {
 
     this.elements = []
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
 
     this.bindEvents()
   }
@@ -44,7 +43,7 @@ class Intersection extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -84,7 +83,7 @@ class Intersection extends Plugin {
     if (!this.elements.includes(element)) {
       this.getAttributes(element)
 
-      ViewportObserver.add(element)
+      this.luge.viewportobserver.add(element)
       element.addEventListener('viewportintersect', this.listeners.onViewportIntersect)
 
       this.elements.push(element)
@@ -97,7 +96,7 @@ class Intersection extends Plugin {
    */
   removeElement (element) {
     if (this.elements.includes(element)) {
-      ViewportObserver.remove(element)
+      this.luge.viewportobserver.remove(element)
       element.removeEventListener('viewportintersect', this.listeners.onViewportIntersect)
 
       this.elements.splice(this.elements.indexOf(element), 1)
@@ -149,5 +148,3 @@ class Intersection extends Plugin {
     }
   }
 }
-
-export default new Intersection()

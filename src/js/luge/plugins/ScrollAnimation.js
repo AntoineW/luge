@@ -1,16 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
-import Emitter from 'Core/Emitter'
-import Plugin from 'Core/Plugin'
-import ScrollObserver from 'Core/ScrollObserver'
-import Ticker from 'Core/Ticker'
+import Plugin from '../core/Plugin'
 
-class ScrollAnimation extends Plugin {
+export default class ScrollAnimation extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('scroll')
+
+    this.luge = luge
 
     this.elements = []
 
@@ -56,10 +53,10 @@ class ScrollAnimation extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
 
-    Ticker.add(this.tick, this)
+    this.luge.ticker.add(this.tick, this)
 
     this.bindEvents()
   }
@@ -71,7 +68,7 @@ class ScrollAnimation extends Plugin {
     this.pluginAttributes = {
       root: String,
       yoyo: Boolean,
-      inertia: [String, Luge.settings.scroll.inertia],
+      inertia: [String, this.luge._settings.scroll.inertia],
       animate: String
     }
   }
@@ -101,7 +98,7 @@ class ScrollAnimation extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -141,7 +138,7 @@ class ScrollAnimation extends Plugin {
     if (!this.elements.includes(element)) {
       const attributes = this.getAttributes(element)
 
-      ScrollObserver.add(element)
+      this.luge.scrollobserver.add(element)
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
@@ -335,5 +332,3 @@ class ScrollAnimation extends Plugin {
     }
   }
 }
-
-export default new ScrollAnimation()
