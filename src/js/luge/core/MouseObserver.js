@@ -9,6 +9,10 @@ class MouseObserver {
 
     this.elementsToBound = []
 
+    this.timeouts = {
+      scroll: null
+    }
+
     LifeCycle.add('pageKill', this.pageKill.bind(this))
     LifeCycle.add('pageInit', this.init.bind(this), 20)
 
@@ -24,6 +28,7 @@ class MouseObserver {
     Emitter.on('mouseMove', this.mouseHandler, this)
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('update', this.updateHandler, this)
+    Emitter.on('scroll', this.scrollHandler, this)
   }
 
   /**
@@ -64,6 +69,14 @@ class MouseObserver {
   }
 
   /**
+   * Scroll handler
+   */
+  scrollHandler () {
+    clearTimeout(this.timeouts.scroll)
+    this.timeouts.scroll = setTimeout(this.getBoundingThrottle.bind(this), 75)
+  }
+
+  /**
    * Mouse handler
    */
   mouseHandler () {
@@ -80,11 +93,7 @@ class MouseObserver {
    * Get elements bouding throttle
    */
   getBoundingThrottle () {
-    this.elements.forEach(element => {
-      if (!this.elementsToBound.includes(element)) {
-        this.elementsToBound.push(element)
-      }
-    })
+    this.elementsToBound = this.elements
 
     Ticker.nextTick(this.getBounding.bind(this))
   }
