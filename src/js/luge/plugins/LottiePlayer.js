@@ -50,6 +50,7 @@ class LottiePlayer extends Plugin {
       reverse: Boolean,
       required: Boolean,
       force: Boolean,
+      lazy: Boolean,
       renderer: [String, Luge.settings.lottie.renderer],
       subframe: [Boolean, Luge.settings.lottie.subFrame]
     }
@@ -114,12 +115,18 @@ class LottiePlayer extends Plugin {
 
     this.elements.forEach(element => {
       if (!element.player) {
+        const attributes = this.getAttributes(element)
+
         ScrollObserver.add(element)
 
-        self.initPlayer(element)
+        if (attributes.lazy) {
+          element.addEventListener('viewportintersect', self.onViewportIntersect)
+        } else {
+          self.initPlayer(element)
 
-        element.addEventListener('revealin', self.play)
-        element.addEventListener('viewportintersect', self.onViewportIntersect)
+          element.addEventListener('revealin', self.play)
+          element.addEventListener('viewportintersect', self.onViewportIntersect)
+        }
       }
     })
   }
@@ -178,19 +185,37 @@ class LottiePlayer extends Plugin {
   onViewportIntersect (e) {
     const element = e.target
 
-    if (!element.luge.lottie.force) {
+    if (!element.player) {
       if (element.viewportPosition === 'in') {
-        if (element.player.isPaused && (element.player.scrollPaused || element.hasAttribute('data-lg-lottie-autoplay'))) {
-          element.player.scrollPaused = false
-          element.play()
-        }
-      } else {
-        if (!element.player.isPaused) {
-          element.player.scrollPaused = true
-          element.pause()
+        this.initLazy(element)
+      }
+    } else {
+      if (!element.luge.lottie.force) {
+        if (element.viewportPosition === 'in') {
+          if (element.player.isPaused && (element.player.scrollPaused || element.hasAttribute('data-lg-lottie-autoplay'))) {
+            element.player.scrollPaused = false
+            element.play()
+          }
+        } else {
+          if (!element.player.isPaused) {
+            element.player.scrollPaused = true
+            element.pause()
+          }
         }
       }
     }
+  }
+
+  /**
+   * Lazy init
+   * @param {HTMLElement} element Container
+   */
+  initLazy (element) {
+    this.initPlayer(element)
+
+    element.player.addEventListener('DOMLoaded', () => {
+      element.play()
+    }, { once: true })
   }
 
   /**
