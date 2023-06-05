@@ -53,6 +53,9 @@ const luge = {
     remove: LifeCycle.remove.bind(LifeCycle),
     debug: LifeCycle.enableDebug.bind(LifeCycle)
   },
+  lottie: {
+    deferInit: LottiePlayer.deferInit.bind(LottiePlayer)
+  },
   mouseobserver: {
     add: MouseObserver.add.bind(MouseObserver),
     remove: MouseObserver.remove.bind(MouseObserver)
