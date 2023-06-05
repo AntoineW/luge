@@ -38,6 +38,20 @@ class LottiePlayer extends Plugin {
   }
 
   /**
+   * Defer init
+   */
+  deferInit () {
+    console.log('deferInit', typeof lottie)
+    if (typeof lottie === 'object') {
+      this.pageInit(() => {})
+      LifeCycle.add('pageKill', this.pageKill.bind(this))
+      LifeCycle.add('reveal', this.reveal.bind(this))
+
+      ScrollObserver.updateHandler()
+    }
+  }
+
+  /**
    * Set plugin attributes
    */
   setAttributes () {
