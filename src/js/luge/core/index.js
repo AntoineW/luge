@@ -54,7 +54,7 @@ class Luge {
   init() {
     // Site init on DOM ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', LifeCycle.cycle('load'), { once: true })
+      document.addEventListener('DOMContentLoaded', LifeCycle.cycle.bind(LifeCycle, 'load'), { once: true })
     } else {
       this.ticker.nextTick(() => {
         LifeCycle.cycle('load')
