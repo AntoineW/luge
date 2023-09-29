@@ -188,6 +188,8 @@ html.lg-cursor-hide * {
 
 [data-lg-reveal-stagger] {
   opacity: 1; }
+  [data-lg-reveal-stagger] > * {
+    opacity: 0; }
 
 /* Fade */
 .lg-reveal--fade-to-bottom,
@@ -423,7 +425,7 @@ html.lg-cursor-hide * {
     width: 100%;
     height: 100%;
     background: white;
-    content: '';
+    content: "";
     transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) 0.4s;
     z-index: 999; }
   .lg-reveal--layer.is-in,
