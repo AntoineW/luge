@@ -8,7 +8,7 @@ const eslint = require('@rollup/plugin-eslint')
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
 const replace = require('@rollup/plugin-replace')
 const commonjs = require('@rollup/plugin-commonjs')
-const { terser } = require('rollup-plugin-terser')
+const terser = require('@rollup/plugin-terser')
 
 const sass = require('gulp-sass')(require('node-sass'))
 const sassGlob = require('gulp-sass-glob')
