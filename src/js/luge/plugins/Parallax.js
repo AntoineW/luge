@@ -109,7 +109,7 @@ export default class Parallax extends Plugin {
       const disable = attributes.disable
       let enable = true
 
-      const is = (window.luge.browser || {}).is
+      const is = (this.luge.browser || {}).is
 
       if (disable && is) {
         if ((disable === 'desktop' && is('desktop')) ||
