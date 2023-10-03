@@ -197,7 +197,7 @@ class ScrollAnimation extends Plugin {
               from: fromValue,
               to: toValue,
               current: fromValue,
-              unit: unit
+              unit
             }
           }
         }

@@ -16,8 +16,8 @@ class Emitter {
   on (name, callback, context, once = false) {
     (this.events[name] || (this.events[name] = [])).push({
       cb: callback,
-      context: context,
-      once: once
+      context,
+      once
     })
   }
 

@@ -170,8 +170,8 @@ class LifeCycle {
   add (eventName, callback, position = 10, cycleName = null) {
     if (this.events[eventName]) {
       this.events[eventName].callbacks.push({
-        callback: callback,
-        position: position,
+        callback,
+        position,
         cycle: cycleName
       })
     }

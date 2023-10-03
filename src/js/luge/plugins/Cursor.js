@@ -113,7 +113,7 @@ class Cursor extends Plugin {
                 y: 0
               },
               points: [],
-              path: path
+              path
             }
           }
 
