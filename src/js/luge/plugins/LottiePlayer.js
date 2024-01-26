@@ -65,8 +65,8 @@ export default class LottiePlayer extends Plugin {
       required: Boolean,
       force: Boolean,
       lazy: Boolean,
-      renderer: [String, Luge.settings.lottie.renderer],
-      subframe: [Boolean, Luge.settings.lottie.subFrame]
+      renderer: [String, this.luge._settings.lottie.renderer],
+      subframe: [Boolean, this.luge._settings.lottie.subFrame]
     }
   }
 
