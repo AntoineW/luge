@@ -1,6 +1,6 @@
 {
   "name": "@waaark/luge",
-  "version": "0.6.17-beta.2",
+  "version": "1.0.0-rc.1",
   "description": "Front-end animation plugin for uncreative developers",
   "author": "Antoine Wodniack <hello@wodniack.dev> (https://wodniack.dev)",
   "homepage": "https://luge.cool",
@@ -39,21 +39,19 @@
     "scss:postcss": "postcss -d dist/css/ dist/css/"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.21.3",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^7.29.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.27.5",
+    "@babel/eslint-parser": "^7.23.9",
+    "autoprefixer": "^10.4.17",
+    "bowser": "^2.11.0",
+    "eslint": "^8.56.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "microbundle": "^0.15.1",
-    "node-sass": "^7.0.1",
+    "node-sass": "^9.0.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.21",
-    "postcss-cli": "^10.1.0"
-  },
-  "dependencies": {
-    "bowser": "^2.11.0",
+    "postcss": "^8.4.33",
+    "postcss-cli": "^11.0.0",
     "virtual-scroll": "^2.2.1"
   }
 }
