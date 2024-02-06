@@ -1,14 +1,5 @@
 class Helpers {
   /**
-   * Check if the variable is an array
-   * @param {*} item
-   * @returns {Boolean}
-   */
-  static isArray(item) {
-    return (item && typeof item === 'object' && Array.isArray(item))
-  }
-
-  /**
    * Check if the variable is an object
    * @param {*} item
    * @returns {Boolean}
@@ -66,29 +57,6 @@ class Helpers {
     } else {
       return string
     }
-  }
-
-  /**
-   * Convert a string to UpperCamelCase
-   * @param {String} string The string to convert
-   */
-  static toUpperCamelCase (string) {
-    if (Helpers.isString(string)) {
-      string = Helpers.toCamelCase(string)
-
-      return string.charAt(0).toUpperCase() + string.slice(1)
-    } else {
-      return string
-    }
-  }
-
-  /**
-   * Check if an element is still in the page's body
-   * @param {HTMLElement} node
-   * @returns {Boolean}
-   */
-  static isInPage (node) {
-    return (node === document.body) ? false : document.body.contains(node)
   }
 
   /**
