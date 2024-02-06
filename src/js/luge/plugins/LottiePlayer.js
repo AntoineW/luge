@@ -238,6 +238,7 @@ export default class LottiePlayer extends Plugin {
    */
   initPlayer (element) {
     const self = this
+    console.log(this)
 
     this.toLoad++
 
@@ -279,28 +280,28 @@ export default class LottiePlayer extends Plugin {
               element.player.pause()
 
               if (attributes.reverse) {
-                this.luge.ticker.nextTick(() => {
+                self.luge.ticker.nextTick(() => {
                   element.player.setDirection(-1)
                   element.player.goToAndPlay(element.player.totalFrames, true)
 
                   self.setPlayerStateClasses(element, 'backward')
-                }, this)
+                }, self)
               } else {
-                this.luge.ticker.nextTick(() => {
+                self.luge.ticker.nextTick(() => {
                   element.player.goToAndPlay(attributes.loopFrame, true)
-                }, this)
+                }, self)
               }
             }
           } else {
             if (currentFrame === attributes.loopFrame) {
               element.player.pause()
 
-              this.luge.ticker.nextTick(() => {
+              self.luge.ticker.nextTick(() => {
                 element.player.setDirection(1)
                 element.player.goToAndPlay(attributes.loopFrame, true)
 
                 self.setPlayerStateClasses(element, 'forward')
-              }, this)
+              }, self)
             }
           }
         }
