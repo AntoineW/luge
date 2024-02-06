@@ -1,4 +1,4 @@
-import Helpers from '../core/Helpers'
+import Core from '../core/Core'
 import Plugin from '../core/Plugin'
 
 import Lenis from '@studio-freight/lenis'
@@ -29,6 +29,10 @@ export default class SmoothScroll extends Plugin {
       window.hasSmoothScroll = true
 
       this.lenis = new Lenis()
+
+      this.lenis.on('scroll', () => {
+        Core.updateScroll()
+      })
 
       document.documentElement.classList.add('has-smooth-scroll')
 

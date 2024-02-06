@@ -171,17 +171,26 @@ class Luge {
    * Scroll handler
    */
   scrollHandler () {
-    window.scrollTop = window.scrollY
-
-    // Backward compatibility
-    window.unifiedScrollTop = window.scrollTop
-
     if (!this.isScrolling) {
       this.scrollStart()
     }
 
     clearTimeout(this.timeouts.scrollEnd)
     this.timeouts.scrollEnd = setTimeout(this.scrollEnd.bind(this), 200)
+
+    if (!window.hasSmoothScroll) {
+      this.updateScroll()
+    }
+  }
+
+  /**
+   * Update scroll
+   */
+  updateScroll () {
+    window.scrollTop = window.scrollY
+
+    // Backward compatibility
+    window.unifiedScrollTop = window.scrollTop
 
     this.previousScrollTop = window.scrollTop
     window.scrollProgress = window.scrollTop / window.maxScrollTop
