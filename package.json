@@ -14,7 +14,7 @@
   },
   "license": "GPL-3.0-only",
   "files": [
-    "/dist/*"
+    "/dist"
   ],
   "sideEffects": false,
   "type": "module",
