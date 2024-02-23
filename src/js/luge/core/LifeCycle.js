@@ -238,10 +238,10 @@ class LifeCycle {
       console.log('Done event: ' + eventName + ' ' + this.events[eventName].done + '/' + this.events[eventName].callbacks.length + ' (' + cycleName + ' cycle)')
     }
 
-    Emitter.emit(Helpers.toCamelCase('after-' + eventName))
-
     // All callback are done, call next action
     if (this.events[eventName].done >= this.events[eventName].callbacks.length) {
+      Emitter.emit(Helpers.toCamelCase('after-' + eventName))
+
       this.next(cycleName, eventName)
     }
   }
