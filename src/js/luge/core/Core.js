@@ -230,6 +230,7 @@ class Luge {
       const consoleBoldStyle = consoleBaseStyle + 'font-weight: bold; '
       const consoleWhiteStyle = 'color: black; font: 400 1em monospace; padding: 0.5em 0; '
 
+      const VERSION = VERSION_WIN.includes('npm') ? VERSION_BASH : VERSION_WIN
       console.log('%c powered by %cluge%c / ' + VERSION + ' %c > https://luge.cool ', consoleBaseStyle, consoleBoldStyle, consoleBaseStyle, consoleWhiteStyle)
     }
   }
