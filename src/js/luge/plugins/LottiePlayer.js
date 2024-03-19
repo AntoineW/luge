@@ -238,7 +238,6 @@ export default class LottiePlayer extends Plugin {
    */
   initPlayer (element) {
     const self = this
-    console.log(this)
 
     this.toLoad++
 
