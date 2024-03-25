@@ -37,7 +37,8 @@ class Luge {
 
     this.scrollobserver = {
       add: ScrollObserver.add.bind(ScrollObserver),
-      remove: ScrollObserver.remove.bind(ScrollObserver)
+      remove: ScrollObserver.remove.bind(ScrollObserver),
+      updateHandler: ScrollObserver.updateHandler.bind(ScrollObserver)
     }
 
     this.ticker = {

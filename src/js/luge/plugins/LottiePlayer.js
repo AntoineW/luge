@@ -44,10 +44,10 @@ export default class LottiePlayer extends Plugin {
   deferInit () {
     if (typeof lottie === 'object') {
       this.pageInit(() => {})
-      LifeCycle.add('pageKill', this.pageKill.bind(this))
-      LifeCycle.add('reveal', this.reveal.bind(this))
+      this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
+      this.luge.lifecycle.add('reveal', this.reveal.bind(this))
 
-      ScrollObserver.updateHandler()
+      this.luge.scrollobserver.updateHandler()
     }
   }
 
