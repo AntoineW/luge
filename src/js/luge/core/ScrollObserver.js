@@ -124,9 +124,9 @@ class ScrollObserver {
 
     const bounding = element.getBoundingClientRect()
 
-    element.scrollStart = bounding.top + window.unifiedScrollTop - (element.scrollFromCenter ? window.innerHeight / 2 :  window.innerHeight)
+    element.scrollStart = bounding.top + window.unifiedScrollTop - (window.innerHeight * element.scrollTriggerStart)
 
-    element.scrollEnd = element.scrollStart + element.clientHeight + (element.scrollFromCenter ? 0 : window.innerHeight)
+    element.scrollEnd = element.scrollStart + element.clientHeight + (window.innerHeight * (element.scrollTriggerStart - element.scrollTriggerEnd))
     element.scrollEnd = Math.min(element.scrollEnd, window.maxScrollTop)
 
     element.scrollMiddle = element.scrollStart + (element.scrollEnd - element.scrollStart) / 2
@@ -206,11 +206,13 @@ class ScrollObserver {
   /**
    * Add scroll element
    * @param {HTMLElement} element Element
+   * @param {Boolean} trigger Trigger
    */
-  add (element, fromCenter = false) {
+  add (element, start = 0, end = 1) {
     if (!this.elements.includes(element)) {
       element.scrollProgress = 0
-      element.scrollFromCenter = fromCenter
+      element.scrollTriggerStart = start
+      element.scrollTriggerEnd = end
 
       if (!this.elementsToBound.includes(element)) {
         this.elementsToBound.push(element)
