@@ -206,7 +206,8 @@ class ScrollObserver {
   /**
    * Add scroll element
    * @param {HTMLElement} element Element
-   * @param {Boolean} trigger Trigger
+   * @param {Number} start Trigger start point, in percentage of the viewport height
+   * @param {Number} end Trigger end point, in percentage of the viewport height
    */
   add (element, start = 0, end = 1) {
     if (!this.elements.includes(element)) {
