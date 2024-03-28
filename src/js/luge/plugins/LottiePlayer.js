@@ -61,6 +61,7 @@ export default class LottiePlayer extends Plugin {
       scroll: Boolean,
       loop: Boolean,
       loopFrame: [Number, 0],
+      persistent: Boolean,
       reverse: Boolean,
       required: Boolean,
       force: Boolean,
@@ -139,7 +140,10 @@ export default class LottiePlayer extends Plugin {
           self.initPlayer(element)
 
           element.addEventListener('revealin', self.play)
-          element.addEventListener('viewportintersect', self.onViewportIntersect)
+
+          if (!attributes.persistent) {
+            element.addEventListener('viewportintersect', self.onViewportIntersect)
+          }
         }
       }
     })
@@ -163,7 +167,10 @@ export default class LottiePlayer extends Plugin {
 
     elements.forEach(element => {
       element.removeEventListener('revealin', self.play)
-      element.removeEventListener('viewportintersect', self.onViewportIntersect)
+
+      if (!element.luge.lottie.persistent) {
+        element.removeEventListener('viewportintersect', self.onViewportIntersect)
+      }
 
       if (element.hasAttribute('data-lg-lottie-scroll')) {
         element.removeEventListener('scrollprogress', self.onScrollProgress)
