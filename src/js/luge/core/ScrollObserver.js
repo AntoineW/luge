@@ -209,7 +209,7 @@ class ScrollObserver {
    * @param {Number} start Trigger start point, in percentage of the viewport height
    * @param {Number} end Trigger end point, in percentage of the viewport height
    */
-  add (element, start = 0, end = 1) {
+  add (element, start = 1, end = 0) {
     if (!this.elements.includes(element)) {
       element.scrollProgress = 0
       element.scrollTriggerStart = start
