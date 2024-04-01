@@ -11,6 +11,7 @@ export default class Transition extends Plugin {
     this.luge = luge
 
     this.url = window.location.href
+    this.oldUrl = window.location.href
     this.pathname = window.location.pathname
     this.pageFetched = null
     this.currentPage = null
@@ -27,7 +28,9 @@ export default class Transition extends Plugin {
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
 
     luge.transition = {
-      add: this.add.bind(this)
+      add: this.add.bind(this),
+      getOldUrl: this.getOldUrl.bind(this),
+      getNewUrl: this.getNewUrl.bind(this),
     }
   }
 
@@ -110,6 +113,7 @@ export default class Transition extends Plugin {
    * @param {URL} url New page URL
    */
   navigateTo (url) {
+    this.oldUrl = this.url
     this.url = url
 
     if (this.reload) {
@@ -463,5 +467,21 @@ export default class Transition extends Plugin {
         this.transitions[type][pageName] = callback
       }
     }
+  }
+
+  /**
+   * Get old URL
+   * @returns {String} Old URL
+   */
+  getOldUrl () {
+    return this.oldUrl
+  }
+
+  /**
+   * Get new URL
+   * @returns {String} New URL
+   */
+  getNewUrl () {
+    return this.url
   }
 }
