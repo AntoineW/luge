@@ -140,7 +140,6 @@ export default class Parallax extends Plugin {
         const children = element.children
         let child = null
 
-        console.log(children)
         for (let i = 0; i < children.length; i++) {
           if (children[i].tagName !== 'SOURCE') {
             child = children[i]
