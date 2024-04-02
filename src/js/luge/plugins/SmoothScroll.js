@@ -13,6 +13,8 @@ export default class SmoothScroll extends Plugin {
     this.luge = luge
 
     window.hasSmoothScroll = false
+
+    luge.smoothscroll = {}
   }
 
   /**
@@ -33,6 +35,8 @@ export default class SmoothScroll extends Plugin {
       this.lenis.on('scroll', () => {
         Core.updateScroll()
       })
+
+      this.luge.smoothscroll.lenis = this.lenis
 
       document.documentElement.classList.add('has-smooth-scroll')
 
