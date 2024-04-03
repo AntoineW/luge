@@ -47,6 +47,8 @@ export default class Cursor extends Plugin {
   bindEvents () {
     document.documentElement.addEventListener('mouseenter', this.hoverHandler.bind(this), { capture: true, passive: true })
     document.documentElement.addEventListener('mouseleave', this.hoverHandler.bind(this), { capture: true, passive: true })
+
+    this.luge.emitter.on('beforePageOut', this.resetHover, this)
   }
 
   /**
@@ -164,6 +166,24 @@ export default class Cursor extends Plugin {
         }
       })
     }
+  }
+
+  /**
+   * Reset hover
+   */
+  resetHover () {
+    this.cursors.forEach(cursor => {
+      const newClasses = []
+      const classes = cursor.getAttribute('class').split(' ')
+
+      classes.forEach(className => {
+        if (!className.includes('hover')) {
+          newClasses.push(className)
+        }
+      })
+
+      cursor.setAttribute('class', newClasses.join(' '))
+    })
   }
 
   /**
