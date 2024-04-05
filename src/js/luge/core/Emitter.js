@@ -13,11 +13,12 @@ class Emitter {
    * @param {Object} context Context
    * @param {Boolean} once Call handler only once
    */
-  on (name, callback, context, once = false) {
+  on (name, callback, context, once = false, position = 10) {
     (this.events[name] || (this.events[name] = [])).push({
       cb: callback,
       context: context,
-      once: once
+      once: once,
+      position: position
     })
   }
 
@@ -40,7 +41,11 @@ class Emitter {
     const data = [].slice.call(arguments, 1)
 
     if (this.events[name]) {
-      this.events[name].forEach((object, index) => {
+      const events = this.events[name].sort((a, b) => {
+        return a.position - b.position
+      })
+
+      events.forEach((object, index) => {
         object.cb.apply(object.context, data)
 
         if (object.once) {
