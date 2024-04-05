@@ -177,7 +177,7 @@ class ScrollObserver {
     let progress = 0
 
     if (element.scrollStart < 0) {
-      progress = Math.min(Math.max((scrollTop - element.scrollStart) / element.scrollEnd, 0), 1)
+      progress = Math.min(Math.max(scrollTop / element.scrollEnd, 0), 1)
     } else {
       progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
     }

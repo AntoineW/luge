@@ -244,7 +244,7 @@ export default class Reveal extends Plugin {
    */
   checkElement (element) {
     const threshold = this.luge._settings.reveal.threshold
-    if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed) {
+    if (((element.scrollStart < 0 && Math.abs(element.scrollStart) / window.safeHeight) >= threshold) || (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed)) {
       if (this.toRevealOut.includes(element)) {
         this.toRevealOut.splice(this.toRevealOut.indexOf(element), 1)
       }
