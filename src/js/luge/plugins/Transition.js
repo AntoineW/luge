@@ -55,6 +55,8 @@ export default class Transition extends Plugin {
     this.luge.lifecycle.add('pageIn', this.pageIn.bind(this), 10, 'transition')
     this.luge.lifecycle.add('pageCreate', this.pageCreate.bind(this))
     this.luge.lifecycle.add('pageKill', this.pageKill.bind(this), 999, 'transition')
+
+    this.luge.emitter.on('update', this.updateHandler.bind(this))
   }
 
   /**
@@ -73,6 +75,14 @@ export default class Transition extends Plugin {
    */
   unbindLinksEvent () {
     document.querySelectorAll('a').forEach(el => { el.removeEventListener('click', this.listeners.linkHandler) })
+  }
+
+  /**
+   * Update handler
+   */
+  updateHandler () {
+    this.unbindLinksEvent()
+    this.bindLinksEvent()
   }
 
   /**
