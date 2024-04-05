@@ -13,6 +13,7 @@ export default class Reveal extends Plugin {
     this.elements = []
     this.toRevealIn = []
     this.toRevealOut = []
+    this.removed = []
 
     this.reveals = {
       in: {},
@@ -78,6 +79,7 @@ export default class Reveal extends Plugin {
     this.luge.emitter.on('resize', this.resizeHandler, this)
     this.luge.emitter.on('scroll', this.scrollHandler, this)
     this.luge.emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('afterScrollUpdate', this.afterScrollUpdateHandler, this)
   }
 
   /**
@@ -184,6 +186,7 @@ export default class Reveal extends Plugin {
 
     if (this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
+      this.removed.push(element)
     }
   }
 
@@ -209,8 +212,38 @@ export default class Reveal extends Plugin {
    */
   onScrollProgress (e) {
     const element = e.target
+
+    this.checkElement(element)
+  }
+
+  /**
+   * Check elements state
+   */
+  checkElements () {
     const threshold = this.luge._settings.reveal.threshold
 
+    this.elements.forEach(element => {
+      let state = ''
+
+      if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold)) {
+        state = 'is-in'
+      } else if ((element.scrollProgress < threshold || (element.scrollProgress > (1 - threshold) && element.scrollEnd < Math.round(window.unifiedScrollTop)))) {
+        state = 'is-out'
+      }
+
+      if (state !== '') {
+        this.setRevealClasses(element, state)
+        el.luge.reveal.isRevealed = (state === 'is-in')
+      }
+    })
+  }
+
+  /**
+   * Check element
+   * @param {HTMLElement} element
+   */
+  checkElement (element) {
+    const threshold = this.luge._settings.reveal.threshold
     if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed) {
       if (this.toRevealOut.includes(element)) {
         this.toRevealOut.splice(this.toRevealOut.indexOf(element), 1)
@@ -269,6 +302,12 @@ export default class Reveal extends Plugin {
    */
   updateHandler () {
     this.addElements()
+  }
+
+  /**
+   * After scroll update handler
+   */
+  afterScrollUpdateHandler () {
     this.revealElements()
   }
 
@@ -282,6 +321,10 @@ export default class Reveal extends Plugin {
       let revealInTimeout = 0
 
       this.toRevealIn.forEach(element => {
+        if (this.removed.includes(element)) {
+          return
+        }
+
         const delay = true
         const revealName = Helpers.toCamelCase(element.luge.reveal.root)
 

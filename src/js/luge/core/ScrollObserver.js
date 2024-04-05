@@ -9,6 +9,8 @@ class ScrollObserver {
     this.elementsToBound = []
     this.elementsToCheck = []
 
+    this.isUpdating = false
+
     this.setMaxScrollTop()
 
     LifeCycle.add('pageKill', this.pageKill.bind(this))
@@ -23,7 +25,7 @@ class ScrollObserver {
   bindEvents () {
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('scroll', this.scrollHandler, this)
-    Emitter.on('update', this.updateHandler, this)
+    Emitter.on('update', this.updateHandler, this, false, 5)
   }
 
   /**
@@ -68,6 +70,8 @@ class ScrollObserver {
    * Update handler
    */
   updateHandler () {
+    this.isUpdating = true
+
     Ticker.nextTick(() => {
       this.getBoundingThrottle()
       this.checkElementsThrottle()
@@ -155,6 +159,11 @@ class ScrollObserver {
       this.checkElement(element)
     })
     this.elementsToCheck = []
+
+    if (this.isUpdating) {
+      Emitter.emit('afterScrollUpdate')
+      this.isUpdating = false
+    }
   }
 
   /**
@@ -168,7 +177,7 @@ class ScrollObserver {
     let progress = 0
 
     if (element.scrollStart < 0) {
-      progress = Math.min(Math.max(scrollTop / element.scrollEnd, 0), 1)
+      progress = Math.min(Math.max((scrollTop - element.scrollStart) / element.scrollEnd, 0), 1)
     } else {
       progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
     }
