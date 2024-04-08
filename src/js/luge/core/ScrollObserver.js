@@ -176,7 +176,7 @@ class ScrollObserver {
     let position = ''
     let progress = 0
 
-    if (element.scrollStart < 0) {
+    if (element.scrollStart < 0 && !element.scrollStartForce) {
       progress = Math.min(Math.max(scrollTop / element.scrollEnd, 0), 1)
     } else {
       progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
@@ -217,12 +217,15 @@ class ScrollObserver {
    * @param {HTMLElement} element Element
    * @param {Number} start Trigger start point, in percentage of the viewport height
    * @param {Number} end Trigger end point, in percentage of the viewport height
+   * @param {Boolean} force Force scroll progress to start from element position
    */
-  add (element, start = 1, end = 0) {
+  add (element, start = 1, end = 0, force = false) {
     if (!this.elements.includes(element)) {
       element.scrollProgress = 0
       element.scrollTriggerStart = start
       element.scrollTriggerEnd = end
+
+      element.scrollStartForce = force
 
       if (!this.elementsToBound.includes(element)) {
         this.elementsToBound.push(element)
