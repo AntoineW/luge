@@ -363,13 +363,6 @@ export default class LottiePlayer extends Plugin {
       this.doneLoad()
       this.doneLoad = null
     }
-
-    // Emit resize event when all animations are loaded
-    if (this.toLoad === 0) {
-      this.luge.ticker.nextTick(() => {
-        this.luge.emitter.emit('resize')
-      })
-    }
   }
 
   /**
