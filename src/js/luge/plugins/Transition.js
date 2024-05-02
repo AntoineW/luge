@@ -111,9 +111,6 @@ export default class Transition extends Plugin {
         }
 
         this.navigateTo(href)
-
-        // Change page url
-        history.pushState(null, null, this.url)
       }
     }
   }
@@ -294,6 +291,9 @@ export default class Transition extends Plugin {
     this.newScrollTop = 0
 
     this.luge.emitter.emit('pageTransition', html)
+
+    // Change page url
+    history.pushState(null, null, this.url)
 
     done()
   }
