@@ -34,7 +34,9 @@ class Luge {
         threshold: 0.15
       },
       scroll: {
-        inertia: 0.1
+        inertia: 0.1,
+        start: 1,
+        end: 0
       },
       smooth: {
         inertia: 0.1

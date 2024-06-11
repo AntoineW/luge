@@ -69,7 +69,9 @@ export default class ScrollAnimation extends Plugin {
       root: String,
       yoyo: Boolean,
       inertia: [String, this.luge._settings.scroll.inertia],
-      animate: String
+      animate: String,
+      start: [Number, this.luge._settings.scroll.start],
+      end: [Number, this.luge._settings.scroll.end]
     }
   }
 
@@ -138,7 +140,7 @@ export default class ScrollAnimation extends Plugin {
     if (!this.elements.includes(element)) {
       const attributes = this.getAttributes(element)
 
-      this.luge.scrollobserver.add(element)
+      this.luge.scrollobserver.add(element, attributes.start, attributes.end)
 
       element.addEventListener('scrollprogress', this.onScrollProgress)
 
