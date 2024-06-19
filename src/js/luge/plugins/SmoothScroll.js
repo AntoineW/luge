@@ -1,7 +1,7 @@
 import Core from '../core/Core'
 import Plugin from '../core/Plugin'
 
-import Lenis from '@studio-freight/lenis'
+import Lenis from 'lenis'
 
 export default class SmoothScroll extends Plugin {
   /**
