@@ -34,8 +34,8 @@
     "dev": "run-p dev:*",
     "dev:js": "microbundle watch --define VERSION_WIN=%npm_package_version%,VERSION_BASH=$npm_package_version",
     "dev:scss": "run-s scss:build scss:watch",
-    "scss:build": "node-sass --recursive --output dist/css/ src/scss/luge.scss",
-    "scss:watch": "node-sass --watch --recursive --output dist/css/ src/scss/luge.scss",
+    "scss:build": "sass --style=compressed --no-source-map src/scss:dist/css",
+    "scss:watch": "sass --watch src/scss:dist/css",
     "scss:postcss": "postcss -d dist/css/ dist/css/"
   },
   "devDependencies": {
@@ -49,9 +49,9 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "microbundle": "^0.15.1",
-    "node-sass": "^9.0.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.33",
-    "postcss-cli": "^11.0.0"
+    "postcss-cli": "^11.0.0",
+    "sass": "^1.77.6"
   }
 }
