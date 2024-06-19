@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.9",
-    "@studio-freight/lenis": "^1.0.34",
+    "@studio-freight/lenis": "^1.0.42",
     "autoprefixer": "^10.4.17",
     "bowser": "^2.11.0",
     "eslint": "^8.56.0",
