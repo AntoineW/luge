@@ -95,12 +95,8 @@ export default class Intersection extends Plugin {
    * @param {HTMLElement} element Element to remove
    */
   removeElement (element) {
-    if (this.elements.includes(element)) {
-      this.luge.viewportobserver.remove(element)
-      element.removeEventListener('viewportintersect', this.listeners.onViewportIntersect)
-
-      this.elements.splice(this.elements.indexOf(element), 1)
-    }
+    this.luge.viewportobserver.remove(element)
+    element.removeEventListener('viewportintersect', this.listeners.onViewportIntersect)
   }
 
   /**
@@ -113,6 +109,8 @@ export default class Intersection extends Plugin {
     this.elements.forEach(element => {
       self.removeElement(element)
     })
+
+    this.elements = []
 
     done()
   }

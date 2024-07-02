@@ -96,6 +96,8 @@ export default class Parallax extends Plugin {
       self.removeElement(element)
     })
 
+    this.elements = []
+
     done()
   }
 
@@ -169,11 +171,8 @@ export default class Parallax extends Plugin {
    * @param {HTMLElement} element Element to remove
    */
   removeElement (element) {
+    this.luge.scrollobserver.remove(element)
     element.removeEventListener('scrollprogress', this.onScrollProgress)
-
-    if (this.elements.includes(element)) {
-      this.elements.splice(this.elements.indexOf(element), 1)
-    }
   }
 
   /**

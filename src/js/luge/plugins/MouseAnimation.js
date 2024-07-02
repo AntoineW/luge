@@ -129,9 +129,7 @@ export default class MouseAnimation extends Plugin {
    * @param {HTMLElement} element Element to remove
    */
   removeElement (element) {
-    if (this.elements.includes(element)) {
-      this.elements.splice(this.elements.indexOf(element), 1)
-    }
+    this.luge.mouseobserver.remove(element)
   }
 
   /**
@@ -144,6 +142,8 @@ export default class MouseAnimation extends Plugin {
     this.elements.forEach(element => {
       self.removeElement(element)
     })
+
+    this.elements = []
 
     done()
   }

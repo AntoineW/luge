@@ -181,11 +181,14 @@ export default class Reveal extends Plugin {
    * Remove element from observer
    * @param {HTMLElement} element Element to remove
    */
-  removeElement (element) {
+  removeElement (element, single = false) {
+    this.luge.scrollobserver.remove(element)
     element.removeEventListener('scrollprogress', this.onScrollProgress)
 
-    if (this.elements.includes(element)) {
+    if (single && this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
+      this.removed.push(element)
+    } else if (!single) {
       this.removed.push(element)
     }
   }
@@ -202,6 +205,8 @@ export default class Reveal extends Plugin {
     this.elements.forEach(element => {
       self.removeElement(element)
     })
+
+    this.elements = []
 
     done()
   }
@@ -355,7 +360,7 @@ export default class Reveal extends Plugin {
         }
 
         if (!element.luge.reveal.multiple) {
-          self.removeElement(element)
+          self.removeElement(element, true)
         }
       })
 

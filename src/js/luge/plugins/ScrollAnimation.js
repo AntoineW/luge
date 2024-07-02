@@ -215,11 +215,8 @@ export default class ScrollAnimation extends Plugin {
    * @param {HTMLElement} element Element to remove
    */
   removeElement (element) {
+    this.luge.scrollobserver.remove(element)
     element.removeEventListener('scrollprogress', this.onScrollProgress)
-
-    if (this.elements.includes(element)) {
-      this.elements.splice(this.elements.indexOf(element), 1)
-    }
   }
 
   /**
@@ -232,6 +229,8 @@ export default class ScrollAnimation extends Plugin {
     this.elements.forEach(element => {
       self.removeElement(element)
     })
+
+    this.elements = []
 
     done()
   }
