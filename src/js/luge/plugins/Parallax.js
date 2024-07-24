@@ -191,7 +191,7 @@ export default class Parallax extends Plugin {
     let progress = 0
 
     if (element.scrollStart < 0) {
-      progress = element.scrollProgress
+      progress = -element.scrollProgress
     } else {
       progress = 1 - element.scrollProgress * 2
     }
