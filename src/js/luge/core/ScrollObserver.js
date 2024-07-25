@@ -194,6 +194,12 @@ class ScrollObserver {
       position = 'in'
     }
 
+    if (progress > element.scrollProgress) {
+      element.scrollDirection = 'down'
+    } else {
+      element.scrollDirection = 'up'
+    }
+
     element.scrollProgress = progress
 
     if (element.viewportPosition !== position) {
