@@ -307,6 +307,13 @@ export default class Transition extends Plugin {
     oldPage.parentNode.removeChild(oldPage)
 
     this.currentPage = document.querySelector('[data-lg-page]')
+
+    // Fallback to reload if no page is found
+    if (!this.currentPage) {
+      window.location = this.url
+      return
+    }
+
     this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : this.luge._settings.transition.reload
 
     done()
