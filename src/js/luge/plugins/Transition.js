@@ -376,7 +376,7 @@ export default class Transition extends Plugin {
       done()
     }
 
-    this.unbindLinksEvent.bind(this)
+    this.unbindLinksEvent()
   }
 
   /**
