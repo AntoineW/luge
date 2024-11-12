@@ -25,6 +25,8 @@ export default class Transition extends Plugin {
       out: {}
     }
 
+    this.linkTransition = false
+
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
 
     luge.transition = {
@@ -108,6 +110,15 @@ export default class Transition extends Plugin {
 
         if (window.location.href === href) {
           return
+        }
+
+        if (element.hasAttribute('data-lg-transition')) {
+          this.linkTransition = {
+            name: Helpers.toCamelCase(element.getAttribute('data-lg-transition')),
+            element: element
+          }
+        } else {
+          this.linkTransition = false
         }
 
         this.navigateTo(href)
@@ -330,8 +341,15 @@ export default class Transition extends Plugin {
     if (page) {
       const pageName = Helpers.toCamelCase(page.getAttribute('data-lg-page'))
       let transition = false
+      let element = null
 
-      if (typeof this.transitions.out[pageName] === 'function') {
+      if (this.linkTransition && typeof this.transitions.out[this.linkTransition.name] === 'function') {
+        transition = this.transitions.out[this.linkTransition.name]
+        element = this.linkTransition.element
+
+        // Reset link transition
+        this.linkTransition = false
+      } else if (typeof this.transitions.out[pageName] === 'function') {
         transition = this.transitions.out[pageName]
       } else if (typeof page.onpageout === 'function') {
         transition = page.onpageout
@@ -340,7 +358,7 @@ export default class Transition extends Plugin {
       }
 
       if (transition) {
-        transition(page, done)
+        transition(page, done, element)
       } else {
         const loader = document.querySelector('[data-lg-loader]')
 
@@ -478,9 +496,7 @@ export default class Transition extends Plugin {
     if (this.transitions[type]) {
       pageName = Helpers.toCamelCase(pageName)
 
-      if (this.transitions[type][pageName]) {
-        console.log('Transition animation for ' + pageName + ' page already exists.')
-      } else {
+      if (!this.transitions[type][pageName]) {
         this.transitions[type][pageName] = callback
       }
     }
