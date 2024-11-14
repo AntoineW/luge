@@ -217,7 +217,7 @@ class LifeCycle {
 
       callbacks.forEach(object => {
         if (object.cycle === null || object.cycle === cycleName) {
-          object.callback(() => this.done(cycleName, eventName))
+          object.callback(() => this.done(cycleName, eventName), cycleName)
         } else {
           this.done(cycleName, eventName)
         }
@@ -240,7 +240,7 @@ class LifeCycle {
 
     // All callback are done, call next action
     if (this.events[eventName].done >= this.events[eventName].callbacks.length) {
-      Emitter.emit(Helpers.toCamelCase('after-' + eventName))
+      Emitter.emit(Helpers.toCamelCase('after-' + eventName), cycleName)
 
       this.next(cycleName, eventName)
     }
