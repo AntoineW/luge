@@ -8,6 +8,10 @@
     opacity: 1;
   }
 }
+[data-lg-reveal-disabled] {
+  opacity: initial;
+  will-change: initial
+}
 [data-lg-reveal-stagger] {
   opacity: 1;
 }

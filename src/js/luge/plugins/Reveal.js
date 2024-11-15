@@ -50,6 +50,7 @@ export default class Reveal extends Plugin {
 
     this.pluginAttributes = {
       root: String,
+      disable: String,
       stagger: String,
       manual: [Boolean, false],
       multiple: Boolean,
@@ -100,7 +101,27 @@ export default class Reveal extends Plugin {
     const self = this
 
     elements.forEach(element => {
-      self.addElement(element)
+      const attributes = this.getAttributes(element)
+
+      const disable = attributes.disable
+      let enable = true
+
+      const browser = (this.luge.browser || {})
+
+      if (disable && browser.is) {
+        if ((disable === 'desktop' && browser.is('desktop')) ||
+            (disable === 'handheld' && !browser.is('desktop')) ||
+            (disable === 'mobile' && browser.is('mobile')) ||
+            (disable === 'tablet' && browser.is('tablet'))) {
+          enable = false
+        }
+      }
+
+      if (enable) {
+        self.addElement(element)
+      } else {
+        element.setAttribute('data-lg-reveal-disabled', '')
+      }
     })
   }
 
