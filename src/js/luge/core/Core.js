@@ -77,6 +77,7 @@ class Luge {
     window.mouseLastScrollTop = 0
 
     LifeCycle.add('siteInit', this.siteInit.bind(this), 999)
+    Emitter.once('afterPageLoad', this.afterPageLoad.bind(this))
 
     this.bindEvents()
   }
@@ -100,6 +101,13 @@ class Luge {
     this.scrollHandler()
 
     done()
+  }
+
+  /**
+   * After page load
+   */
+  afterPageLoad () {
+    this.setCSSProperties()
   }
 
   /**
@@ -147,18 +155,12 @@ class Luge {
    */
   setCSSProperties () {
     // Pass window widths to CSS
-    const newWidth = window.innerWidth
-    if (this.windowWidth !== newWidth) {
-      this.windowWidth = newWidth
-      this.clientWidth = document.body.clientWidth
-    }
+    this.windowWidth = window.innerWidth
+    this.clientWidth = document.documentElement.clientWidth
 
     // Pass window height to CSS
-    const newHeight = window.innerHeight
-    if (this.windowHeight !== newHeight) {
-      this.windowHeight = newHeight
-      this.clientHeight = document.body.clientHeight
-    }
+    this.windowHeight = window.innerHeight
+    this.clientHeight = document.documentElement.clientHeight
 
     requestAnimationFrame(() => {
       document.documentElement.style.setProperty('--vw', (this.windowWidth * 0.01) + 'px')
