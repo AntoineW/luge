@@ -1,3 +1,5 @@
+@use 'easing';
+
 /* Preloader */
 .lg-preloader {
   position: fixed;
@@ -31,7 +33,7 @@
 .lg-preloader--slide-to-right,
 .lg-preloader--slide-to-bottom,
 .lg-preloader--slide-to-left {
-  transition: transform 0.5s ease(in-out-cubic);
+  transition: transform 0.5s easing.ease(in-out-cubic);
 
   &.is-hidden {
     opacity: 1;

@@ -1,7 +1,5 @@
-@import 'luge/easing';
-
-@import 'luge/cursor';
-@import 'luge/lenis';
-@import 'luge/loader';
-@import 'luge/preloader';
-@import 'luge/reveal';
+@use 'luge/cursor';
+@use 'luge/lenis';
+@use 'luge/loader';
+@use 'luge/preloader';
+@use 'luge/reveal';

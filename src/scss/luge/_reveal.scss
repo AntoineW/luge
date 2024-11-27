@@ -1,3 +1,5 @@
+@use 'easing';
+
 /* Reveal */
 [data-lg-reveal],
 .lg-reveal {
@@ -37,11 +39,11 @@
 .lg-reveal--fade-scale-to-left,
 .lg-reveal--fade-scale-x,
 .lg-reveal--fade-scale-y {
-  transition: opacity 0.4s linear 0.2s, transform 0.6s ease(in-cubic) 0s;
+  transition: opacity 0.4s linear 0.2s, transform 0.6s easing.ease(in-cubic) 0s;
 
   &.is-in {
     transform: translate3d(0, 0, 0) rotate(0) scale(1);
-    transition: opacity 0.4s linear 0s, transform 0.6s ease(out-cubic) 0s;
+    transition: opacity 0.4s linear 0s, transform 0.6s easing.ease(out-cubic) 0s;
   }
 }
 
@@ -168,12 +170,12 @@
 .lg-reveal--scale-x,
 .lg-reveal--scale-y {
   opacity: 1;
-  transition: transform 0.6s ease(in-cubic) 0s;
+  transition: transform 0.6s easing.ease(in-cubic) 0s;
   transform: scale(0);
 
   &.is-in {
     transform: scale(1);
-    transition: transform 0.6s ease(out-cubic) 0s;
+    transition: transform 0.6s easing.ease(out-cubic) 0s;
   }
 }
 
@@ -218,7 +220,7 @@
 .lg-reveal--slide-x,
 .lg-reveal--slide-y {
   opacity: 1;
-  transition: transform 0.6s ease(in-out-cubic) 0s;
+  transition: transform 0.6s easing.ease(in-out-cubic) 0s;
 
   &.is-in {
     transform: translate3d(0, 0, 0);
@@ -266,7 +268,7 @@
   position: relative;
 
   opacity: 1;
-  transition: transform 0.8s ease(out-cubic) 0s, clip-path 0.4s ease(in-cubic) 0s;
+  transition: transform 0.8s easing.ease(out-cubic) 0s, clip-path 0.4s easing.ease(in-cubic) 0s;
 
   &:after {
     display: block;
@@ -278,7 +280,7 @@
 
     background: white;
     content: '';
-    transition: transform 0.4s ease(out-cubic) 0.4s;
+    transition: transform 0.4s easing.ease(out-cubic) 0.4s;
     z-index: 999;
   }
 

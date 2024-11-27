@@ -1,3 +1,5 @@
+@use 'easing';
+
 /* Loader */
 .lg-loader {
   position: fixed;
@@ -49,11 +51,11 @@
 .lg-loader--slide-to-left,
 .lg-loader--slide-to-right {
   transform: scaleX(0);
-  transition: transform 0.5s ease(out-cubic);
+  transition: transform 0.5s easing.ease(out-cubic);
 
   &.is-visible {
     transform: scaleX(1);
-    transition-timing-function: ease(in-cubic);
+    transition-timing-function: easing.ease(in-cubic);
   }
 }
 
@@ -76,11 +78,11 @@
 .lg-loader--slide-to-bottom,
 .lg-loader--slide-to-top {
   transform: scaleY(0);
-  transition: transform 0.5s ease(out-cubic);
+  transition: transform 0.5s easing.ease(out-cubic);
 
   &.is-visible {
     transform: scaleY(1);
-    transition-timing-function: ease(in-cubic);
+    transition-timing-function: easing.ease(in-cubic);
   }
 }
 
