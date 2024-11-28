@@ -108,7 +108,7 @@ export default class Transition extends Plugin {
           href.indexOf('/') === -1) {
         e.preventDefault()
 
-        if (window.location.href === href) {
+        if (href === window.location.href || href === window.location.pathname) {
           return
         }
 
