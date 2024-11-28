@@ -410,9 +410,7 @@ html.lg-cursor-hide * {
 .lg-reveal--layer-to-left {
   position: relative;
   opacity: 1;
-  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, -webkit-clip-path 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) 0s;
-  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, clip-path 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) 0s;
-  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, clip-path 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) 0s, -webkit-clip-path 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) 0s; }
+  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0s, clip-path 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) 0s; }
   .lg-reveal--layer:after,
   .lg-reveal--layer-to-top:after,
   .lg-reveal--layer-to-right:after,
@@ -433,8 +431,7 @@ html.lg-cursor-hide * {
   .lg-reveal--layer-to-right.is-in,
   .lg-reveal--layer-to-bottom.is-in,
   .lg-reveal--layer-to-left.is-in {
-    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     transform: translate3d(0, 0, 0); }
 
 .lg-reveal--layer-to-top.is-in:after,
@@ -442,15 +439,13 @@ html.lg-cursor-hide * {
   transform: scaleY(0); }
 
 .lg-reveal--layer-to-top {
-  -webkit-clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
-          clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+  clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
   transform: translate3d(0, 10%, 0); }
   .lg-reveal--layer-to-top:after {
     transform-origin: 50% 0; }
 
 .lg-reveal--layer-to-bottom {
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-          clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
   transform: translate3d(0, -10%, 0); }
   .lg-reveal--layer-to-bottom:after {
     transform-origin: 50% 100%; }
@@ -460,15 +455,13 @@ html.lg-cursor-hide * {
   transform: scaleX(0); }
 
 .lg-reveal--layer-to-right {
-  -webkit-clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-          clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
   transform: translate3d(-10%, 0, 0); }
   .lg-reveal--layer-to-right:after {
     transform-origin: 100% 50%; }
 
 .lg-reveal--layer-to-left {
-  -webkit-clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
-          clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+  clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
   transform: translate3d(10%, 0, 0); }
   .lg-reveal--layer-to-left:after {
     transform-origin: 0 50%; }
