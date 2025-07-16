@@ -141,20 +141,20 @@ export default class Reveal extends Plugin {
       const revealName = attributes.root
       element.luge.reveal.name = Helpers.toCamelCase(revealName)
 
+      element.luge.reveal.in = () => {
+        this.revealCallback(element, element.luge.reveal.name, 'in')
+        this.setRevealClasses(element, 'is-in')
+      }
+
+      element.luge.reveal.out = () => {
+        this.revealCallback(element, element.luge.reveal.name, 'out')
+        this.setRevealClasses(element, 'is-out')
+      }
+
       if (!attributes.manual) {
         this.luge.scrollobserver.add(element)
 
         element.addEventListener('scrollprogress', this.onScrollProgress)
-      } else {
-        element.luge.reveal.in = () => {
-          this.revealCallback(element, element.luge.reveal.name, 'in')
-          this.setRevealClasses(element, 'is-in')
-        }
-
-        element.luge.reveal.out = () => {
-          this.revealCallback(element, element.luge.reveal.name, 'out')
-          this.setRevealClasses(element, 'is-out')
-        }
       }
 
       element.luge.reveal.delay = attributes.delay * 1000
