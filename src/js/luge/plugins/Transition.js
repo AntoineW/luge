@@ -99,6 +99,7 @@ export default class Transition extends Plugin {
       href.indexOf('#') !== 0 &&
       href.indexOf('tel') !== 0 &&
       href.indexOf('mailto') !== 0 &&
+      href.indexOf('/email-protection') === -1 &&
       !element.closest('#wpadminbar') &&
       element.getAttribute('data-lg-transition') !== 'disabled' &&
       element.getAttribute('target') !== '_blank') {
