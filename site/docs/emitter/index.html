@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Emitter — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/emitter/"><meta property="og:title" content="Emitter"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/emitter/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Emitter</h1><div class="l__body rte"><p>This tiny event emitter handles luge internal events. You can subscribe to luge events or add your own ones.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#D73A49">const</span><span style="color:#6F42C1"> myCallback</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> () </span><span style="color:#D73A49">=></span><span style="color:#24292E"> { </span><span style="color:#6A737D">/* Respond to the event. */</span><span style="color:#24292E"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E">luge.emitter.</span><span style="color:#6F42C1">on</span><span style="color:#24292E">(</span><span style="color:#032F62">'my-event'</span><span style="color:#24292E">, myCallback , </span><span style="color:#005CC5">this</span><span style="color:#24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E">luge.emitter.</span><span style="color:#6F42C1">once</span><span style="color:#24292E">(</span><span style="color:#032F62">'my-event'</span><span style="color:#24292E">, myCallback , </span><span style="color:#005CC5">this</span><span style="color:#24292E">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E">luge.emitter.</span><span style="color:#6F42C1">off</span><span style="color:#24292E">(</span><span style="color:#032F62">'my-event'</span><span style="color:#24292E">, myCallback )</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E">luge.emitter.</span><span style="color:#6F42C1">emit</span><span style="color:#24292E">(</span><span style="color:#032F62">'my-event'</span><span style="color:#24292E">)</span></span></code></pre>
+<h2 id="events">Events</h2>
+<ul>
+<li><code>mouseMove(e)</code>: emitted when the mouse move, synced with the window mousemove event. The <code>MouseEvent</code> object is passed as a paramater ;</li>
+<li><code>pageTransition(html)</code>: emitted during pages transition, just after the new page has been added to dom. The <code>html</code> of the new page is passed as a parameter ;</li>
+<li><code>resize</code>: emitted on window resize with a 200ms delay for optimization ;</li>
+<li><code>scroll</code>: emitted on scroll, synced with the window scroll event or with requestAnimationFrame when smooth scroll is used ;</li>
+<li><code>scrollStart</code>: emitted when scroll starts ;</li>
+<li><code>scrollEnd</code>: emitted when scroll ends ;</li>
+</ul>
+<p><code>update</code> requests plugin discovery and observer measurements. <code>afterScrollUpdate</code> signals a completed queued scroll-observer measurement pass. Lifecycle notifications such as <code>beforePageInit</code> and <code>afterReveal</code> receive the cycle name; see <a href="/docs/life-cycle/">Life cycle</a>. These emitter events are separate from element CustomEvents such as <code>scrollprogress</code> and <code>revealin</code>.</p>
+<h2 id="methods">Methods</h2>
+<p><code id="_on" class="js">on(name, callback, context, once = false, position = 10)</code></p>
+<p>Attach a function to an event.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>name</td><td>String</td><td>Event name.</td></tr><tr><td>callback</td><td>Function</td><td>Function to call.</td></tr><tr><td>context</td><td>Object</td><td>Context.</td></tr><tr><td>once</td><td>Boolean</td><td>Call function only once.</td></tr><tr><td>position</td><td>Number</td><td>Invocation order; lower values run first. Default <code>10</code>.</td></tr></tbody></table></div>
+<hr>
+<p><code id="_once" class="js">once(name, callback, context)</code></p>
+<p>Attach a function to an event only once.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>name</td><td>String</td><td>Event name.</td></tr><tr><td>callback</td><td>Function</td><td>Function to call.</td></tr><tr><td>context</td><td>Object</td><td>Context.</td></tr></tbody></table></div>
+<hr>
+<p><code id="_emit" class="js">emit(name, …args)</code></p>
+<p>Emit an event. Additional arguments are forwarded to each listener.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>name</td><td>String</td><td>Event name.</td></tr></tbody></table></div>
+<hr>
+<p><code id="_off" class="js">off(name, callback)</code></p>
+<p>Detach a function from an event.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>name</td><td>String</td><td>Event name.</td></tr><tr><td>callback</td><td>Function</td><td>Function that was attached.</td></tr></tbody></table></div>
+<h2 id="initialization">Initialization</h2>
+<p>Use the emitter exposed by your <code>Luge</code> instance. Attach startup listeners before <code>luge.init()</code> so they can observe the initial cycle. Remove custom listeners when their owner is disposed. See <a href="/docs/getting-started/">Getting started</a>.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/core/?embed=1" title="Emitter example" loading="lazy"></iframe><p><a href="/demo/core/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Emitter</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#events">Events</a></li><li class="p__link"><a href="#methods">Methods</a><ul class="p__sublinks"><li class="p__link"><a href="#_on">on()</a></li><li class="p__link"><a href="#_once">once()</a></li><li class="p__link"><a href="#_emit">emit()</a></li><li class="p__link"><a href="#_off">off()</a></li></ul></li><li class="p__link"><a href="#initialization">Initialization</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/browser-detection/">Browser detection</a></li><li class="p__link is-active"><a href="/docs/emitter/">Emitter</a></li><li class="p__link"><a href="/docs/life-cycle/">Life cycle</a></li><li class="p__link"><a href="/docs/mouse-observer/">Mouse observer</a></li><li class="p__link"><a href="/docs/scroll-observer/">Scroll observer</a></li><li class="p__link"><a href="/docs/ticker/">Ticker</a></li><li class="p__link"><a href="/docs/viewport-observer/">Viewport observer</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

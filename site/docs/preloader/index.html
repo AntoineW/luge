@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Preloader — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/preloader/"><meta property="og:title" content="Preloader"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/preloader/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Preloader</h1><div class="l__body rte"><p>Import <code>Preloader</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('preloader', Preloader)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>Adds a preloader screen before your site shows in. It can be used to make the user waits while site ressources are loaded or to create a nice intro animation.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-preloader</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-preloader</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-preloader</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-preloader"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>You can use one of the built-in animations or create your own one.</p>
+<h2 id="built-in">Built-in animations</h2>
+<p>luge comes with a few preloader animations:</p>
+<ul>
+<li><code>fade</code></li>
+<li><code>slide</code>|<code>slide-to-top</code>|<code>slide-to-right</code>|<code>slide-to-bottom</code>|<code>slide-to-left</code></li>
+</ul>
+<h2 id="custom">Custom animations</h2>
+<p>The preloader DOM Element gets a <code>.lg-preloader</code> and a<code>.lg-preloader—[preloader name]</code> CSS classes when initiated. It also gets a <code>.is-hidden</code> CSS class when the site is ready to be shown.</p>
+<p>You can use these to animate the preloader in CSS:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.lg-preloader--my-preloader</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  opacity</span><span style="color:#24292E">: </span><span style="color:#005CC5">1</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  transition</span><span style="color:#24292E">: opacity </span><span style="color:#005CC5">0.6</span><span style="color:#D73A49">s</span><span style="color:#005CC5"> linear</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#22863A">  &#x26;</span><span style="color:#6F42C1">.is-hidden</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">    opacity</span><span style="color:#24292E">: </span><span style="color:#005CC5">0</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#24292E">  }</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<p>Or you can use a third-party JS animation library:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#24292E">luge.preloader.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">((</span><span style="color:#E36209">done</span><span style="color:#24292E">, </span><span style="color:#E36209">remove</span><span style="color:#24292E">) </span><span style="color:#D73A49">=></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#24292E">  gsap.</span><span style="color:#6F42C1">to</span><span style="color:#24292E">(</span></span>
+<span class="line"><span style="color:#24292E">    document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.lg-preloader'</span><span style="color:#24292E">),</span></span>
+<span class="line"><span style="color:#24292E">    {</span></span>
+<span class="line"><span style="color:#24292E">      opacity: </span><span style="color:#005CC5">0</span><span style="color:#24292E">,</span></span>
+<span class="line"><span style="color:#6F42C1">      onComplete</span><span style="color:#24292E">: () </span><span style="color:#D73A49">=></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#6F42C1">        done</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#6F42C1">        remove</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#24292E">      }</span></span>
+<span class="line"><span style="color:#24292E">    }</span></span>
+<span class="line"><span style="color:#24292E">  )</span></span>
+<span class="line"><span style="color:#24292E">})</span></span></code></pre>
+<p>The preloader callback function gets passed two parameters:</p>
+<ul>
+<li><code>done()</code>: proceed to the next life cycle event. Call it when you want to launch <code>pageIn</code> or <code>reveal</code> hooked animations.</li>
+<li><code>remove()</code>: remove the preloader element from DOM. Call it when your preloader animation is complete.</li>
+</ul>
+<h2 id="lottie">Lottie animation</h2>
+<p>You can use a lottie animation as a preloader animation, it will be played when the preloader hides.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-preloader</span><span style="color:#24292E">=</span><span style="color:#032F62">"lottie"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-preloader-in</span><span style="color:#24292E">=</span><span style="color:#032F62">"/path/to/lottie.json"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>Please note that lottie is not bundled with luge, you have to make sure to load lottie in your code and make the <code>lottie</code> property globally accessible <strong>before</strong> luge initialization.</p>
+<h2 id="attributes">Attributes</h2>
+<p>The plain <code>slide</code> animation is an alias of <code>slide-to-top</code>.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-preloader</code></td><td>String</td><td>empty string</td><td>The preloader animation name. Set it to one of the built-in animations name or create your own one.</td></tr><tr><td><code>data-lg-preloader-duration</code></td><td>Number</td><td>0</td><td>Defines the minimum duration (in second) before hidding the preloader. For instance it can be used if you want to make sure that the user has time to read something on the preloader screen. The default value can be changed globally in JS <code>luge.settings({preloader: {duration: 0}})</code>.</td></tr><tr><td><code>data-lg-preloader-in</code></td><td>String</td><td>unset</td><td>Path to lottie json file when using a lottie animation as a preloader animation.</td></tr><tr><td><code>data-lg-preloader-reverse</code></td><td>Boolean</td><td>false</td><td>Makes the lottie animation play in reverse direction.</td></tr></tbody></table></div><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/preloader/?embed=1" title="Preloader example" loading="lazy"></iframe><p><a href="/demo/preloader/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Preloader</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#built-in">Built-in animations</a></li><li class="p__link"><a href="#custom">Custom animations</a></li><li class="p__link"><a href="#lottie">Lottie animation</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link"><a href="/docs/parallax/">Parallax</a></li><li class="p__link is-active"><a href="/docs/preloader/">Preloader</a></li><li class="p__link"><a href="/docs/reveal/">Reveal</a></li><li class="p__link"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

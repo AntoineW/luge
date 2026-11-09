@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lottie player — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/lottie-player/"><meta property="og:title" content="Lottie player"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/lottie-player/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Lottie player</h1><div class="l__body rte"><p>Import <code>LottiePlayer</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('lottie', LottiePlayer)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>A lottie animation player with auto play and loop capabilities.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-lottie</span><span style="color:#24292E">=</span><span style="color:#032F62">"/path/to/my-lottie.json"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-lottie-autoplay</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-lottie-loop</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-lottie-loop-frame</span><span style="color:#24292E">=</span><span style="color:#032F62">"50"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-lottie-reverse</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>The lottie player elements get a <code>.lg-lottie</code> CSS classes when initiated. They also get <code>.is-loaded</code>, <code>.is-playing</code>, <code>.is-playing-forward</code>, <code>.is-playing-backward</code>, <code>.is-paused</code> CSS classes when loaded/played/paused.</p>
+<p>Please note that lottie is not bundled with luge, you have to make sure to load lottie in your code and make the <code>lottie</code> property globally accessible. By default you have to make sure <code>lottie</code> is available <strong>before</strong> luge initialization.</p>
+<p>If you want to defer the load of lottie code for optimization purposes, you can call <code>luge.lottie.deferInit()</code> once lottie has been loaded.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#24292E">luge.lifecycle.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">(</span><span style="color:#032F62">'siteIn'</span><span style="color:#24292E">, (</span><span style="color:#E36209">done</span><span style="color:#24292E">) </span><span style="color:#D73A49">=></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#6F42C1">  import</span><span style="color:#24292E">(</span><span style="color:#6A737D">/* webpackChunkName: "lottie" */</span><span style="color:#032F62"> 'lottie-web/build/player/lottie_light'</span><span style="color:#24292E">).</span><span style="color:#6F42C1">then</span><span style="color:#24292E">(</span><span style="color:#E36209">module</span><span style="color:#D73A49"> =></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#D73A49">    const</span><span style="color:#005CC5"> lottie</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> module</span><span style="color:#24292E">.default</span></span>
+<span class="line"><span style="color:#24292E">    window.lottie </span><span style="color:#D73A49">=</span><span style="color:#24292E"> lottie</span></span>
+<span class="line"><span style="color:#24292E">    luge.lottie.</span><span style="color:#6F42C1">deferInit</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#24292E">  })</span></span>
+<span class="line"><span style="color:#6F42C1">  done</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#24292E">})</span></span></code></pre>
+<h2 id="lazy-loading">Lazy loading</h2>
+<p>To start loading a lottie animation only when it enters the viewport, you can add the <code>data-lg-lottie-lazy</code> attribute on your element.</p>
+<p>Lazy players start playback when their first <code>DOMLoaded</code> event fires, even without <code>data-lg-lottie-autoplay</code>. Lazy player methods and <code>player</code> are unavailable until viewport entry initializes that player. Do not combine <code>lazy</code> with <code>required</code>: the page-loading gate expects an initialized player.</p>
+<h2 id="attributes">Attributes</h2>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-lottie</code></td><td>String</td><td>unset</td><td>Path to lottie json file.</td></tr><tr><td><code>data-lg-lottie-autoplay</code></td><td>Boolean</td><td>false</td><td>Autoplay animation after load or when it gets in the viewport.</td></tr><tr><td><code>data-lg-lottie-lazy</code></td><td>Boolean</td><td>false</td><td>Lazy load the lottie json file only when the element gets in the viewport.</td></tr><tr><td><code>data-lg-lottie-required</code></td><td>Boolean</td><td>false</td><td>Hold page loading until the animation is ready or reports a loading failure. Use with a non-lazy player initialized before <code>pageLoad</code>.</td></tr><tr><td><code>data-lg-lottie-force</code></td><td>Boolean</td><td>false</td><td>Keep playback running when the element leaves the viewport.</td></tr><tr><td><code>data-lg-lottie-persistent</code></td><td>Boolean</td><td>false</td><td>For non-lazy players, skip viewport-driven pause/resume listeners. This does not preserve the player across page cleanup.</td></tr><tr><td><code>data-lg-lottie-loop</code></td><td>Boolean</td><td>false</td><td>Makes animation loop.</td></tr><tr><td><code>data-lg-lottie-loop-frame</code></td><td>Number</td><td>0</td><td>If you want the animation to loop from a given frame. Useful when the lottie animation contains both intro and loop animations.</td></tr><tr><td><code>data-lg-lottie-subframe</code></td><td>Boolean</td><td>true</td><td>Let lottie uses <a href="https://github.com/airbnb/lottie-web#setsubframeusesubframes">subframes</a>. The default value can be changed globally in JS <code>luge.settings({lottie: {subFrame: true}})</code>.</td></tr><tr><td><code>data-lg-lottie-renderer</code></td><td>String</td><td>‘svg’</td><td>Change the <a href="https://github.com/airbnb/lottie-web#other-loading-options">lottie renderer</a>. The default value can be changed globally in JS <code>luge.settings({lottie: {renderer: 'svg'}})</code>.</td></tr><tr><td><code>data-lg-lottie-reverse</code></td><td>Boolean</td><td>false</td><td>When used with the loop attribute, makes the animation play in reverse from end instead of jumping to start.</td></tr><tr><td><code>data-lg-lottie-scroll</code></td><td>Boolean</td><td>false</td><td>When set, the animation will be played on scroll based on the element progress inside the viewport.</td></tr></tbody></table></div>
+<h2 id="methods">Methods</h2>
+<p><code id="_play">play()</code></p>
+<p>Play the animation manually.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#D73A49">const</span><span style="color:#005CC5"> myElement</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.lg-lottie'</span><span style="color:#24292E">)</span></span>
+<span class="line"><span style="color:#24292E">myElement.</span><span style="color:#6F42C1">play</span><span style="color:#24292E">()</span></span></code></pre>
+<hr>
+<p><code id="_pause">pause()</code></p>
+<p>Pause the animation manually.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#D73A49">const</span><span style="color:#005CC5"> myElement</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.lg-lottie'</span><span style="color:#24292E">)</span></span>
+<span class="line"><span style="color:#24292E">myElement.</span><span style="color:#6F42C1">pause</span><span style="color:#24292E">()</span></span></code></pre>
+<hr>
+<p><code id="_stop">stop()</code></p>
+<p>Stop the animation manually.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#D73A49">const</span><span style="color:#005CC5"> myElement</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.lg-lottie'</span><span style="color:#24292E">)</span></span>
+<span class="line"><span style="color:#24292E">myElement.</span><span style="color:#6F42C1">stop</span><span style="color:#24292E">()</span></span></code></pre>
+<h2 id="deferred-initialization">Deferred initialization</h2>
+<p>Load Lottie into <code>window.lottie</code> before initialization. If loading it later, call <code>luge.lottie.deferInit()</code> once after it becomes available. Initialized players expose <code>play()</code>, <code>pause()</code>, <code>stop()</code>, and <code>player</code>. Deferring until <code>siteIn</code> cannot hold the earlier <code>pageLoad</code> phase, so do not use this approach for required intro assets. Requests that never settle still have no built-in timeout.</p>
+<p><code>deferInit()</code> initializes the current elements but does not install the normal <code>pageInit</code> or <code>pageLoad</code> hooks. If later pages introduce new Lottie containers, emit <code>update</code> after their DOM has been inserted to discover them. Load Lottie before startup when you need automatic page-by-page initialization and required loading gates.</p>
+<p>When Lottie reports a loading failure, the container receives <code>is-error</code> and emits a non-bubbling <code>lottieerror</code> event with the asset path in <code>event.detail.path</code>. Listen on the container (or use a capture listener). The failed player does not autoplay, is not marked <code>is-loaded</code>, and releases its required loading gate once so page entry can continue. Other players continue normally.</p>
+<p>Page cleanup destroys players belonging to the old page. Loop work already queued on the ticker is discarded if that player has been destroyed or replaced; it cannot restart a player from the departed page. Keep page-specific player containers inside <code>[data-lg-page]</code> when using Transition; <code>persistent</code> is a viewport-playback option, not a general teardown guarantee.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/lottie/?embed=1" title="Lottie player example" loading="lazy"></iframe><p><a href="/demo/lottie/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Lottie player</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#lazy-loading">Lazy loading</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#methods">Methods</a><ul class="p__sublinks"><li class="p__link"><a href="#_play">play()</a></li><li class="p__link"><a href="#_pause">pause()</a></li><li class="p__link"><a href="#_stop">stop()</a></li></ul></li><li class="p__link"><a href="#deferred-initialization">Deferred initialization</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link is-active"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link"><a href="/docs/parallax/">Parallax</a></li><li class="p__link"><a href="/docs/preloader/">Preloader</a></li><li class="p__link"><a href="/docs/reveal/">Reveal</a></li><li class="p__link"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

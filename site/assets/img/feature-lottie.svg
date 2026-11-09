@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 224 160">
+  <style>
+    @keyframes ball-vertical {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(0, 40px, 0);
+      }
+    }
+
+    .lottie__ball {
+      animation: ball-vertical 0.8s cubic-bezier(.72, 0, .93, .73) infinite alternate both paused;
+    }
+
+    @keyframes ball-scale {
+      0%,
+      70% {
+        transform: scaleX(1) scaleY(1);
+      }
+
+      100% {
+        transform: scaleX(1.25) scaleY(0.75);
+      }
+    }
+
+    .lottie__ball circle {
+      animation: ball-scale 0.8s cubic-bezier(.72, 0, .93, .73) infinite alternate both paused;
+      transform-origin: 112px 75px;
+    }
+
+    @keyframes line-bend {
+      0%,
+      80% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(0, 12px, 0);
+      }
+    }
+
+    .lottie__line {
+      animation: line-bend 0.8s linear infinite alternate both paused;
+    }
+
+    .is-animated .lottie__ball,
+    .is-animated .lottie__ball circle,
+    .is-animated .lottie__line {
+      animation-play-state: running;
+    }
+  </style>
+  <rect fill="#000" x="0" y="0" width="100%" height="100%" />
+  <g class="is-animated">
+    <g class="browser">
+      <path stroke="#FFF" stroke-width="2" d="M1 1h222v19H1z" />
+      <path stroke="#FFF" stroke-width="2" d="M1 20h222v139H1z" />
+    </g>
+
+    <g class="lottie">
+      <g class="lottie__ball">
+        <circle fill="none" stroke="#58F4FF" stroke-width="2" cx="111.8" cy="75.3" r="24" />
+      </g>
+      <path class="lottie__line" fill="none" stroke="#F56E59" stroke-width="2" d="M43.3,120.3h137.4" />
+    </g>
+  </g>
+</svg>

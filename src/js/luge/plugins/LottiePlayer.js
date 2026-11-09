@@ -1,16 +1,13 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Luge from 'Core/Core'
-import Plugin from 'Core/Plugin'
-import ScrollObserver from 'Core/ScrollObserver'
-import Ticker from 'Core/Ticker'
+import Plugin from '../core/Plugin'
 
-class LottiePlayer extends Plugin {
+export default class LottiePlayer extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('lottie')
+
+    this.luge = luge
 
     this.elements = []
 
@@ -19,6 +16,10 @@ class LottiePlayer extends Plugin {
     // Listeners
     this.onViewportIntersect = this.onViewportIntersect.bind(this)
     this.onScrollProgress = this.onScrollProgress.bind(this)
+
+    luge.lottie = {
+      deferInit: this.deferInit.bind(this)
+    }
   }
 
   /**
@@ -28,10 +29,10 @@ class LottiePlayer extends Plugin {
     super.init()
 
     if (typeof lottie === 'object') {
-      LifeCycle.add('pageInit', this.pageInit.bind(this))
-      LifeCycle.add('pageLoad', this.pageLoad.bind(this))
-      LifeCycle.add('pageKill', this.pageKill.bind(this))
-      LifeCycle.add('reveal', this.reveal.bind(this))
+      this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+      this.luge.lifecycle.add('pageLoad', this.pageLoad.bind(this))
+      this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
+      this.luge.lifecycle.add('reveal', this.reveal.bind(this))
     }
 
     this.bindEvents()
@@ -43,10 +44,10 @@ class LottiePlayer extends Plugin {
   deferInit () {
     if (typeof lottie === 'object') {
       this.pageInit(() => {})
-      LifeCycle.add('pageKill', this.pageKill.bind(this))
-      LifeCycle.add('reveal', this.reveal.bind(this))
+      this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
+      this.luge.lifecycle.add('reveal', this.reveal.bind(this))
 
-      ScrollObserver.updateHandler()
+      this.luge.scrollobserver.updateHandler()
     }
   }
 
@@ -60,12 +61,13 @@ class LottiePlayer extends Plugin {
       scroll: Boolean,
       loop: Boolean,
       loopFrame: [Number, 0],
+      persistent: Boolean,
       reverse: Boolean,
       required: Boolean,
       force: Boolean,
       lazy: Boolean,
-      renderer: [String, Luge.settings.lottie.renderer],
-      subframe: [Boolean, Luge.settings.lottie.subFrame]
+      renderer: [String, this.luge._settings.lottie.renderer],
+      subframe: [Boolean, this.luge._settings.lottie.subFrame]
     }
   }
 
@@ -73,7 +75,7 @@ class LottiePlayer extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
   }
 
   /**
@@ -93,7 +95,7 @@ class LottiePlayer extends Plugin {
 
     if (this.elements.length > 0) {
       this.elements.forEach(element => {
-        if (element.luge.lottie.required && !element.player.isLoaded) {
+        if (element.luge.lottie.required && !element.luge.lottie.failed && !element.player.isLoaded) {
           waitLoad = true
         }
       })
@@ -130,7 +132,7 @@ class LottiePlayer extends Plugin {
       if (!element.player) {
         const attributes = this.getAttributes(element)
 
-        ScrollObserver.add(element)
+        this.luge.scrollobserver.add(element)
 
         if (attributes.lazy) {
           element.addEventListener('viewportintersect', self.onViewportIntersect)
@@ -138,7 +140,10 @@ class LottiePlayer extends Plugin {
           self.initPlayer(element)
 
           element.addEventListener('revealin', self.play)
-          element.addEventListener('viewportintersect', self.onViewportIntersect)
+
+          if (!attributes.persistent) {
+            element.addEventListener('viewportintersect', self.onViewportIntersect)
+          }
         }
       }
     })
@@ -162,7 +167,10 @@ class LottiePlayer extends Plugin {
 
     elements.forEach(element => {
       element.removeEventListener('revealin', self.play)
-      element.removeEventListener('viewportintersect', self.onViewportIntersect)
+
+      if (!element.luge.lottie.persistent) {
+        element.removeEventListener('viewportintersect', self.onViewportIntersect)
+      }
 
       if (element.hasAttribute('data-lg-lottie-scroll')) {
         element.removeEventListener('scrollprogress', self.onScrollProgress)
@@ -242,6 +250,8 @@ class LottiePlayer extends Plugin {
 
     // Get options
     const attributes = this.getAttributes(element)
+    attributes.failed = false
+    element.classList.remove('is-error')
 
     element.player = lottie.loadAnimation({
       container: element,
@@ -250,6 +260,7 @@ class LottiePlayer extends Plugin {
       autoplay: false,
       path: attributes.root
     })
+    const player = element.player
 
     if (typeof attributes.subframe !== 'undefined') {
       element.player.setSubframe(attributes.subframe)
@@ -278,28 +289,31 @@ class LottiePlayer extends Plugin {
               element.player.pause()
 
               if (attributes.reverse) {
-                Ticker.nextTick(() => {
+                self.luge.ticker.nextTick(() => {
+                  if (element.player !== player) return
                   element.player.setDirection(-1)
                   element.player.goToAndPlay(element.player.totalFrames, true)
 
                   self.setPlayerStateClasses(element, 'backward')
-                }, this)
+                }, self)
               } else {
-                Ticker.nextTick(() => {
+                self.luge.ticker.nextTick(() => {
+                  if (element.player !== player) return
                   element.player.goToAndPlay(attributes.loopFrame, true)
-                }, this)
+                }, self)
               }
             }
           } else {
             if (currentFrame === attributes.loopFrame) {
               element.player.pause()
 
-              Ticker.nextTick(() => {
+              self.luge.ticker.nextTick(() => {
+                if (element.player !== player) return
                 element.player.setDirection(1)
                 element.player.goToAndPlay(attributes.loopFrame, true)
 
                 self.setPlayerStateClasses(element, 'forward')
-              }, this)
+              }, self)
             }
           }
         }
@@ -311,12 +325,25 @@ class LottiePlayer extends Plugin {
     element.pause = this.pause.bind(this, element)
     element.stop = this.stop.bind(this, element)
 
-    // Loaded
+    // Success and failure both settle the loading gate exactly once.
+    let settled = false
     element.player.addEventListener('DOMLoaded', () => {
+      if (settled) return
+      settled = true
       element.classList.add('is-loaded')
 
       self.playerLoaded(attributes.required)
     }, { once: true })
+    element.player.addEventListener('data_failed', () => {
+      if (settled) return
+      settled = true
+      attributes.failed = true
+      element.classList.add('is-error')
+      self.pause(element)
+      self.toAutoplay = self.toAutoplay.filter(item => item !== element)
+      element.dispatchEvent(new CustomEvent('lottieerror', { detail: { path: attributes.root } }))
+      self.playerLoaded(attributes.required)
+    })
   }
 
   /**
@@ -355,20 +382,13 @@ class LottiePlayer extends Plugin {
       this.doneLoad()
       this.doneLoad = null
     }
-
-    // Emit resize event when all animations are loaded
-    if (this.toLoad === 0) {
-      Ticker.nextTick(() => {
-        Emitter.emit('resize')
-      })
-    }
   }
 
   /**
    * Play
    */
   play (element) {
-    if (element && element.player) {
+    if (element && element.player && !element.luge.lottie.failed) {
       element.player.play()
 
       this.setPlayerStateClasses(element, 'forward')
@@ -407,5 +427,3 @@ class LottiePlayer extends Plugin {
     element.player.goToAndStop(element.player.totalFrames * element.scrollProgress, true)
   }
 }
-
-export default new LottiePlayer()

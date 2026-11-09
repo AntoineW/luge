@@ -1,7 +1,6 @@
-import Emitter from 'Core/Emitter'
-import LifeCycle from 'Core/LifeCycle'
-import Luge from 'Core/Core'
-import Ticker from 'Core/Ticker'
+import Emitter from './Emitter'
+import LifeCycle from './LifeCycle'
+import Ticker from './Ticker'
 
 class ScrollObserver {
   constructor () {
@@ -9,6 +8,8 @@ class ScrollObserver {
 
     this.elementsToBound = []
     this.elementsToCheck = []
+
+    this.isUpdating = false
 
     this.setMaxScrollTop()
 
@@ -24,7 +25,7 @@ class ScrollObserver {
   bindEvents () {
     Emitter.on('resize', this.resizeHandler, this)
     Emitter.on('scroll', this.scrollHandler, this)
-    Emitter.on('update', this.updateHandler, this)
+    Emitter.on('update', this.updateHandler, this, false, 5)
   }
 
   /**
@@ -69,6 +70,8 @@ class ScrollObserver {
    * Update handler
    */
   updateHandler () {
+    this.isUpdating = true
+
     Ticker.nextTick(() => {
       this.getBoundingThrottle()
       this.checkElementsThrottle()
@@ -125,9 +128,9 @@ class ScrollObserver {
 
     const bounding = element.getBoundingClientRect()
 
-    element.scrollStart = bounding.top + window.unifiedScrollTop - window.innerHeight
+    element.scrollStart = bounding.top + window.unifiedScrollTop - (window.innerHeight * element.scrollTriggerStart)
 
-    element.scrollEnd = element.scrollStart + element.clientHeight + window.innerHeight
+    element.scrollEnd = element.scrollStart + element.clientHeight + (window.innerHeight * (element.scrollTriggerStart - element.scrollTriggerEnd))
     element.scrollEnd = Math.min(element.scrollEnd, window.maxScrollTop)
 
     element.scrollMiddle = element.scrollStart + (element.scrollEnd - element.scrollStart) / 2
@@ -156,6 +159,11 @@ class ScrollObserver {
       this.checkElement(element)
     })
     this.elementsToCheck = []
+
+    if (this.isUpdating) {
+      Emitter.emit('afterScrollUpdate')
+      this.isUpdating = false
+    }
   }
 
   /**
@@ -163,12 +171,17 @@ class ScrollObserver {
    * @param {HTMLElement} element Element to check
    */
   checkElement (element) {
+    // Scroll events can arrive before the queued measurement tick.
+    if (element.scrollStart === undefined || element.scrollEnd === undefined) {
+      this.setElementBounding(element)
+    }
+
     const scrollTop = window.unifiedScrollTop
 
     let position = ''
     let progress = 0
 
-    if (element.scrollStart < 0) {
+    if (element.scrollStart < 0 && !element.scrollStartForce) {
       progress = Math.min(Math.max(scrollTop / element.scrollEnd, 0), 1)
     } else {
       progress = Math.min(Math.max((scrollTop - element.scrollStart) / (element.scrollEnd - element.scrollStart), 0), 1)
@@ -184,6 +197,12 @@ class ScrollObserver {
       position = 'above'
     } else {
       position = 'in'
+    }
+
+    if (progress > element.scrollProgress) {
+      element.scrollDirection = 'down'
+    } else {
+      element.scrollDirection = 'up'
     }
 
     element.scrollProgress = progress
@@ -207,10 +226,17 @@ class ScrollObserver {
   /**
    * Add scroll element
    * @param {HTMLElement} element Element
+   * @param {Number} start Trigger start point, in percentage of the viewport height
+   * @param {Number} end Trigger end point, in percentage of the viewport height
+   * @param {Boolean} force Force scroll progress to start from element position
    */
-  add (element) {
+  add (element, start = 1, end = 0, force = false) {
     if (!this.elements.includes(element)) {
       element.scrollProgress = 0
+      element.scrollTriggerStart = start
+      element.scrollTriggerEnd = end
+
+      element.scrollStartForce = force
 
       if (!this.elementsToBound.includes(element)) {
         this.elementsToBound.push(element)

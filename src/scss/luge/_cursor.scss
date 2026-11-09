@@ -1,3 +1,5 @@
+@use 'easing';
+
 /* Cursor */
 .lg-cursor {
   position: fixed;
@@ -40,7 +42,7 @@
     border-radius: 50%;
     content: '';
     opacity: 1;
-    transition: transform 0.2s ease(in-out-cubic), opacity 0.2s linear, background 0.2s linear;
+    transition: transform 0.2s easing.ease(in-out-cubic), opacity 0.2s linear, background 0.2s linear;
   }
 }
 

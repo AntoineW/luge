@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Life cycle — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/life-cycle/"><meta property="og:title" content="Life cycle"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/life-cycle/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Life cycle</h1><div class="l__body rte"><p>The life cycle is the internal mechanism that split the page display in a sequence of events. luge internal actions are bound to these events in order to make sure that they are triggered at the right moment and in the correct order.</p>
+<p>You can attach your own functions to life cycle events and decide whether to postpone or not the execution of the current cycle.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#24292E">luge.lifecycle.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">(</span><span style="color:#032F62">'pageInit'</span><span style="color:#24292E">, (</span><span style="color:#E36209">done</span><span style="color:#24292E">) </span><span style="color:#D73A49">=></span><span style="color:#24292E"> {</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // Do you things here</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // Then call the done callback function</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6F42C1">  done</span><span style="color:#24292E">()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E">}, </span><span style="color:#005CC5">10</span><span style="color:#24292E">, </span><span style="color:#032F62">'load'</span><span style="color:#24292E">)</span></span></code></pre>
+<p>The attached function gets a <code>done</code> callback function as a parameter.</p>
+<p>luge will wait for this callback to be called before moving to the next cycle event in the sequence. It allows you to block the execution of the current cycle until your own script is over (for instance if you want load resources or initialize other libraries before displaying a page).</p>
+<p>Call <code>done()</code> once when your work is complete. Calling it early lets the cycle advance before your work finishes; it does not make synchronous JavaScript run asynchronously.</p>
+<p>Callbacks are invoked in <code>position</code> order. Their asynchronous work can overlap; the cycle waits until every callback has called <code>done()</code>.</p>
+<h2 id="methods">Methods</h2>
+<p><code>add(eventName, callback, position, cycleName)</code></p>
+<p>Attach a function to an event.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>eventName</td><td>String</td><td>A life cycle event name.</td></tr><tr><td>callback</td><td>Function</td><td>Function to call.</td></tr><tr><td>position</td><td>Integer</td><td>Execution order, the lower the sooner. (default <code>10</code>)</td></tr><tr><td>cycleName</td><td>String</td><td>A life cycle name if you want to limit your function to a particular cycle. Leave empty to attach the function to all cycles. (default <code>null</code>)</td></tr></tbody></table></div>
+<hr>
+<p><code>remove(eventName, callback, cycleName)</code></p>
+<p>Dettach a function from an event.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>eventName</td><td>String</td><td>A life cycle event name.</td></tr><tr><td>callback</td><td>Function</td><td>Function that was attached.</td></tr><tr><td>cycleName</td><td>String</td><td>The life cycle name that was used (default <code>null</code>)</td></tr></tbody></table></div>
+<h3 id="refresh-the-page-lifecycle">Refresh the page lifecycle</h3>
+<p>Call <code>luge.lifecycle.refresh()</code> after an external router replaces the page DOM. This runs the refresh sequence below without constructing another Luge instance.</p>
+<h2 id="cycles">Cycles</h2>
+<p>Four cycles are used:</p>
+<ul>
+<li><code>load</code>: when the first page is loaded.</li>
+<li><code>transition</code>: when navigating between two pages.</li>
+<li><code>reload</code>: when forcing reload between a page transition.</li>
+<li><code>refresh</code>: to manually refresh luge after an external page transition (for example with React).</li>
+</ul>
+<h2 id="events">Events</h2>
+<p>Each cycle calls its events in an ordered sequence.</p>
+<p>Before and after events are also emitted during each life cycle event, without affecting the main cycle sequence.</p>
+<p>These emitter listeners receive the cycle name (<code>load</code>, <code>transition</code>, <code>reload</code>, or <code>refresh</code>), not a completion callback. Use <code>lifecycle.add()</code> when your work must hold the cycle. <code>afterReveal</code> means reveal work has been scheduled; it does not mean every CSS animation or custom animation has finished.</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#24292E">luge.emitter.</span><span style="color:#6F42C1">on</span><span style="color:#24292E">(</span><span style="color:#032F62">'beforePageInit'</span><span style="color:#24292E">, myFirstCallback)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E">luge.emitter.</span><span style="color:#6F42C1">on</span><span style="color:#24292E">(</span><span style="color:#032F62">'afterPageLoad'</span><span style="color:#24292E">, myOtherCallback)</span></span></code></pre>
+<h3 id="_load">load</h3>
+<ol>
+<li><code>siteInit</code></li>
+<li><code>pageInit</code></li>
+<li><code>siteLoad</code> + <code>pageLoad</code> <small>(simultaneously)</small></li>
+<li><code>siteIn</code></li>
+<li><code>pageIn</code></li>
+<li><code>reveal</code></li>
+</ol>
+<h3 id="_transition">transition</h3>
+<ol>
+<li><code>pageFetch</code> + <code>pageOut</code> <small>(simultaneously)</small></li>
+<li><code>pageCreate</code></li>
+<li><code>pageKill</code></li>
+<li><code>pageInit</code></li>
+<li><code>pageLoad</code></li>
+<li><code>pageIn</code></li>
+<li><code>reveal</code></li>
+</ol>
+<h3 id="_reload">reload</h3>
+<ol>
+<li><code>pageOut</code></li>
+<li><code>siteReload</code></li>
+</ol>
+<h3 id="refresh">refresh</h3>
+<ol>
+<li><code>pageKill</code></li>
+<li><code>pageInit</code></li>
+<li><code>pageLoad</code></li>
+<li><code>pageIn</code></li>
+<li><code>reveal</code></li>
+</ol>
+<h2 id="initialization">Initialization</h2>
+<p>Register startup lifecycle callbacks before <code>luge.init()</code>. Keep the function reference when you need to remove a callback later. See <a href="/docs/getting-started/">Getting started</a>.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/core/?embed=1" title="Life cycle example" loading="lazy"></iframe><p><a href="/demo/core/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Life cycle</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#methods">Methods</a><ul class="p__sublinks"><li class="p__link"><a href="#refresh-the-page-lifecycle">Refresh the page lifecycle</a></li></ul></li><li class="p__link"><a href="#cycles">Cycles</a></li><li class="p__link"><a href="#events">Events</a><ul class="p__sublinks"><li class="p__link"><a href="#_load">load</a></li><li class="p__link"><a href="#_transition">transition</a></li><li class="p__link"><a href="#_reload">reload</a></li><li class="p__link"><a href="#refresh">refresh</a></li></ul></li><li class="p__link"><a href="#initialization">Initialization</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/browser-detection/">Browser detection</a></li><li class="p__link"><a href="/docs/emitter/">Emitter</a></li><li class="p__link is-active"><a href="/docs/life-cycle/">Life cycle</a></li><li class="p__link"><a href="/docs/mouse-observer/">Mouse observer</a></li><li class="p__link"><a href="/docs/scroll-observer/">Scroll observer</a></li><li class="p__link"><a href="/docs/ticker/">Ticker</a></li><li class="p__link"><a href="/docs/viewport-observer/">Viewport observer</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

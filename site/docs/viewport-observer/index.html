@@ -1,0 +1,68 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Viewport observer — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/viewport-observer/"><meta property="og:title" content="Viewport observer"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/viewport-observer/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Viewport observer</h1><div class="l__body rte"><p>The viewport observer is used to observe DOM Elements visibility inside the viewport, using <a href="https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver" target="_blank" rel="noopener">IntersectionObserver</a>.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#6A737D">// Register before luge.init(). Query the current page on every cycle.</span></span>
+<span class="line"><span style="color:#24292E">luge.lifecycle.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">(</span><span style="color:#032F62">'pageInit'</span><span style="color:#24292E">, </span><span style="color:#E36209">done</span><span style="color:#D73A49"> =></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#D73A49">  const</span><span style="color:#005CC5"> element</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'#my-element'</span><span style="color:#24292E">)</span></span>
+<span class="line"><span style="color:#D73A49">  if</span><span style="color:#24292E"> (element) {</span></span>
+<span class="line"><span style="color:#24292E">    element.</span><span style="color:#6F42C1">addEventListener</span><span style="color:#24292E">(</span><span style="color:#032F62">'viewportintersect'</span><span style="color:#24292E">, </span><span style="color:#E36209">event</span><span style="color:#D73A49"> =></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#24292E">      console.</span><span style="color:#6F42C1">log</span><span style="color:#24292E">(event.target.luge.viewport.position)</span></span>
+<span class="line"><span style="color:#24292E">    })</span></span>
+<span class="line"><span style="color:#24292E">    luge.viewportobserver.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">(element)</span></span>
+<span class="line"><span style="color:#24292E">  }</span></span>
+<span class="line"><span style="color:#6F42C1">  done</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#24292E">}, </span><span style="color:#005CC5">30</span><span style="color:#24292E">)</span></span></code></pre>
+<h2 id="properties">Property</h2>
+<p>Observed elements get the following property:</p>
+<p>The initial position is <code>out</code> until the first asynchronous observer notification. It then becomes <code>under</code>, <code>in</code>, or <code>above</code>. Events are dispatched on the element and do not bubble.</p>
+<ul>
+<li><code id="_p-viewportposition">luge.viewport.position</code>:  a string containing the element position in comparison to the viewport. The element can be <code>under</code>, <code>in</code> or <code>above</code> the viewport.</li>
+</ul>
+<h2 id="events">Events</h2>
+<p>The viewport observer emits <code>CustomEvent</code> that can be catched with the<code>addEventListener</code> method on observed elements.</p>
+<ul>
+<li><code id="_e-viewportposition">viewportintersect</code> : emitted when the element gets in or out the viewport.</li>
+<li><code>viewportin</code> : emitted when the element gets in the viewport.</li>
+<li><code>viewportout</code> : emitted when the element gets out of the viewport.</li>
+<li><code>viewportabove</code> : emitted when the element gets out of the viewport from top.</li>
+<li><code>viewportunder</code> : emitted when the element gets out of the viewport from bottom.</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<p><code id="_add" class="js">add(element)</code></p>
+<p>Add an element to the observer.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>element</td><td>HTMLElement</td><td>DOM element to observe.</td></tr></tbody></table></div>
+<hr>
+<p><code id="_remove" class="js">remove(element)</code></p>
+<p>Remove an element from the observer.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead><tbody><tr><td>element</td><td>HTMLElement</td><td>DOM element to remove.</td></tr></tbody></table></div>
+<h2 id="initialization">Initialization</h2>
+<p>Use this service through a single initialized <code>Luge</code> instance. Register page-specific observations in <code>pageInit</code> after the core observers are ready (position 30), and remove your own callbacks when their owner is disposed. See <a href="/docs/getting-started/">Getting started</a>.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/core/?embed=1" title="Viewport observer example" loading="lazy"></iframe><p><a href="/demo/core/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Viewport observer</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#properties">Property</a><ul class="p__sublinks"><li class="p__link"><a href="#_p-viewportposition">luge.viewport.position</a></li></ul></li><li class="p__link"><a href="#events">Events</a><ul class="p__sublinks"><li class="p__link"><a href="#_e-viewportposition">viewportintersect</a></li></ul></li><li class="p__link"><a href="#methods">Methods</a><ul class="p__sublinks"><li class="p__link"><a href="#_add">add()</a></li><li class="p__link"><a href="#_remove">remove()</a></li></ul></li><li class="p__link"><a href="#initialization">Initialization</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/browser-detection/">Browser detection</a></li><li class="p__link"><a href="/docs/emitter/">Emitter</a></li><li class="p__link"><a href="/docs/life-cycle/">Life cycle</a></li><li class="p__link"><a href="/docs/mouse-observer/">Mouse observer</a></li><li class="p__link"><a href="/docs/scroll-observer/">Scroll observer</a></li><li class="p__link"><a href="/docs/ticker/">Ticker</a></li><li class="p__link is-active"><a href="/docs/viewport-observer/">Viewport observer</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

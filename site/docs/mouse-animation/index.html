@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mouse animation — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/mouse-animation/"><meta property="og:title" content="Mouse animation"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/mouse-animation/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Mouse animation</h1><div class="l__body rte"><p>Import <code>MouseAnimation</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('mouse', MouseAnimation)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>Animates elements on mouse move.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-mouse</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>Mouse animated elements will get CSS variables:</p>
+<ul>
+<li><code>--mouse-x</code>/ <code>--mouse-y</code>: contains the mouse position relative to the element top left corner position in px.</li>
+<li><code>--mouse-progress-x</code>/ <code>--mouse-progress-y</code>: contains the mouse progress (from <code>0</code> to <code>1</code>) inside the the element bouding box.</li>
+<li><code>--diff-x</code> / <code>--diff-y</code>: when using inertia (see <a href="#attributes">attributes</a>), contains the difference between the expected position and the delayed one.</li>
+<li><code>--abs-diff-x</code> / <code>--abs-diff-y</code> :  contains the absolute value of the <code>--diff-x</code> / <code>--diff-y</code> variables.</li>
+</ul>
+<p>You can then use these variables to create your own CSS animations. For instance, to make an element rotate based on mouse movement:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.my-element</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  transform</span><span style="color:#24292E">: </span><span style="color:#005CC5">rotateY</span><span style="color:#24292E">( </span><span style="color:#005CC5">calc</span><span style="color:#24292E">( </span><span style="color:#005CC5">var</span><span style="color:#24292E">(</span><span style="color:#E36209">--mouse-progress-x</span><span style="color:#24292E">) </span><span style="color:#D73A49">*</span><span style="color:#005CC5"> 180</span><span style="color:#D73A49">deg</span><span style="color:#24292E"> ) );</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<p>Mouse animation also brings new properties to the global <code>window</code> object:</p>
+<ul>
+<li><code>window.mouseSpeed</code>: contains the mouse speed ;</li>
+<li><code>window.mouseAngle</code>: contains the mouse angle in degrees ;</li>
+<li><code>window.mouseDirection</code>: contains the mouse direction as a string (<code>up</code>, <code>right</code>, <code>down</code>, <code>left</code>) ;</li>
+</ul>
+<p>Quick demo <a href="https://codepen.io/wodniack/pen/7c50e8d9d355f184f7508e03b47537a6" target="_blank" rel="noopener">on this pen</a>.</p>
+<h2 id="attributes">Attributes</h2>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-mouse-inertia</code></td><td>Number or range string</td><td>0.1</td><td>The interpolation factor. Smaller positive values follow the mouse more slowly; <code>0</code> bypasses smoothing. You can use <code>{0.25,0.75}</code> for a random value in that range. Set the default with <code>luge.settings({mouse: {inertia: 0.1}})</code>.</td></tr></tbody></table></div>
+<p>The CSS variables contain unitless numbers: <code>--mouse-x</code> and <code>--mouse-y</code> represent pixel distances, so use <code>calc(var(--mouse-x) * 1px)</code> when a CSS length is needed. Numeric inertia is clamped to 0–0.99. Unlike ScrollAnimation, MouseAnimation multiplies the remaining distance by inertia itself, not by <code>1 - inertia</code>.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/mouse/?embed=1" title="Mouse animation example" loading="lazy"></iframe><p><a href="/demo/mouse/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Mouse animation</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link is-active"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link"><a href="/docs/parallax/">Parallax</a></li><li class="p__link"><a href="/docs/preloader/">Preloader</a></li><li class="p__link"><a href="/docs/reveal/">Reveal</a></li><li class="p__link"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

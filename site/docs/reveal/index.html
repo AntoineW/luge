@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reveal — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/reveal/"><meta property="og:title" content="Reveal"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/reveal/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Reveal</h1><div class="l__body rte"><p>Import <code>Reveal</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('reveal', Reveal)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>Reveals elements when they get in or out the viewport.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-reveal"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>You can use built-in animations or create your own ones.</p>
+<p>When multiple elements get in the viewport at the same time, their reveal animations will be staggered with a <code>0.1</code> second delay (see <a href="#attributes">attributes</a>).</p>
+<h2 id="built-in">Built-in animations</h2>
+<ul>
+<li><code>fade</code>|<code>fade-to-top</code>|<code>fade-to-right</code>|<code>fade-to-bottom</code>|<code>fade-to-left</code>|<code>fade-x</code>|<code>fade-y</code></li>
+<li><code>fade-rotate</code>|<code>fade-rotate-to-top</code>|<code>fade-rotate-to-right</code>|<code>fade-rotate-to-bottom</code>|<code>fade-rotate-to-left</code>|<code>fade-rotate-x</code>|<code>fade-rotate-y</code></li>
+<li><code>fade-scale</code>|<code>fade-scale-to-top</code>|<code>fade-scale-to-right</code>|<code>fade-scale-to-bottom</code>|<code>fade-scale-to-left</code>|<code>fade-scale-x</code>|<code>fade-scale-y</code></li>
+<li><code>scale</code>|<code>scale-to-top</code>|<code>scale-to-right</code>|<code>scale-to-bottom</code>|<code>scale-to-left</code>|<code>scale-x</code>|<code>scale-y</code></li>
+<li><code>slide</code>|<code>slide-to-top</code>|<code>slide-to-right</code>|<code>slide-to-bottom</code>|<code>slide-to-left</code>|<code>slide-x</code>|<code>slide-y</code></li>
+<li><code>layer-to-top</code> | <code>layer-to-right</code> | <code>layer-to-bottom</code> | <code>layer-to-left</code></li>
+</ul>
+<h2 id="custom">Custom animations</h2>
+<p>The revealed element gets a <code>.lg-reveal</code> and a<code>.lg-reveal—[reveal name]</code> CSS classes when initiated. It also gets <code>.is-in</code>, <code>.is-out</code>, <code>.is-out-top</code>, <code>.is-out-bottom</code> CSS classes when it gets in or out the viewport.</p>
+<p>You can use these to create the reveal animation in CSS:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.lg-reveal--my-reveal</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  opacity</span><span style="color:#24292E">: </span><span style="color:#005CC5">0</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  transition</span><span style="color:#24292E">: opacity </span><span style="color:#005CC5">0.3</span><span style="color:#D73A49">s</span><span style="color:#005CC5"> linear</span><span style="color:#24292E">, transform </span><span style="color:#005CC5">0.3</span><span style="color:#D73A49">s</span><span style="color:#005CC5"> ease-in-out</span><span style="color:#24292E">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#22863A">  &#x26;</span><span style="color:#6F42C1">.is-out-bottom</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">    transform</span><span style="color:#24292E">: </span><span style="color:#005CC5">translate3d</span><span style="color:#24292E">(</span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">10</span><span style="color:#D73A49">px</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">);</span></span>
+<span class="line"><span style="color:#24292E">  }</span></span>
+<span class="line"><span style="color:#22863A">  &#x26;</span><span style="color:#6F42C1">.is-out-top</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">    transform</span><span style="color:#24292E">: </span><span style="color:#005CC5">translate3d</span><span style="color:#24292E">(</span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">-10</span><span style="color:#D73A49">px</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">);</span></span>
+<span class="line"><span style="color:#24292E">  }</span></span>
+<span class="line"><span style="color:#22863A">  &#x26;</span><span style="color:#6F42C1">.is-in</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">    opacity</span><span style="color:#24292E">: </span><span style="color:#005CC5">1</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">    transform</span><span style="color:#24292E">: </span><span style="color:#005CC5">translate3d</span><span style="color:#24292E">(</span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">);</span></span>
+<span class="line"><span style="color:#24292E">  }</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<p>Or you can use a third-party JS animation library:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#6A737D">// Add a callback function</span></span>
+<span class="line"><span style="color:#24292E">luge.reveal.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">(</span><span style="color:#032F62">'in'</span><span style="color:#24292E">, </span><span style="color:#032F62">'myReveal'</span><span style="color:#24292E">, (</span><span style="color:#E36209">element</span><span style="color:#24292E">) </span><span style="color:#D73A49">=></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#6A737D">  // When the element gets in viewport</span></span>
+<span class="line"><span style="color:#24292E">  gsap.</span><span style="color:#6F42C1">to</span><span style="color:#24292E">(element, { opacity: </span><span style="color:#005CC5">1</span><span style="color:#24292E">, duration: </span><span style="color:#005CC5">0.4</span><span style="color:#24292E"> })</span></span>
+<span class="line"><span style="color:#24292E">})</span></span>
+<span class="line"><span style="color:#24292E">luge.reveal.</span><span style="color:#6F42C1">add</span><span style="color:#24292E">(</span><span style="color:#032F62">'out'</span><span style="color:#24292E">, </span><span style="color:#032F62">'myReveal'</span><span style="color:#24292E">, (</span><span style="color:#E36209">element</span><span style="color:#24292E">) </span><span style="color:#D73A49">=></span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#6A737D">  // When the element gets out of viewport</span></span>
+<span class="line"><span style="color:#24292E">  gsap.</span><span style="color:#6F42C1">to</span><span style="color:#24292E">(element, { opacity: </span><span style="color:#005CC5">0</span><span style="color:#24292E">, duration: </span><span style="color:#005CC5">0.4</span><span style="color:#24292E"> })</span></span>
+<span class="line"><span style="color:#24292E">})</span></span>
+<span class="line"><span style="color:#6A737D">// Or attach the function to the element onrevealin and onrevealout properties</span></span>
+<span class="line"><span style="color:#24292E">document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.my-element'</span><span style="color:#24292E">).</span><span style="color:#6F42C1">onrevealin</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> function</span><span style="color:#24292E"> () { gsap.</span><span style="color:#6F42C1">to</span><span style="color:#24292E">(</span><span style="color:#005CC5">this</span><span style="color:#24292E">, { opacity: </span><span style="color:#005CC5">1</span><span style="color:#24292E">, duration: </span><span style="color:#005CC5">0.4</span><span style="color:#24292E"> }) }</span></span>
+<span class="line"><span style="color:#24292E">document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.my-element'</span><span style="color:#24292E">).</span><span style="color:#6F42C1">onrevealout</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> function</span><span style="color:#24292E"> () { gsap.</span><span style="color:#6F42C1">to</span><span style="color:#24292E">(</span><span style="color:#005CC5">this</span><span style="color:#24292E">, { opacity: </span><span style="color:#005CC5">0</span><span style="color:#24292E">, duration: </span><span style="color:#005CC5">0.4</span><span style="color:#24292E"> }) }</span></span></code></pre>
+<h2 id="staggered">Staggered reveals</h2>
+<p>You can set up staggered reveal animations on children elements to reveal them with a staggered start time:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-parent"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade"</span><span style="color:#6F42C1"> data-lg-reveal-stagger</span><span style="color:#24292E">=</span><span style="color:#032F62">"0.1"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-child"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-child"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-child"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>When the parent element gets in the viewport, each child will be revealed with the <code>fade</code>animation and a <code>0.1</code> second delay.</p>
+<p>You can also use different reveal animations for each child:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-parent"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#6F42C1"> data-lg-reveal-stagger</span><span style="color:#24292E">=</span><span style="color:#032F62">"0.1"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-child"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-child"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade-to-left"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-child"</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade-to-right"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<h2 id="manual-reveals">Manual reveals</h2>
+<p>Sometimes it can be useful to trigger reveal animations manually, to group them in a larger animation sequence. You can do so by adding the <code>data-lg-reveal-manual</code> attribute to the element.</p>
+<p>Reveal animation can then be triggered manually:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#6A737D">// Reveal in animation</span></span>
+<span class="line"><span style="color:#24292E">document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.my-element'</span><span style="color:#24292E">).luge.reveal.</span><span style="color:#6F42C1">in</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#6A737D">// Reveal out animation</span></span>
+<span class="line"><span style="color:#24292E">document.</span><span style="color:#6F42C1">querySelector</span><span style="color:#24292E">(</span><span style="color:#032F62">'.my-element'</span><span style="color:#24292E">).luge.reveal.</span><span style="color:#6F42C1">out</span><span style="color:#24292E">()</span></span></code></pre>
+<h2 id="attributes">Attributes</h2>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-reveal</code></td><td>String</td><td>unset</td><td>The reveal animation name. Set it to one of the built-in animations name or create your own one.</td></tr><tr><td><code>data-lg-reveal-disable</code></td><td>String</td><td>unset</td><td>Disable this element on <code>desktop</code>, <code>tablet</code>, <code>mobile</code>, or <code>handheld</code>. Requires the Browser plugin.</td></tr><tr><td><code>data-lg-reveal-multiple</code></td><td>Boolean</td><td>false</td><td>Whether the element should be revealed in and out when it gets back in or out of the viewport.</td></tr><tr><td><code>data-lg-reveal-stagger</code></td><td>Number</td><td>disabled when absent</td><td>Enables child staggering. Its value is the interval in seconds; an empty attribute uses <code>reveal.stagger</code> (default <code>0.1</code>). Without this attribute, the element itself is revealed.</td></tr><tr><td><code>data-lg-reveal-delay</code></td><td>Number</td><td>0</td><td>The delay (in second) before the reveal animation starts when the element gets in the viewport.</td></tr><tr><td><code>data-lg-reveal-manual</code></td><td>Boolean</td><td>false</td><td>Disable automated reveal on scroll and enable manual triggering.</td></tr></tbody></table></div>
+<h2 id="callback-behavior">Callback behavior</h2>
+<p>Set <code>luge.settings({ reveal: { threshold: 0.15, stagger: 0.1 } })</code> before initialization to change the automatic progress threshold and spacing between elements in a reveal batch. The threshold is a fraction of the element’s scroll progress, not an IntersectionObserver visibility ratio.</p>
+<p><code>data-lg-reveal-manual</code> skips automatic scroll observation. Call <code>element.luge.reveal.in()</code> and <code>.out()</code> after initialization. Both dispatch reveal events and invoke custom callbacks. <code>data-lg-reveal-delay</code> is in seconds. Named callbacks take precedence over element <code>onrevealin</code> / <code>onrevealout</code> handlers.</p>
+<p>Within an automatic reveal batch, element delays accumulate along with the global stagger. A staggered group’s children start at intervals relative to their parent’s reveal. Page cleanup cancels pending reveal delays and remaining child callbacks, so they cannot run on a departed page. Custom callbacks remain responsible for cancelling animations or timers they start themselves.</p>
+<p>The element emits non-bubbling <code>revealin</code> and <code>revealout</code> events. Reveal callbacks do not receive a <code>done</code> argument and do not hold the lifecycle until their animations finish. Manual <code>.in()</code> and <code>.out()</code> calls act immediately on that element; they do not apply automatic delays or run the staggered-child scheduling path.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/reveal/?embed=1" title="Reveal example" loading="lazy"></iframe><p><a href="/demo/reveal/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Reveal</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#built-in">Built-in animations</a></li><li class="p__link"><a href="#custom">Custom animations</a></li><li class="p__link"><a href="#staggered">Staggered reveals</a></li><li class="p__link"><a href="#manual-reveals">Manual reveals</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#callback-behavior">Callback behavior</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link"><a href="/docs/parallax/">Parallax</a></li><li class="p__link"><a href="/docs/preloader/">Preloader</a></li><li class="p__link is-active"><a href="/docs/reveal/">Reveal</a></li><li class="p__link"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

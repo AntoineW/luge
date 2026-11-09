@@ -1,21 +1,20 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
-import Luge from 'Core/Core'
-import Plugin from 'Core/Plugin'
-import ScrollObserver from 'Core/ScrollObserver'
-import Ticker from 'Core/Ticker'
+import Helpers from '../core/Helpers'
+import Plugin from '../core/Plugin'
 
-class Reveal extends Plugin {
+export default class Reveal extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('reveal')
+
+    this.luge = luge
 
     this.elements = []
     this.toRevealIn = []
     this.toRevealOut = []
+    this.removed = []
+    this.revealTimeouts = new Set()
 
     this.reveals = {
       in: {},
@@ -25,6 +24,10 @@ class Reveal extends Plugin {
 
     // Listeners
     this.onScrollProgress = this.onScrollProgress.bind(this)
+
+    luge.reveal = {
+      add: this.add.bind(this)
+    }
   }
 
   /**
@@ -33,9 +36,9 @@ class Reveal extends Plugin {
   init () {
     super.init()
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this), 11)
-    LifeCycle.add('pageKill', this.pageKill.bind(this))
-    LifeCycle.add('reveal', this.reveal.bind(this))
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this), 11)
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this))
+    this.luge.lifecycle.add('reveal', this.reveal.bind(this))
 
     this.bindEvents()
   }
@@ -48,6 +51,7 @@ class Reveal extends Plugin {
 
     this.pluginAttributes = {
       root: String,
+      disable: String,
       stagger: String,
       manual: [Boolean, false],
       multiple: Boolean,
@@ -62,7 +66,7 @@ class Reveal extends Plugin {
     const data = super.getAttributes(element)
 
     if (data.stagger !== undefined && data.stagger === '') {
-      data.stagger = Luge.settings.reveal.stagger
+      data.stagger = this.luge._settings.reveal.stagger
     } else if (data.stagger === undefined) {
       data.stagger = false
     }
@@ -74,9 +78,10 @@ class Reveal extends Plugin {
    * Bind events
    */
   bindEvents () {
-    Emitter.on('resize', this.resizeHandler, this)
-    Emitter.on('scroll', this.scrollHandler, this)
-    Emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('resize', this.resizeHandler, this)
+    this.luge.emitter.on('scroll', this.scrollHandler, this)
+    this.luge.emitter.on('update', this.updateHandler, this)
+    this.luge.emitter.on('afterScrollUpdate', this.afterScrollUpdateHandler, this)
   }
 
   /**
@@ -97,7 +102,27 @@ class Reveal extends Plugin {
     const self = this
 
     elements.forEach(element => {
-      self.addElement(element)
+      const attributes = this.getAttributes(element)
+
+      const disable = attributes.disable
+      let enable = true
+
+      const browser = (this.luge.browser || {})
+
+      if (disable && browser.is) {
+        if ((disable === 'desktop' && browser.is('desktop')) ||
+            (disable === 'handheld' && !browser.is('desktop')) ||
+            (disable === 'mobile' && browser.is('mobile')) ||
+            (disable === 'tablet' && browser.is('tablet'))) {
+          enable = false
+        }
+      }
+
+      if (enable) {
+        self.addElement(element)
+      } else {
+        element.setAttribute('data-lg-reveal-disabled', '')
+      }
     })
   }
 
@@ -117,20 +142,20 @@ class Reveal extends Plugin {
       const revealName = attributes.root
       element.luge.reveal.name = Helpers.toCamelCase(revealName)
 
+      element.luge.reveal.in = () => {
+        this.revealCallback(element, element.luge.reveal.name, 'in')
+        this.setRevealClasses(element, 'is-in')
+      }
+
+      element.luge.reveal.out = () => {
+        this.revealCallback(element, element.luge.reveal.name, 'out')
+        this.setRevealClasses(element, 'is-out')
+      }
+
       if (!attributes.manual) {
-        ScrollObserver.add(element)
+        this.luge.scrollobserver.add(element)
 
         element.addEventListener('scrollprogress', this.onScrollProgress)
-      } else {
-        element.luge.reveal.in = () => {
-          this.revealCallback(element, element.luge.reveal.name, 'in')
-          this.setRevealClasses(element, 'is-in')
-        }
-
-        element.luge.reveal.out = () => {
-          this.revealCallback(element, element.luge.reveal.name, 'out')
-          this.setRevealClasses(element, 'is-out')
-        }
       }
 
       element.luge.reveal.delay = attributes.delay * 1000
@@ -140,7 +165,7 @@ class Reveal extends Plugin {
           const childRevealName = child.dataset.lgReveal
 
           child.style.transition = 'none'
-          Ticker.nextTick(() => {
+          this.luge.ticker.nextTick(() => {
             child.style.transition = ''
           })
 
@@ -159,7 +184,7 @@ class Reveal extends Plugin {
         })
       } else {
         element.style.transition = 'none'
-        Ticker.nextTick(() => {
+        this.luge.ticker.nextTick(() => {
           element.style.transition = ''
         })
 
@@ -178,11 +203,15 @@ class Reveal extends Plugin {
    * Remove element from observer
    * @param {HTMLElement} element Element to remove
    */
-  removeElement (element) {
+  removeElement (element, single = false) {
+    this.luge.scrollobserver.remove(element)
     element.removeEventListener('scrollprogress', this.onScrollProgress)
 
-    if (this.elements.includes(element)) {
+    if (single && this.elements.includes(element)) {
       this.elements.splice(this.elements.indexOf(element), 1)
+      this.removed.push(element)
+    } else if (!single) {
+      this.removed.push(element)
     }
   }
 
@@ -195,9 +224,16 @@ class Reveal extends Plugin {
 
     this.canReveal = false
 
+    this.revealTimeouts.forEach(timeout => clearTimeout(timeout))
+    this.revealTimeouts.clear()
+    this.toRevealIn = []
+    this.toRevealOut = []
+
     this.elements.forEach(element => {
       self.removeElement(element)
     })
+
+    this.elements = []
 
     done()
   }
@@ -208,9 +244,41 @@ class Reveal extends Plugin {
    */
   onScrollProgress (e) {
     const element = e.target
-    const threshold = Luge.settings.reveal.threshold
 
-    if (element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold) && !element.luge.reveal.isRevealed) {
+    this.checkElement(element)
+    // Progress is computed on the ticker, after the native scroll handler.
+    this.luge.ticker.nextTick(this.revealElements, this)
+  }
+
+  /**
+   * Check elements state
+   */
+  checkElements () {
+    const threshold = this.luge._settings.reveal.threshold
+
+    this.elements.forEach(element => {
+      let state = ''
+
+      if ((element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold)) || this.isVisibleAtScrollEnd(element)) {
+        state = 'is-in'
+      } else if ((element.scrollProgress < threshold || (element.scrollProgress > (1 - threshold) && element.scrollEnd < Math.round(window.unifiedScrollTop)))) {
+        state = 'is-out'
+      }
+
+      if (state !== '') {
+        this.setRevealClasses(element, state)
+        element.luge.reveal.isRevealed = (state === 'is-in')
+      }
+    })
+  }
+
+  /**
+   * Check element
+   * @param {HTMLElement} element
+   */
+  checkElement (element) {
+    const threshold = this.luge._settings.reveal.threshold
+    if (((element.scrollStart < 0 && Math.abs(element.scrollStart) / window.innerHeight) >= threshold) || (((element.scrollProgress >= threshold && element.scrollProgress <= (1 - threshold)) || this.isVisibleAtScrollEnd(element)) && !element.luge.reveal.isRevealed)) {
       if (this.toRevealOut.includes(element)) {
         this.toRevealOut.splice(this.toRevealOut.indexOf(element), 1)
       }
@@ -227,6 +295,28 @@ class Reveal extends Plugin {
         this.toRevealOut.push(element)
       }
     }
+  }
+
+  /**
+   * Check the reveal threshold when the observer's end is clipped by the page.
+   * @param {HTMLElement} element Element to check
+   * @returns {boolean}
+   */
+  isVisibleAtScrollEnd (element) {
+    if (element.scrollProgress !== 1 || element.scrollEnd !== window.maxScrollTop) {
+      return false
+    }
+
+    // Reconstruct the measured range, without reading animated transforms.
+    const end = element.scrollStart + element.clientHeight + window.innerHeight * (element.scrollTriggerStart - element.scrollTriggerEnd)
+    if (end <= element.scrollEnd) {
+      return false
+    }
+
+    const progress = (window.unifiedScrollTop - element.scrollStart) / (end - element.scrollStart)
+    const threshold = this.luge._settings.reveal.threshold
+    // Keep the observer's entry threshold; only correct its premature exit.
+    return element.scrollProgress >= threshold && progress > 0 && progress <= (1 - threshold)
   }
 
   /**
@@ -268,7 +358,24 @@ class Reveal extends Plugin {
    */
   updateHandler () {
     this.addElements()
+  }
+
+  /**
+   * After scroll update handler
+   */
+  afterScrollUpdateHandler () {
     this.revealElements()
+  }
+
+  /**
+   * Schedule reveal work owned by the current page.
+   */
+  scheduleReveal (callback, delay) {
+    const timeout = setTimeout(() => {
+      this.revealTimeouts.delete(timeout)
+      callback()
+    }, delay)
+    this.revealTimeouts.add(timeout)
   }
 
   /**
@@ -281,19 +388,23 @@ class Reveal extends Plugin {
       let revealInTimeout = 0
 
       this.toRevealIn.forEach(element => {
+        if (this.removed.includes(element)) {
+          return
+        }
+
         const delay = true
         const revealName = Helpers.toCamelCase(element.luge.reveal.root)
 
         revealInTimeout += element.luge.reveal.delay
 
-        setTimeout(function () {
+        this.scheduleReveal(function () {
           self.revealCallback(element, revealName, 'in')
 
           if (element.luge.reveal.stagger) {
             Array.from(element.children).forEach((child, index) => {
               const childRevealName = Helpers.toCamelCase(child.dataset.lgReveal)
 
-              setTimeout(() => {
+              self.scheduleReveal(() => {
                 if (childRevealName || revealName) {
                   self.revealCallback(child, (childRevealName ?? revealName), 'in')
                 }
@@ -307,11 +418,11 @@ class Reveal extends Plugin {
         }, delay ? revealInTimeout : 0)
 
         if (delay) {
-          revealInTimeout += Luge.settings.reveal.stagger * 1000
+          revealInTimeout += this.luge._settings.reveal.stagger * 1000
         }
 
         if (!element.luge.reveal.multiple) {
-          self.removeElement(element)
+          self.removeElement(element, true)
         }
       })
 
@@ -333,7 +444,7 @@ class Reveal extends Plugin {
           Array.from(element.children).forEach((child, index) => {
             const childRevealName = Helpers.toCamelCase(child.dataset.lgReveal)
 
-            setTimeout(() => {
+            self.scheduleReveal(() => {
               if (childRevealName || revealName) {
                 self.revealCallback(child, (childRevealName ?? revealName), 'out')
               }
@@ -399,5 +510,3 @@ class Reveal extends Plugin {
     }
   }
 }
-
-export default new Reveal()

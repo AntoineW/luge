@@ -1,5 +1,5 @@
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
+import Emitter from './Emitter'
+import Helpers from './Helpers'
 
 class LifeCycle {
   /**
@@ -170,8 +170,8 @@ class LifeCycle {
   add (eventName, callback, position = 10, cycleName = null) {
     if (this.events[eventName]) {
       this.events[eventName].callbacks.push({
-        callback,
-        position,
+        callback: callback,
+        position: position,
         cycle: cycleName
       })
     }
@@ -184,14 +184,10 @@ class LifeCycle {
    * @param {String} cycleName Cycle name
    */
   remove (eventName, callback, cycleName = null) {
-    const self = this
-
     if (this.events[eventName]) {
-      this.events[eventName].callbacks.forEach((event, index) => {
-        if (event.callback === callback && event.cycle === cycleName) {
-          delete self.events[eventName].callbacks[index]
-        }
-      })
+      this.events[eventName].callbacks = this.events[eventName].callbacks.filter(event =>
+        event.callback !== callback || event.cycle !== cycleName
+      )
     }
   }
 
@@ -217,7 +213,7 @@ class LifeCycle {
 
       callbacks.forEach(object => {
         if (object.cycle === null || object.cycle === cycleName) {
-          object.callback(() => this.done(cycleName, eventName))
+          object.callback(() => this.done(cycleName, eventName), cycleName)
         } else {
           this.done(cycleName, eventName)
         }
@@ -238,10 +234,10 @@ class LifeCycle {
       console.log('Done event: ' + eventName + ' ' + this.events[eventName].done + '/' + this.events[eventName].callbacks.length + ' (' + cycleName + ' cycle)')
     }
 
-    Emitter.emit(Helpers.toCamelCase('after-' + eventName))
-
     // All callback are done, call next action
     if (this.events[eventName].done >= this.events[eventName].callbacks.length) {
+      Emitter.emit(Helpers.toCamelCase('after-' + eventName), cycleName)
+
       this.next(cycleName, eventName)
     }
   }

@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Known limitations — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/known-limitations/"><meta property="og:title" content="Known limitations"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/known-limitations/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Known limitations</h1><div class="l__body rte"><p>These notes describe the 1.0 API and its integration constraints.</p>
+<ul>
+<li>
+<p>Core services are singletons and require the browser DOM. There is no complete public destroy operation.</p>
+</li>
+<li>
+<p>Smooth scrolling uses Lenis defaults; the retained <code>smooth.inertia</code> setting has no effect.</p>
+</li>
+<li>
+<p>Failed navigation fetches fall back to normal document navigation. Overlapping transition requests are serialized: the active transition finishes, then only the latest queued destination starts. A request that never settles still has no built-in timeout.</p>
+</li>
+<li>
+<p>Animations that write the same inline transform should be placed on separate wrappers.</p>
+</li>
+<li>
+<p>Automatic reduced-motion handling is not a library-wide behavior. Configure your integration explicitly; the documentation homepage disables decorative motion for that preference.</p>
+</li>
+<li>
+<p>When loading Lottie later with <code>deferInit()</code>, avoid <code>id="lottie"</code> on HTML elements: browsers expose named elements on <code>window</code>, which can shadow the absent player global.</p>
+</li>
+<li>
+<p>Custom text-splitting animations should wait for their fonts before measuring lines. Luge does not automatically wait for web fonts or third-party animations.</p>
+</li>
+<li>
+<p>Lottie lazy loading and required page-loading gates should not be combined. Lottie preloaders and transition loaders need their player global before initialization; their loading failures do not use LottiePlayer’s <code>lottieerror</code> handling.</p>
+</li>
+</ul>
+<h2 id="rc-to-10-compatibility">RC-to-1.0 compatibility</h2>
+<p>Keep the same plugin names, <code>settings()</code> calls, attributes and callback signatures. Named imports still require explicit registration before <code>init()</code>; the UMD build registers the bundled plugins automatically. Both <code>dist/luge.umd.js</code> and <code>dist/js/luge.umd.js</code> remain available. The CSS import <code>@waaark/luge/css</code> is an additional convenience entry point.</p>
+<p>The 1.0 changes preserve native modified-click/download behavior and Forward history, serialize overlapping transitions, cancel pending reveals and retired-player loop work at page cleanup, and support plain <code>slide</code> as an alias of <code>slide-to-top</code> for preloaders and loaders. Animation formulas, default settings and singleton service ownership are retained.</p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Known limitations</div><ul class="p__links"><li class="p__link"><a href="#rc-to-10-compatibility">RC-to-1.0 compatibility</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/disable-plugins/">Disable plugins</a></li><li class="p__link"><a href="/docs/dynamic-elements/">Dynamic elements</a></li><li class="p__link"><a href="/docs/getting-started/">Getting started</a></li><li class="p__link is-active"><a href="/docs/known-limitations/">Known limitations</a></li><li class="p__link"><a href="/docs/use-hash-links-with-transitions/">Use # links with transitions</a></li><li class="p__link"><a href="/docs/using-luge-with-a-js-framework/">Using luge with a JS framework</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

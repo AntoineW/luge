@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Scroll animation — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/scroll-animation/"><meta property="og:title" content="Scroll animation"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/scroll-animation/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Scroll animation</h1><div class="l__body rte"><p>Import <code>ScrollAnimation</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('scroll', ScrollAnimation)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>Animates elements on scroll.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-scroll</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<h2 id="animatable">Animatable properties</h2>
+<p>The following properties can be used to animate elements on scroll:</p>
+<ul>
+<li><code>opacity</code></li>
+<li><code>background-x</code> | <code>background-y</code></li>
+<li><code>x</code> | <code>y</code> | <code>z</code></li>
+<li><code>rotate</code> | <code>rotateX</code> | <code>rotateY</code> | <code>rotateZ</code></li>
+<li><code>scale</code> | <code>scaleX</code> | <code>scaleY</code> | <code>scaleZ</code></li>
+</ul>
+<p>They can be used in a JSON string set in the <code>data-lg-scroll-animate</code> attribute:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-scroll</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-scroll-animate</span><span style="color:#24292E">=</span><span style="color:#032F62">"{'x': ['0%', '100%'], 'opacity': ['0', '1']}"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>These properties will progress from the start to the end value while the element progresses in the viewport during scroll.</p>
+<p>Use matching units at both ends. Supply explicit length units for translations, such as <code>['0px', '100px']</code> or <code>['0%', '100%']</code>; rotation defaults to degrees, and opacity and scale use unitless values. The parser does not interpolate arbitrary CSS expressions such as <code>calc()</code> or mix units.</p>
+<h2 id="preset">Preset animations</h2>
+<p>The following preset animations can also be used instead of setting individual properties:</p>
+<ul>
+<li><code>background-x</code> : changes <code>background-x</code> position from 0% to 100%.</li>
+<li><code>background-y</code> : changes <code>background-y</code> position from 0% to 100%.</li>
+</ul>
+<h2 id="css">CSS animations</h2>
+<p>When not using <code>data-lg-scroll-animate</code> attribute or a preset animation, scroll animated elements get CSS variables:</p>
+<ul>
+<li><code>--progress</code>: contains the element's progress (from <code>0</code> to <code>1</code>) inside the viewport during scroll (see <a href="/docs/scroll-observer/">ScrollObserver</a>).</li>
+<li><code>--diff</code>: when using inertia (see <a href="#attributes">attributes</a>), contains the difference between the expected progress and the delayed one.</li>
+<li><code>--abs-diff</code> :  contains the absolute value of the <code>--diff</code> variable.</li>
+</ul>
+<p>You can use these variables to create your own CSS scroll animations:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.my-element</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  transform</span><span style="color:#24292E">: </span><span style="color:#005CC5">rotateY</span><span style="color:#24292E">( </span><span style="color:#005CC5">calc</span><span style="color:#24292E">( </span><span style="color:#005CC5">var</span><span style="color:#24292E">(</span><span style="color:#E36209">--progress</span><span style="color:#24292E">) </span><span style="color:#D73A49">*</span><span style="color:#005CC5"> 180</span><span style="color:#D73A49">deg</span><span style="color:#24292E"> ) );</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<h2 id="attributes">Attributes</h2>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-scroll</code></td><td>String</td><td>unset</td><td>The preset animation to use.</td></tr><tr><td><code>data-lg-scroll-animate</code></td><td>String</td><td>unset</td><td>A JSON string containing the properties animations (see <a href="#animatable">Animatable properties</a>).</td></tr><tr><td><code>data-lg-scroll-inertia</code></td><td>Number</td><td>0.1</td><td>The inertia strength, which adds smoothness to the animation. You can use a string like <code>{0.25,0.75}</code> to use a random value in this range. The default value can be changed globally in JS <code>luge.settings({scroll: {inertia: 0.1}})</code>.</td></tr><tr><td><code>data-lg-scroll-start</code></td><td>Number</td><td>1</td><td>Viewport fraction used for the start boundary: <code>1</code> is the bottom of the viewport.</td></tr><tr><td><code>data-lg-scroll-end</code></td><td>Number</td><td>0</td><td>Viewport fraction used for the end boundary: <code>0</code> is the top of the viewport.</td></tr><tr><td><code>data-lg-scroll-yoyo</code></td><td>Boolean</td><td>false</td><td>If set, the animation reaches its end when the element gets to the viewport’s center and then moves back to it start.</td></tr></tbody></table></div>
+<h2 id="settings-and-interpolation">Settings and interpolation</h2>
+<p><code>data-lg-scroll-start</code> defaults to <code>1</code>, and <code>data-lg-scroll-end</code> defaults to <code>0</code>. Numeric inertia is clamped to 0–0.99; this plugin interpolates with <code>1 - inertia</code>, so higher inertia is slower. CSS-only mode exposes <code>--progress</code>, <code>--diff</code>, and <code>--abs-diff</code>. Transform animation replaces the element’s inline transform rather than composing with other transform owners.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/scroll/?embed=1" title="Scroll animation example" loading="lazy"></iframe><p><a href="/demo/scroll/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Scroll animation</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#animatable">Animatable properties</a></li><li class="p__link"><a href="#preset">Preset animations</a></li><li class="p__link"><a href="#css">CSS animations</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#settings-and-interpolation">Settings and interpolation</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link"><a href="/docs/parallax/">Parallax</a></li><li class="p__link"><a href="/docs/preloader/">Preloader</a></li><li class="p__link"><a href="/docs/reveal/">Reveal</a></li><li class="p__link is-active"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

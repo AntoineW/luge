@@ -1,5 +1,2 @@
-/package-lock.json
-/demo
-/node_modules
-*.code-workspace
-/build/config.json
+node_modules/
+.artifacts/

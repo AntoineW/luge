@@ -1,4 +1,4 @@
-import Luge from 'Core/Core'
+import Luge from './Core'
 
 class Ticker {
   /**
@@ -33,7 +33,7 @@ class Ticker {
     if (!exists) {
       this.callbacks.push({
         cb: callback,
-        context
+        context: context
       })
     }
   }
@@ -61,7 +61,7 @@ class Ticker {
   nextTick (callback, context) {
     this.onceCallbacks.push({
       cb: callback,
-      context
+      context: context
     })
   }
 

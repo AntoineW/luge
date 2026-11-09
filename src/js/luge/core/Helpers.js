@@ -1,11 +1,16 @@
 class Helpers {
   /**
-   * Check if the variable is an array
-   * @param {*} item
-   * @returns {Boolean}
+   * Parse the shared mouse/scroll inertia syntax without changing coercion.
    */
-  static isArray(item) {
-    return (item && typeof item === 'object' && Array.isArray(item))
+  static parseInertia (value) {
+    if (value) {
+      const range = value.match(/\{\s*([0-9]*[.]?[0-9]*)\s*,\s*([0-9]*[.]?[0-9]*)\s*\}/m)
+      value = range
+        ? Number(range[1]) + ((Number(range[2]) - Number(range[1])) * Math.random())
+        : Number(value)
+      value = Math.max(Math.min(value, 0.99), 0)
+    }
+    return value
   }
 
   /**
@@ -69,26 +74,26 @@ class Helpers {
   }
 
   /**
-   * Convert a string to UpperCamelCase
-   * @param {String} string The string to convert
+   * Deep freeze an object
+   * @param {Object} obj
+   * @returns {Object} freezed object
    */
-  static toUpperCamelCase (string) {
-    if (Helpers.isString(string)) {
-      string = Helpers.toCamelCase(string)
-
-      return string.charAt(0).toUpperCase() + string.slice(1)
-    } else {
-      return string
-    }
+  static deepFreeze(obj) {
+    Object.keys(obj).forEach(prop => {
+      if (typeof obj[prop] === 'object') Helpers.deepFreeze(obj[prop])
+    })
+    return Object.freeze(obj)
   }
 
   /**
-   * Check if an element is still in the page's body
-   * @param {HTMLElement} node
-   * @returns {Boolean}
+   * Clamp x between lower and upper
+   * @param {Number} x
+   * @param {Number} lower
+   * @param {Number} upper
+   * @returns {Number} clamped Number
    */
-  static isInPage (node) {
-    return (node === document.body) ? false : document.body.contains(node)
+  static clamp(x, lower, upper) {
+    return Math.min(upper, Math.max(lower, x));
   }
 }
 

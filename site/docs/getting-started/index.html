@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Getting started — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/getting-started/"><meta property="og:title" content="Getting started"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/getting-started/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Getting started</h1><div class="l__body rte"><p>Install the package:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="sh"><code><span class="line"><span style="color:#6F42C1">npm</span><span style="color:#032F62"> install</span><span style="color:#032F62"> @waaark/luge</span></span></code></pre>
+<h2 id="module-usage">Module usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#D73A49">import</span><span style="color:#24292E"> { Luge, Reveal, Browser } </span><span style="color:#D73A49">from</span><span style="color:#032F62"> '@waaark/luge'</span></span>
+<span class="line"><span style="color:#D73A49">import</span><span style="color:#032F62"> '@waaark/luge/css'</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49">const</span><span style="color:#005CC5"> luge</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> new</span><span style="color:#6F42C1"> Luge</span><span style="color:#24292E">()</span></span>
+<span class="line"><span style="color:#24292E">luge.</span><span style="color:#6F42C1">addPlugin</span><span style="color:#24292E">(</span><span style="color:#032F62">'browser'</span><span style="color:#24292E">, Browser)</span></span>
+<span class="line"><span style="color:#24292E">luge.</span><span style="color:#6F42C1">addPlugin</span><span style="color:#24292E">(</span><span style="color:#032F62">'reveal'</span><span style="color:#24292E">, Reveal)</span></span>
+<span class="line"><span style="color:#24292E">luge.</span><span style="color:#6F42C1">settings</span><span style="color:#24292E">({ reveal: { stagger: </span><span style="color:#005CC5">0.1</span><span style="color:#24292E"> } })</span></span>
+<span class="line"><span style="color:#24292E">luge.</span><span style="color:#6F42C1">init</span><span style="color:#24292E">()</span></span></code></pre>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-reveal</span><span style="color:#24292E">=</span><span style="color:#032F62">"fade-to-top"</span><span style="color:#24292E">>Hello, luge.&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>Register plugins and configure settings before <code>init()</code>. Register <code>Browser</code> before using <code>luge.browser</code> in settings. The CSS includes built-in reveals, loaders, cursor styling, and Lenis integration rules; include it when using those features, or supply equivalent styles.</p>
+<p><code>init()</code> starts the load lifecycle when the DOM is ready, or on a future ticker update if it is already ready. Register startup listeners before calling it; do not assume plugin elements are initialized on the next line.</p>
+<h2 id="settings">Settings</h2>
+<p><code>luge.settings(options)</code> merges the supplied values into the current settings. Configure them before initialization; most plugins capture their settings at startup rather than reacting to later changes.</p>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Setting</th><th>Default</th><th>Purpose</th></tr></thead><tbody><tr><td><code>cursor.inertia</code> / <code>cursor.trailLength</code></td><td><code>1</code> / <code>10</code></td><td>Cursor interpolation and trail length.</td></tr><tr><td><code>intersection.threshold</code></td><td><code>0.3</code></td><td>Native IntersectionObserver threshold used by ViewportObserver and Intersection.</td></tr><tr><td><code>lottie.renderer</code> / <code>lottie.subFrame</code></td><td><code>'svg'</code> / <code>true</code></td><td>Lottie rendering defaults.</td></tr><tr><td><code>mouse.inertia</code></td><td><code>0.1</code></td><td>Mouse interpolation factor.</td></tr><tr><td><code>parallax.inertia</code></td><td><code>0.1</code></td><td>Parallax interpolation factor.</td></tr><tr><td><code>preloader.duration</code></td><td><code>0</code></td><td>Minimum preloader duration in seconds.</td></tr><tr><td><code>reveal.stagger</code> / <code>reveal.threshold</code></td><td><code>0.1</code> / <code>0.15</code></td><td>Reveal batch spacing in seconds and scroll-progress threshold.</td></tr><tr><td><code>scroll.inertia</code> / <code>scroll.start</code> / <code>scroll.end</code></td><td><code>0.1</code> / <code>1</code> / <code>0</code></td><td>Scroll animation interpolation and viewport boundaries.</td></tr><tr><td><code>smooth.inertia</code></td><td><code>0.1</code></td><td>Retained for compatibility; not consumed by Lenis.</td></tr><tr><td><code>ticker.external</code></td><td><code>false</code></td><td>Supply ticks from your own animation loop.</td></tr><tr><td><code>transition.reload</code></td><td><code>false</code></td><td>Use full document navigation after the out transition.</td></tr><tr><td><code>credits.show</code></td><td><code>true</code></td><td>Show the console credit at startup.</td></tr></tbody></table></div>
+<p>Plugins extending <code>Plugin</code> also accept <code>disabled: true</code>; see <a href="/docs/disable-plugins/">Disable plugins</a>. Inertia has different meanings across plugins; use the individual plugin reference when tuning it.</p>
+<p>The shared plugin attribute parser treats Boolean attributes as enabled when present, including an empty value; only the literal value <code>"false"</code> parses as false. Some activation checks instead use attribute presence directly, including <code>data-lg-smooth</code> and <code>data-lg-reload</code>. Omit an attribute when disabling that behaviour. Omit optional string attributes when unused; a table default of <code>unset</code> means no value is supplied.</p>
+<h2 id="script-usage">Script usage</h2>
+<p>Copy the release’s <code>dist</code> files to your site:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">link</span><span style="color:#6F42C1"> rel</span><span style="color:#24292E">=</span><span style="color:#032F62">"stylesheet"</span><span style="color:#6F42C1"> href</span><span style="color:#24292E">=</span><span style="color:#032F62">"/lib/css/luge.css"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">script</span><span style="color:#6F42C1"> src</span><span style="color:#24292E">=</span><span style="color:#032F62">"/lib/js/luge.umd.js"</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">script</span><span style="color:#24292E">></span></span></code></pre>
+<p>The UMD bundle registers every plugin, initializes automatically, and exposes <code>window.luge</code>. It disables cursor and smooth scrolling on handheld devices, and smooth scrolling on Safari 12 and earlier. Module usage lets you choose these settings explicitly.</p>
+<h2 id="available-exports">Available exports</h2>
+<p><code>Luge</code>, <code>Plugin</code>, <code>Preloader</code>, <code>Reveal</code>, <code>Transition</code>, <code>ScrollAnimation</code>, <code>SmoothScroll</code>, <code>Cursor</code>, <code>Intersection</code>, <code>LottiePlayer</code>, <code>MouseAnimation</code>, <code>Parallax</code>, and <code>Browser</code> are named exports.</p>
+<h2 id="moving-from-beta">Moving from beta</h2>
+<p>The old default import is replaced by explicit construction and plugin registration. Smooth scrolling uses Lenis; the old <code>smooth.inertia</code> setting is not consumed. Use CSS <code>position: sticky</code> for sticky layouts; there is no Sticky plugin in this version.</p>
+<p>Luge requires a browser DOM. Import it on the client, not during server rendering. Core services are shared singletons: use one Luge instance per document. See <a href="/docs/using-luge-with-a-js-framework/">framework integration</a> and <a href="/docs/known-limitations/">known limitations</a>.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/reveal/?embed=1" title="Getting started example" loading="lazy"></iframe><p><a href="/demo/reveal/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Getting started</div><ul class="p__links"><li class="p__link"><a href="#module-usage">Module usage</a></li><li class="p__link"><a href="#settings">Settings</a></li><li class="p__link"><a href="#script-usage">Script usage</a></li><li class="p__link"><a href="#available-exports">Available exports</a></li><li class="p__link"><a href="#moving-from-beta">Moving from beta</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/disable-plugins/">Disable plugins</a></li><li class="p__link"><a href="/docs/dynamic-elements/">Dynamic elements</a></li><li class="p__link is-active"><a href="/docs/getting-started/">Getting started</a></li><li class="p__link"><a href="/docs/known-limitations/">Known limitations</a></li><li class="p__link"><a href="/docs/use-hash-links-with-transitions/">Use # links with transitions</a></li><li class="p__link"><a href="/docs/using-luge-with-a-js-framework/">Using luge with a JS framework</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

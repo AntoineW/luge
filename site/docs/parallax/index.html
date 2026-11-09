@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Parallax — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/parallax/"><meta property="og:title" content="Parallax"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/parallax/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Parallax</h1><div class="l__body rte"><p>Import <code>Parallax</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('parallax', Parallax)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>Moves elements vertically at different speeds on scroll to create a parallax effect.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-parallax</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-parallax-amplitude</span><span style="color:#24292E">=</span><span style="color:#032F62">"0.5"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span></span>
+<span class="line"><span style="color:#6F42C1">  class</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-element"</span></span>
+<span class="line"><span style="color:#6F42C1">  data-lg-parallax</span><span style="color:#24292E">=</span><span style="color:#032F62">"child"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">img</span><span style="color:#6F42C1"> src</span><span style="color:#24292E">=</span><span style="color:#032F62">"/my-image"</span><span style="color:#24292E"> /></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>Please note that the parallax effect use element’s <code>transform</code> property. Using parallax on an element will override it’s default <code>transform</code> and conflict with some <a href="/docs/reveal/">reveal animations</a>. It’s recommended to create two separate containers to use parallax and reveal animation together.</p>
+<h2 id="attributes">Attributes</h2>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-parallax</code></td><td>String</td><td>unset</td><td>Set to <code>child</code> when you want the first child element to move within its parent bounding box with an hidden overflow.</td></tr><tr><td><code>data-lg-parallax-anchor</code></td><td>String</td><td>center</td><td>The element anchor point used to define the element position during the scroll. You can change that value to <code>bottom</code> or <code>top</code>.</td></tr><tr><td><code>data-lg-parallax-amplitude</code></td><td>Number | String</td><td>1</td><td>Defines the movement amplitude during scroll, in proportion to the element’s height. A value of 1 means the element movement will be equal to its height. You can use a negative number to make the element move the other way. You can also use a string like <code>{0.5,1.5}</code> to use a random value in this range.</td></tr><tr><td><code>data-lg-parallax-disable</code></td><td>String</td><td>unset</td><td>Disable on <code>desktop</code>, <code>tablet</code>, <code>mobile</code>, or <code>handheld</code>. Requires the Browser plugin.</td></tr><tr><td><code>data-lg-parallax-inertia</code></td><td>Number</td><td>0.1</td><td>The inertia strength, which adds smoothness to the animation. The default value can be changed globally in JS <code>luge.settings({parallax: {inertia: 0.1}})</code>.</td></tr></tbody></table></div>
+<p> </p>
+<h2 id="composition">Composition</h2>
+<p>Parallax writes inline transforms. Use separate wrapper/child elements when combining it with another transform animation. <code>data-lg-parallax="child"</code> animates the first child other than a <code>&#x3C;source></code> element and hides overflow on its parent.</p>
+<p>In normal mode, amplitude <code>1</code> spans one element height across a full scroll range. Child mode instead uses percentage translation and scales the child to cover its container; it does not use the normal height-based distance. Provide a child with dimensions that cover the parent.</p>
+<p>Parallax uses inertia directly as an interpolation factor: smaller positive values move more slowly, <code>1</code> follows immediately, and <code>0</code> freezes the interpolated movement. Use a numeric value between <code>0</code> and <code>1</code>; this plugin does not clamp inertia or parse inertia ranges.</p><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/parallax/?embed=1" title="Parallax example" loading="lazy"></iframe><p><a href="/demo/parallax/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Parallax</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#composition">Composition</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link is-active"><a href="/docs/parallax/">Parallax</a></li><li class="p__link"><a href="/docs/preloader/">Preloader</a></li><li class="p__link"><a href="/docs/reveal/">Reveal</a></li><li class="p__link"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>

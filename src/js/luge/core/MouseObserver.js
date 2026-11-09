@@ -1,7 +1,7 @@
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
-import LifeCycle from 'Core/LifeCycle'
-import Ticker from 'Core/Ticker'
+import Emitter from './Emitter'
+import Helpers from './Helpers'
+import LifeCycle from './LifeCycle'
+import Ticker from './Ticker'
 
 class MouseObserver {
   constructor () {
@@ -146,8 +146,8 @@ class MouseObserver {
         y: window.mouseY - element.luge.anchor.y + window.unifiedScrollTop
       }
 
-      mouse.progressX = Math.clamp(mouse.x / element.luge.width, 0, 1)
-      mouse.progressY = Math.clamp(mouse.y / element.luge.height, 0, 1)
+      mouse.progressX = Helpers.clamp(mouse.x / element.luge.width, 0, 1)
+      mouse.progressY = Helpers.clamp(mouse.y / element.luge.height, 0, 1)
 
       element.luge.mouse = Helpers.mergeDeep(element.luge.mouse, mouse)
     }

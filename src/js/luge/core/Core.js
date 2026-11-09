@@ -1,6 +1,6 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Helpers from 'Core/Helpers'
+import LifeCycle from './LifeCycle'
+import Emitter from './Emitter'
+import Helpers from './Helpers'
 
 class Luge {
   /**
@@ -8,7 +8,7 @@ class Luge {
    */
   constructor () {
     // Options
-    this.settings = {
+    this.settings = Helpers.deepFreeze({
       cursor: {
         inertia: 1,
         trailLength: 10
@@ -34,7 +34,9 @@ class Luge {
         threshold: 0.15
       },
       scroll: {
-        inertia: 0.1
+        inertia: 0.1,
+        start: 1,
+        end: 0
       },
       smooth: {
         inertia: 0.1
@@ -48,7 +50,7 @@ class Luge {
       credits: {
         show: true
       }
-    }
+    })
 
     // Timeouts
     this.timeouts = {
@@ -75,6 +77,7 @@ class Luge {
     window.mouseLastScrollTop = 0
 
     LifeCycle.add('siteInit', this.siteInit.bind(this), 999)
+    Emitter.once('afterPageLoad', this.afterPageLoad.bind(this))
 
     this.bindEvents()
   }
@@ -83,7 +86,7 @@ class Luge {
    * Set settings
    */
   setSettings (settings) {
-    this.settings = Helpers.mergeDeep(this.settings, settings)
+    this.settings = Helpers.deepFreeze(Helpers.mergeDeep(this.settings, settings))
   }
 
   /**
@@ -98,6 +101,13 @@ class Luge {
     this.scrollHandler()
 
     done()
+  }
+
+  /**
+   * After page load
+   */
+  afterPageLoad () {
+    this.setCSSProperties()
   }
 
   /**
@@ -145,18 +155,12 @@ class Luge {
    */
   setCSSProperties () {
     // Pass window widths to CSS
-    const newWidth = window.innerWidth
-    if (this.windowWidth !== newWidth) {
-      this.windowWidth = newWidth
-      this.clientWidth = document.body.clientWidth
-    }
+    this.windowWidth = window.innerWidth
+    this.clientWidth = document.documentElement.clientWidth
 
     // Pass window height to CSS
-    const newHeight = window.innerHeight
-    if (this.windowHeight !== newHeight) {
-      this.windowHeight = newHeight
-      this.clientHeight = document.body.clientHeight
-    }
+    this.windowHeight = window.innerHeight
+    this.clientHeight = document.documentElement.clientHeight
 
     requestAnimationFrame(() => {
       document.documentElement.style.setProperty('--vw', (this.windowWidth * 0.01) + 'px')
@@ -171,17 +175,26 @@ class Luge {
    * Scroll handler
    */
   scrollHandler () {
-    window.scrollTop = window.scrollY
-
-    // Backward compatibility
-    window.unifiedScrollTop = window.scrollTop
-
     if (!this.isScrolling) {
       this.scrollStart()
     }
 
     clearTimeout(this.timeouts.scrollEnd)
     this.timeouts.scrollEnd = setTimeout(this.scrollEnd.bind(this), 200)
+
+    if (!window.hasSmoothScroll) {
+      this.updateScroll()
+    }
+  }
+
+  /**
+   * Update scroll
+   */
+  updateScroll () {
+    window.scrollTop = window.scrollY
+
+    // Backward compatibility
+    window.unifiedScrollTop = window.scrollTop
 
     this.previousScrollTop = window.scrollTop
     window.scrollProgress = window.scrollTop / window.maxScrollTop
@@ -221,6 +234,7 @@ class Luge {
       const consoleBoldStyle = consoleBaseStyle + 'font-weight: bold; '
       const consoleWhiteStyle = 'color: black; font: 400 1em monospace; padding: 0.5em 0; '
 
+      const VERSION = VERSION_WIN.includes('npm') ? VERSION_BASH : VERSION_WIN
       console.log('%c powered by %cluge%c / ' + VERSION + ' %c > https://luge.cool ', consoleBaseStyle, consoleBoldStyle, consoleBaseStyle, consoleWhiteStyle)
     }
   }

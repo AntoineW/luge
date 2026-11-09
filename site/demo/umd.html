@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UMD initialization — luge</title>
+    <link rel="stylesheet" href="/lib/css/luge.css">
+    <script src="/lib/js/luge.umd.js"></script>
+    <script>luge.emitter.on('afterReveal', () => { window.demoReady = true })</script>
+  </head>
+  <body><h1 data-lg-reveal="fade">UMD initialization before DOM ready</h1></body>
+</html>

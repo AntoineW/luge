@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 224 160">
+  <style>
+    @keyframes slide-down {
+      0%,
+      15% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      85%,
+      100% {
+        transform: translate3d(0, 50px, 0);
+      }
+    }
+
+    .browser__scrollthumb {
+      animation: slide-down 3s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate both paused;
+    }
+
+    @keyframes shape-1 {
+      0%,
+      15% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      85%,
+      100% {
+        transform: translate3d(0, 50px, 0);
+      }
+    }
+
+    .shape:nth-child(1) {
+      animation: shape-1 3s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate both paused;
+    }
+
+    @keyframes shape-2 {
+      0%,
+      15% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      85%,
+      100% {
+        transform: translate3d(0, 4px, 0);
+      }
+    }
+
+    .shape:nth-child(2) {
+      animation: shape-2 3s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate both paused;
+    }
+
+    @keyframes shape-3 {
+      0%,
+      15% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      85%,
+      100% {
+        transform: translate3d(0, -42px, 0);
+      }
+    }
+
+    .shape:nth-child(3) {
+      animation: shape-3 3s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate both paused;
+    }
+
+    .is-animated .browser__scrollthumb,
+    .is-animated .shape:nth-child(1),
+    .is-animated .shape:nth-child(2),
+    .is-animated .shape:nth-child(3) {
+      animation-play-state: running;
+    }
+  </style>
+  <rect fill="#000" x="0" y="0" width="100%" height="100%" />
+  <g class="is-animated">
+    <g>
+      <path fill="none" stroke="#FFF" stroke-width="2" d="M1 1h222v19H1z" />
+      <path fill="none" stroke="#FFF" stroke-width="2" d="M1 20h222v139H1z" />
+      <path fill="none" stroke="#FFF" stroke-width="2" d="M214 20h9v139h-9z" />
+      <path class="browser__scrollthumb" fill="#58F4FF" d="M217 23h3v21h-3z" />
+    </g>
+
+    <g class="shapes">
+      <g class="shape">
+        <rect x="40" y="40.3" width="78" height="53" />
+        <rect x="40.5" y="40.8" fill="none" stroke="#F56E59" width="77" height="52" />
+      </g>
+      <g class="shape">
+        <rect x="69" y="63.3" width="78" height="53" />
+        <rect x="69.5" y="63.8" fill="none" stroke="#58F4FF" width="77" height="52" />
+      </g>
+      <g class="shape">
+        <rect x="106" y="82.3" width="78" height="53" />
+        <rect x="106.5" y="82.8" fill="none" stroke="#58FF79" width="77" height="52" />
+      </g>
+    </g>
+  </g>
+</svg>

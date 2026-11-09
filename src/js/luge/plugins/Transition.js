@@ -1,22 +1,21 @@
-import LifeCycle from 'Core/LifeCycle'
-import Emitter from 'Core/Emitter'
-import Luge from 'Core/Core'
-import Helpers from 'Core/Helpers'
-import Plugin from 'Core/Plugin'
-import Ticker from 'Core/Ticker'
+import Helpers from '../core/Helpers'
+import Plugin from '../core/Plugin'
 
-class Transition extends Plugin {
+export default class Transition extends Plugin {
   /**
    * Constructor
    */
-  constructor () {
+  constructor (luge) {
     super('transition')
 
+    this.luge = luge
+
     this.url = window.location.href
+    this.oldUrl = window.location.href
     this.pathname = window.location.pathname
     this.pageFetched = null
     this.currentPage = null
-    this.reload = Luge.settings.transition.reload
+    this.reload = this.luge._settings.transition.reload
 
     this.prevScrollTop = 0
     this.newScrollTop = 0
@@ -27,8 +26,17 @@ class Transition extends Plugin {
     }
 
     this.linkTransition = false
+    this.isNavigating = false
+    this.pendingNavigation = null
+    this.historyNavigation = false
 
     this.listeners = { linkHandler: this.linkHandler.bind(this) }
+
+    luge.transition = {
+      add: this.add.bind(this),
+      getOldUrl: this.getOldUrl.bind(this),
+      getNewUrl: this.getNewUrl.bind(this),
+    }
   }
 
   /**
@@ -37,7 +45,7 @@ class Transition extends Plugin {
   init () {
     this.currentPage = document.querySelector('[data-lg-page]')
     if (this.currentPage) {
-      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
+      this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : this.luge._settings.transition.reload
     }
 
     this.initLoader()
@@ -46,12 +54,15 @@ class Transition extends Plugin {
       window.addEventListener('popstate', this.historyStateChanged.bind(this))
     }
 
-    LifeCycle.add('pageInit', this.pageInit.bind(this))
-    LifeCycle.add('pageFetch', this.pageFetch.bind(this))
-    LifeCycle.add('pageOut', this.pageOut.bind(this))
-    LifeCycle.add('pageIn', this.pageIn.bind(this), 10, 'transition')
-    LifeCycle.add('pageCreate', this.pageCreate.bind(this))
-    LifeCycle.add('pageKill', this.pageKill.bind(this), 999, 'transition')
+    this.luge.lifecycle.add('pageInit', this.pageInit.bind(this))
+    this.luge.lifecycle.add('pageFetch', this.pageFetch.bind(this))
+    this.luge.lifecycle.add('pageOut', this.pageOut.bind(this))
+    this.luge.lifecycle.add('pageIn', this.pageIn.bind(this), 10, 'transition')
+    this.luge.lifecycle.add('pageCreate', this.pageCreate.bind(this))
+    this.luge.lifecycle.add('pageKill', this.pageKill.bind(this), 999, 'transition')
+
+    this.luge.emitter.on('update', this.updateHandler.bind(this))
+    this.luge.emitter.on('afterReveal', this.navigationComplete.bind(this))
   }
 
   /**
@@ -73,17 +84,32 @@ class Transition extends Plugin {
   }
 
   /**
+   * Update handler
+   */
+  updateHandler () {
+    this.unbindLinksEvent()
+    this.bindLinksEvent()
+  }
+
+  /**
    * Link handler
    * @param {Event} e Mouse event
    */
   linkHandler (e) {
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || (e.button !== undefined && e.button !== 0)) {
+      return
+    }
     const element = e.currentTarget
+    if (element.hasAttribute('download')) {
+      return
+    }
     const href = element.getAttribute('href')
 
     if (href &&
       href.indexOf('#') !== 0 &&
       href.indexOf('tel') !== 0 &&
       href.indexOf('mailto') !== 0 &&
+      href.indexOf('/email-protection') === -1 &&
       !element.closest('#wpadminbar') &&
       element.getAttribute('data-lg-transition') !== 'disabled' &&
       element.getAttribute('target') !== '_blank') {
@@ -100,16 +126,13 @@ class Transition extends Plugin {
         if (element.hasAttribute('data-lg-transition')) {
           this.linkTransition = {
             name: Helpers.toCamelCase(element.getAttribute('data-lg-transition')),
-            element
+            element: element
           }
         } else {
           this.linkTransition = false
         }
 
         this.navigateTo(href)
-
-        // Change page url
-        history.pushState(null, null, this.url)
       }
     }
   }
@@ -118,8 +141,15 @@ class Transition extends Plugin {
    * Navigate to page
    * @param {URL} url New page URL
    */
-  navigateTo (url) {
+  navigateTo (url, fromHistory = false) {
+    if (this.isNavigating) {
+      this.pendingNavigation = { url, fromHistory, linkTransition: this.linkTransition }
+      return
+    }
+
+    this.oldUrl = this.url
     this.url = url
+    this.historyNavigation = fromHistory
 
     if (this.reload) {
       // Prefetch new URL
@@ -129,15 +159,35 @@ class Transition extends Plugin {
       document.head.appendChild(prefetchLink)
 
       // Change URL after pageOut
-      LifeCycle.add('siteReload', (done) => {
+      this.luge.lifecycle.add('siteReload', (done) => {
         window.location = url
       })
 
       // Call cycle
-      LifeCycle.cycle('reload')
+      this.luge.lifecycle._cycle('reload')
     } else {
-      LifeCycle.cycle('transition')
+      this.isNavigating = true
+      this.luge.lifecycle._cycle('transition')
     }
+  }
+
+  /**
+   * Start the latest queued navigation after the current cycle has finished.
+   */
+  navigationComplete (cycle) {
+    if (cycle !== 'transition') return
+
+    // LifeCycle queues its final proceed after emitting afterReveal. Let that
+    // frame finish before another cycle can reset its shared counters.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      this.isNavigating = false
+      const pending = this.pendingNavigation
+      this.pendingNavigation = null
+      if (pending) {
+        this.linkTransition = pending.linkTransition
+        this.navigateTo(pending.url, pending.fromHistory)
+      }
+    }))
   }
 
   /**
@@ -159,7 +209,7 @@ class Transition extends Plugin {
     if (loader) {
       loader.style.transition = 'none'
       loader.classList.add('lg-loader', 'lg-loader--' + loader.getAttribute('data-lg-loader'))
-      Ticker.nextTick(() => {
+      this.luge.ticker.nextTick(() => {
         loader.style.transition = ''
       })
     }
@@ -217,13 +267,20 @@ class Transition extends Plugin {
     const self = this
 
     if (this.url) {
-      fetch(this.url, { credentials: 'include' })
+      const url = this.url
+      return fetch(url, { credentials: 'include' })
         .then(function (response) {
+          if (!response.ok) {
+            throw new Error('Navigation request failed: ' + response.status)
+          }
           return response.text()
         }).then(function (body) {
           self.pageFetched = body
 
           done()
+        }, () => {
+          // Let the browser handle offline/error pages; do not advance with invalid HTML.
+          window.location.assign(self.pendingNavigation ? self.pendingNavigation.url : url)
         })
     }
   }
@@ -271,7 +328,7 @@ class Transition extends Plugin {
       }
     } else {
       // Force reload when no page is found
-      window.location = this.url
+      window.location = this.pendingNavigation ? this.pendingNavigation.url : this.url
       return
     }
 
@@ -288,7 +345,14 @@ class Transition extends Plugin {
     this.prevScrollTop = 0
     this.newScrollTop = 0
 
-    Emitter.emit('pageTransition', html)
+    this.luge.emitter.emit('pageTransition', html)
+
+    // Change page url
+    // A history traversal already changed the URL. Pushing here would discard
+    // its forward entries, including when traversal overlaps a pending fetch.
+    if (!this.historyNavigation && !this.pendingNavigation?.fromHistory && new URL(this.url, window.location.href).href !== window.location.href) {
+      history.pushState(null, null, this.url)
+    }
 
     done()
   }
@@ -302,7 +366,14 @@ class Transition extends Plugin {
     oldPage.parentNode.removeChild(oldPage)
 
     this.currentPage = document.querySelector('[data-lg-page]')
-    this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : Luge.settings.transition.reload
+
+    // Fallback to reload if no page is found
+    if (!this.currentPage) {
+      window.location = this.pendingNavigation ? this.pendingNavigation.url : this.url
+      return
+    }
+
+    this.reload = this.currentPage.hasAttribute('data-lg-reload') ? true : this.luge._settings.transition.reload
 
     done()
   }
@@ -371,7 +442,7 @@ class Transition extends Plugin {
       done()
     }
 
-    this.unbindLinksEvent.bind(this)
+    this.unbindLinksEvent()
   }
 
   /**
@@ -439,17 +510,18 @@ class Transition extends Plugin {
    * History change
    */
   historyStateChanged () {
+    const destination = this.pendingNavigation ? this.pendingNavigation.url : this.url
     let url = ''
-    if (this.url.indexOf(window.location.origin) === 0) {
-      url = new URL(this.url)
+    if (destination.indexOf(window.location.origin) === 0) {
+      url = new URL(destination)
     } else {
-      url = new URL(window.location.origin + this.url)
+      url = new URL(window.location.origin + destination)
     }
 
     if (url.pathname !== window.location.pathname) {
       this.prevScrollTop = window.scrollY
 
-      Ticker.nextTick(() => {
+      this.luge.ticker.nextTick(() => {
         this.newScrollTop = window.scrollY
 
         window.scroll({
@@ -459,7 +531,7 @@ class Transition extends Plugin {
         })
       })
 
-      this.navigateTo(window.location.href)
+      this.navigateTo(window.location.href, true)
     }
   }
 
@@ -478,6 +550,20 @@ class Transition extends Plugin {
       }
     }
   }
-}
 
-export default new Transition()
+  /**
+   * Get old URL
+   * @returns {String} Old URL
+   */
+  getOldUrl () {
+    return this.oldUrl
+  }
+
+  /**
+   * Get new URL
+   * @returns {String} New URL
+   */
+  getNewUrl () {
+    return this.url
+  }
+}

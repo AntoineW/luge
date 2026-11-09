@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en" data-lg-smooth> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Custom Cursor — luge</title><meta name="description" content="Front-end animation plugin for uncreative developers."><link rel="canonical" href="https://luge.cool/docs/custom-cursor/"><meta property="og:title" content="Custom Cursor"><meta property="og:description" content="Front-end animation plugin for uncreative developers."><meta property="og:url" content="https://luge.cool/docs/custom-cursor/"><link rel="icon" href="/assets/icons/favicon.ico"><link rel="stylesheet" href="/assets/fonts/grotesk.css"><link rel="stylesheet" href="/assets/fonts/source-code-pro.css"><link rel="stylesheet" href="/lib/css/luge.css"><noscript><style>[data-lg-reveal], .lg-reveal { opacity: 1 !important; transform: none !important; } .title__word { --y: 0%; --rotate: 0deg; }</style></noscript><link rel="stylesheet" href="/_astro/SiteLayout.C-V1Fvwk.css"></head> <body> <a class="a-skip" href="#content">Skip to content</a> <div class="site-container"> <header class="site-head"> <div class="site-head__inner"> <a class="site-title" href="/" aria-label="luge home"><span class="a-logo" aria-hidden="true"></span></a> <nav aria-label="Main navigation"><a href="/docs/">Docs</a><a href="/demo/">Demos</a><a href="https://github.com/AntoineW/luge">GitHub</a></nav> </div> <div class="site-head__background"></div> </header> <div id="content"> <main class="l-docs-article"><div class="h-wrapper"> <div class="l__content"><a class="btn-back" href="/docs/">back</a><h1 class="l__title">Custom Cursor</h1><div class="l__body rte"><p>Import <code>Cursor</code> from <code>@waaark/luge</code>, register it with <code>luge.addPlugin('cursor', Cursor)</code>, then call <code>luge.init()</code>. See <a href="/docs/getting-started/">Getting started</a> for a complete setup.</p>
+<p>Adds custom cursor to your site, in addition or as an alternative to the native browser cursor.</p>
+<h2 id="usage">Usage</h2>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-cursor</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-cursor-pointer</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> data-lg-cursor-trail</span><span style="color:#24292E">>&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p><code>data-lg-cursor-pointer</code> adds a small circle (customizable with CSS) at mouse position, while <code>data-lg-cursor-trail</code> adds a a line that follow mouse path.</p>
+<p>You can add several pointers and trails with different inertia to create something unique.</p>
+<p>Quick demo <a href="https://codepen.io/wodniack/pen/7c50e8d9d355f184f7508e03b47537a6" target="_blank" rel="noopener">on this pen</a>.</p>
+<h2 id="style">Custom style</h2>
+<p>The parent cursor element gets a <code>.lg-cursor</code> CSS class, while pointers and trails respectively get <code>.lg-cursor-pointer</code> and <code>.lg-cursor-trail</code> classes.</p>
+<p>To customize the pointer look you can change <code>.lg-cursor-pointer:before</code> pseudo-element:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.lg-cursor-pointer:before</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  margin</span><span style="color:#24292E">: </span><span style="color:#005CC5">-5</span><span style="color:#D73A49">px</span><span style="color:#005CC5"> 0</span><span style="color:#005CC5"> 0</span><span style="color:#005CC5"> -5</span><span style="color:#D73A49">px</span><span style="color:#24292E">; </span><span style="color:#6A737D">/* centers pointer */</span></span>
+<span class="line"><span style="color:#005CC5">  width</span><span style="color:#24292E">: </span><span style="color:#005CC5">10</span><span style="color:#D73A49">px</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  height</span><span style="color:#24292E">: </span><span style="color:#005CC5">10</span><span style="color:#D73A49">px</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  background-color</span><span style="color:#24292E">: </span><span style="color:#005CC5">cyan</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  border-radius</span><span style="color:#24292E">: </span><span style="color:#005CC5">50</span><span style="color:#D73A49">%</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<p>The trail uses a SVG <code>path</code> element, so you can customize it like a regular <code>path</code>:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.lg-cursor-trail</span><span style="color:#22863A"> path</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  stroke</span><span style="color:#24292E">: </span><span style="color:#005CC5">cyan</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  stroke-linecap</span><span style="color:#24292E">: </span><span style="color:#005CC5">round</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  stroke-linejoin</span><span style="color:#24292E">: </span><span style="color:#005CC5">round</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  stroke-width</span><span style="color:#24292E">: </span><span style="color:#005CC5">4</span><span style="color:#D73A49">px</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<h2 id="hover">Hover</h2>
+<p>When hovering <code>a</code> or <code>button</code> elements, the parent cursor element gets a <code>.lg-cursor—hover</code> CSS class that you can use to change cursor look:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.lg-cursor--hover</span><span style="color:#6F42C1"> .lg-cursor-pointer:before</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  background-color</span><span style="color:#24292E">: </span><span style="color:#005CC5">red</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#005CC5">  transform</span><span style="color:#24292E">: </span><span style="color:#005CC5">scale</span><span style="color:#24292E">(</span><span style="color:#005CC5">2</span><span style="color:#24292E">);</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<p>In addition to <code>a</code> and <code>button</code> elements, you can add hover state to any element using <code>data-lg-hover</code> attribute:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="html"><code><span class="line"><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">div</span><span style="color:#6F42C1"> class</span><span style="color:#24292E">=</span><span style="color:#032F62">"btn"</span><span style="color:#6F42C1"> data-lg-hover</span><span style="color:#24292E">=</span><span style="color:#032F62">"my-hover"</span><span style="color:#24292E">></span></span>
+<span class="line"><span style="color:#24292E">  Hover me!</span></span>
+<span class="line"><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">div</span><span style="color:#24292E">></span></span></code></pre>
+<p>When hovering such elements, the parent cursor element gets a CSS class corresponding to the <code>data-lg-hover</code> attribute:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#6F42C1">.lg-cursor--hover--my-hover</span><span style="color:#6F42C1"> .lg-cursor-pointer:before</span><span style="color:#24292E"> {</span></span>
+<span class="line"><span style="color:#005CC5">  background-color</span><span style="color:#24292E">: </span><span style="color:#005CC5">purple</span><span style="color:#24292E">;</span></span>
+<span class="line"><span style="color:#24292E">}</span></span></code></pre>
+<h2 id="attributes">Attributes</h2>
+<div class="a-table-scroll" tabindex="0" role="region" aria-label="Documentation table">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code>data-lg-cursor-hide</code></td><td>Boolean</td><td>false</td><td>On the <code>data-lg-cursor</code> parent element, defines whether the native browser cursor should be hidden or not.</td></tr><tr><td><code>data-lg-cursor-inertia</code></td><td>Number</td><td>1</td><td>The inertia strength, which adds a delay between the custom cursor and the real one. No delay by default. This can be set once on the parent <code>data-lg-cursor</code> element if you want all the child elements (pointers and trails) to share the same value, or individually on each pointers and trails with different values. The default value can be changed globally in JS <code>luge.settings({cursor: {inertia: 1}})</code>.</td></tr><tr><td><code>data-lg-cursor-length</code></td><td>Integer</td><td>10</td><td>On a <code>data-lg-cursor-trail</code> element, defines how long the trail is. The default value can be changed globally in JS <code>luge.settings({cursor: {trailLength: 10}})</code>.</td></tr><tr><td><code>data-lg-hover</code></td><td>String</td><td>unset</td><td>Adds hover state to any element.</td></tr></tbody></table></div><h2 id="try-it">Try it</h2><iframe class="a-demo" src="/demo/cursor/?embed=1" title="Custom Cursor example" loading="lazy"></iframe><p><a href="/demo/cursor/">Open the full demo</a></p></div></div> <aside class="part p-docs-sidebar" data-lenis-prevent><div class="p__block p__block--primary"><div class="p__label">Custom Cursor</div><ul class="p__links"><li class="p__link"><a href="#usage">Usage</a></li><li class="p__link"><a href="#style">Custom style</a></li><li class="p__link"><a href="#hover">Hover</a></li><li class="p__link"><a href="#attributes">Attributes</a></li><li class="p__link"><a href="#try-it">Try it</a></li></ul></div><div class="p__block p__block--secondary"><div class="p__label">Other articles</div><ul class="p__links"><li class="p__link is-active"><a href="/docs/custom-cursor/">Custom Cursor</a></li><li class="p__link"><a href="/docs/intersection/">Intersection</a></li><li class="p__link"><a href="/docs/lottie-player/">Lottie player</a></li><li class="p__link"><a href="/docs/mouse-animation/">Mouse animation</a></li><li class="p__link"><a href="/docs/parallax/">Parallax</a></li><li class="p__link"><a href="/docs/preloader/">Preloader</a></li><li class="p__link"><a href="/docs/reveal/">Reveal</a></li><li class="p__link"><a href="/docs/scroll-animation/">Scroll animation</a></li><li class="p__link"><a href="/docs/smooth-scroll/">Smooth scroll</a></li><li class="p__link"><a href="/docs/transition/">Transition</a></li></ul></div><a class="btn-back" href="/docs/">back</a></aside> </div></main> </div> </div><script type="module" src="/_astro/SiteLayout.astro_astro_type_script_index_0_lang.B64oY2yz.js"></script> </body> </html>
