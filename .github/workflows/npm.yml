@@ -1,4 +1,4 @@
-name: Publish npm package
+name: Stage npm package
 on: workflow_dispatch
 permissions:
   contents: read
@@ -16,10 +16,11 @@ jobs:
         with:
           node-version: '22.23.4'
           registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.15.0
       - run: npm run release:pack
       - run: npm whoami
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-      - run: npm publish waaark-luge-*.tgz --provenance --access public
+      - run: npm stage publish waaark-luge-*.tgz --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
